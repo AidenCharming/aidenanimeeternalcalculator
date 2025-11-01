@@ -440,13 +440,13 @@ const checklistDataByWorld = {
         { id: 'g38', name: 'Thriller Zombie' },
         { id: 'g39', name: 'Nightmare Evolution' },
         { id: 'g40', name: 'Zombie Crafts' },
-        { id: '156', name: 'Demon Fruit Leveling (4)' },
         { id: 'g41', name: 'Special Zombie' },
         { id: 'g42', name: 'Zombie Booster' }
     ],
     progressions: [
         { id: '157', name: 'Special Zombie Crafting (10)' },
-        { id: '158', name: 'Special Zombie Fusion (2)' }
+        { id: '158', name: 'Special Zombie Fusion (2)' },
+        { id: '156', name: 'Demon Fruit Leveling (4)' }
     ],
     sssRank: [
         { id: 's25', name: 'Gekar Morra' }
