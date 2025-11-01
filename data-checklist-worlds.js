@@ -10,7 +10,7 @@ const checklistDataByWorld = {
       { id: 'g2', name: 'Saiyan' }
     ],
     progressions: [],
-    ssRank: [
+    sssRank: [
       { id: 's1', name: 'Kid Kohan' }
     ],
     auras: [
@@ -29,7 +29,7 @@ const checklistDataByWorld = {
     progressions: [
       { id: 'l1', name: 'Haki (60)' }
     ],
-    ssRank: [
+    sssRank: [
       { id: 's2', name: 'Shanks' }
     ],
     auras: [
@@ -47,7 +47,7 @@ const checklistDataByWorld = {
     progressions: [
       { id: 'l2', name: 'Pressure (210)' }
     ],
-    ssRank: [
+    sssRank: [
       { id: 's3', name: 'Eizen' }
     ],
     auras: [
@@ -62,7 +62,7 @@ const checklistDataByWorld = {
     progressions: [
       { id: 'l3', name: 'Cursed Progression (410)' }
     ],
-    ssRank: [
+    sssRank: [
       { id: 's4', name: 'Sakuni' }
     ],
     auras: [
@@ -77,7 +77,7 @@ const checklistDataByWorld = {
     ],
     progressions: [
     ],
-    ssRank: [
+    sssRank: [
       { id: 's5', name: 'Rangaki' }
     ],
     auras: [
@@ -94,7 +94,7 @@ const checklistDataByWorld = {
       { id: 'l5', name: 'Monarch (200)' },
 	  { id: 'g46', name: 'Shadow Ugrades' }
     ],
-    ssRank: [
+    sssRank: [
       { id: 's6', name: 'Statue of God' }
     ],
     auras: [
@@ -111,7 +111,7 @@ const checklistDataByWorld = {
       { id: 'l7', name: 'Fire Spirit (100)' },
       { id: 'l8', name: 'Wind Spirit (10)' }
     ],
-    ssRank: [
+    sssRank: [
       { id: 's7', name: 'Novi Chroni' }
     ],
     auras: [],
@@ -125,7 +125,7 @@ const checklistDataByWorld = {
       { id: 'l9', name: 'Chakra (210)' },
 	  { id: 'l9', name: 'Attack Range 2 (4)' }
     ],
-    ssRank: [
+    sssRank: [
       { id: 's8', name: 'Madera/Itachi' }
     ],
     auras: [
@@ -143,7 +143,7 @@ const checklistDataByWorld = {
 	  { id: 'l10', name: 'Spiritual Upgrade (60)' },
       { id: 'l11', name: 'Lucky Spirit (50)' },
 	],
-    ssRank: [
+    sssRank: [
       { id: 's9', name: 'Ken Turbo' }
     ],
     auras: [],
@@ -159,7 +159,7 @@ const checklistDataByWorld = {
 	  { id: 'l13', name: 'Contract of Greed (100)' },
 	  { id: 'l13', name: 'Energy Obelisk (30)' }
     ],
-    ssRank: [
+    sssRank: [
       { id: 's10', name: 'Killas Godspeed' }
     ],
     auras: [
@@ -175,7 +175,7 @@ const checklistDataByWorld = {
     ],
     progressions: [
     ],
-    ssRank: [
+    sssRank: [
       { id: 's11', name: 'Eran' }
     ],
     auras: [
@@ -196,7 +196,7 @@ const checklistDataByWorld = {
 	  { id: 'l29', name: 'Energy (50)' },
 	  { id: 'l29', name: 'Sin Upgrades' }
     ],
-    ssRank: [
+    sssRank: [
       { id: 's12', name: 'Esanor' }
     ],
     auras: [],
@@ -210,7 +210,7 @@ const checklistDataByWorld = {
 	  { id: 'l17', name: 'Fortitude (210)' },
       { id: 'l16', name: 'Kaiju Energy (110)' }
     ],
-    ssRank: [
+    sssRank: [
       { id: 's13', name: 'Number 8' }
     ],
     auras: [
@@ -229,7 +229,7 @@ const checklistDataByWorld = {
       { id: 'l20', name: 'Demon Lord Coins (100)' },
       { id: 'l21', name: 'Demon Lord Luck (50)' }
 	  ],
-    ssRank: [
+    sssRank: [
       { id: 's14', name: 'Valzora' }
     ],
     auras: [],
@@ -247,7 +247,7 @@ const checklistDataByWorld = {
       { id: 'l24', name: 'Swordsman Damage (110)' },
 	  { id: 'l24', name: 'Damage Obelisk (30)' }
 	],
-    ssRank: [
+    sssRank: [
       { id: 's15', name: 'The Paladin' }
     ],
     auras: [
@@ -264,7 +264,7 @@ const checklistDataByWorld = {
     progressions: [
       { id: 'l25', name: 'Ripple Energy (110)' }
     ],
-    ssRank: [
+    sssRank: [
       { id: 's16', name: 'Dino' }
     ],
     auras: [
@@ -283,7 +283,7 @@ const checklistDataByWorld = {
       { id: 'l26', name: 'Damage Cells (110)' },
       { id: 'l27', name: 'Kagune Leveling (50)' }
     ],
-    ssRank: [
+    sssRank: [
       { id: 's17', name: 'Arama' }
     ],
     auras: [
@@ -301,7 +301,7 @@ const checklistDataByWorld = {
 	  { id: 'l30', name: 'Akuma Energy (160)' },
       { id: 'l30', name: 'Pokita (50)' }
     ],
-    ssRank: [
+    sssRank: [
       { id: 's18', name: 'Hero Of Hell' }
     ],
     auras: [],
@@ -322,7 +322,7 @@ const checklistDataByWorld = {
       { id: 'l34', name: '4th Gen Leveling (80)' },
       { id: 'l35', name: 'Adolla Leveling (100)' }
     ],
-    ssRank: [
+    sssRank: [
       { id: 's19', name: 'Bansho' }
     ],
     auras: [
@@ -348,7 +348,7 @@ const checklistDataByWorld = {
     { id: 'l40', name: 'Dragon Damage (500)' },
 	{ id: 'l40', name: 'Luck Obelisk (15)' }
 	],
-    ssRank: [
+    sssRank: [
       { id: 's20', name: 'Frezi Final Form' }
     ],
     auras: [],
@@ -366,7 +366,7 @@ const checklistDataByWorld = {
 	{ id: 'g31', name: 'Reiatsu Leveling' },
 	{ id: 'g31', name: 'Zanpakuto Leveling' }
 	],
-    ssRank: [      
+    sssRank: [      
 	{ id: 's21', name: 'Vasto Ichige' }
 	],
     auras: [],
@@ -385,7 +385,7 @@ const checklistDataByWorld = {
       { id: 'l48', name: 'Shadow Garden Leveling (50)' },
       { id: 'l49', name: 'Shadow Arts Leveling (50)' }
     ],
-    ssRank: [
+    sssRank: [
       { id: 's22', name: 'Shadow' }
     ],
     auras: [
@@ -406,7 +406,7 @@ const checklistDataByWorld = {
       { id: 'l51', name: 'Punch Power Leveling (50)' },
 	  { id: 'l51', name: 'Hide N Punch (10)' },
     ],
-    ssRank: [
+    sssRank: [
       { id: 's23', name: 'Galaxy Hunter' }
     ],
     auras: [],
@@ -426,7 +426,7 @@ const checklistDataByWorld = {
       { id: 'l55', name: 'Magic Tier Level (50)' },
 	  { id: '156', name: 'Demon Fruit Leveling (4)' }
     ],
-    ssRank: [
+    sssRank: [
       { id: 's24', name: 'Anz Ool Gawn' }
     ],
     auras: [],
@@ -448,7 +448,7 @@ const checklistDataByWorld = {
         { id: '157', name: 'Special Zombie Crafting (10)' },
         { id: '158', name: 'Special Zombie Fusion (2)' }
     ],
-    ssRank: [
+    sssRank: [
         { id: 's25', name: 'Gekar Morra' }
     ],
     auras: [],
@@ -465,7 +465,7 @@ const checklistDataByWorld = {
         { id: '158', name: 'Assassin Critical Energy (10)' },
         { id: '158', name: 'Assassin Critical Damage (10)' }
       ],
-      ssRank: [
+      sssRank: [
           { id: 's26', name: 'Tagamura' }
       ],
       auras: [],
