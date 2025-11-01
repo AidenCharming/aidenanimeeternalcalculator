@@ -277,6 +277,26 @@ function loadTTKData() {
             el.fourSpotFarming.checked = (fourSpot === 'true');
         }
 
+        // --- NEW CODE TO FIX UI SYNC ---
+        // Find the toggle buttons inside the TTK panel
+        const ttkPanel = el['panel-ttk'];
+        if (ttkPanel) {
+            const singleBtn = ttkPanel.querySelector('.toggle-btn[onclick*="\'single\'"]');
+            const fourBtn = ttkPanel.querySelector('.toggle-btn[onclick*="\'four\'"]');
+
+            if (singleBtn && fourBtn) {
+                if (el.fourSpotFarming.checked) {
+                    singleBtn.classList.remove('active');
+                    fourBtn.classList.add('active');
+                } else {
+                    singleBtn.classList.add('active');
+                    fourBtn.classList.remove('active');
+                }
+            }
+        }
+
+// --- END NEW CODE ---
+
         const world = localStorage.getItem('ae_ttk_world');
         if (world && el.worldSelect) {
             el.worldSelect.value = world;
