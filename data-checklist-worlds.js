@@ -460,10 +460,10 @@ const checklistDataByWorld = {
           { id: 'g44', name: 'Assasin Skill' }
       ],
       progressions: [
-        { id: '158', name: 'Assassin Energy (100)' },
-        { id: '158', name: 'Assassin Damage (100)' },
-        { id: '158', name: 'Assassin Critical Energy (10)' },
-        { id: '158', name: 'Assassin Critical Damage (10)' }
+        { id: '159', name: 'Assassin Energy (100)' },
+        { id: '160', name: 'Assassin Damage (100)' },
+        { id: '161', name: 'Assassin Critical Energy (10)' },
+        { id: '162', name: 'Assassin Critical Damage (10)' }
       ],
       sssRank: [
           { id: 's26', name: 'Tagamura' }
