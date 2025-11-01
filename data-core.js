@@ -61,7 +61,7 @@ const denominations = [
     { name: 'QnQGNT', value: 1e168 },
     { name: 'sxQGNT', value: 1e171 },
     { name: 'SpQGNT', value: 1e174 },
-    { name: 'OcQGNT', value: 1e177 },
+    { name: 'OQQGNT', value: 1e177 },
     { name: 'NQQGNT', value: 1e180 },
     { name: 'SXGNTL', value: 1e183 },
     { name: 'USXGNTL', value: 1e186 },
@@ -416,15 +416,15 @@ const worldData = {
     },
 	"Amusement Park": {
         "enemies": {
-            "Masumo": 3.88E+164,
-            "Lu Shaoran": 3.09E+165,
-            "Shiru": 5.58E+166,
-            "Nakumo": 6.02E+167,
-            "Sakomura": 6.34E+168,
-            "Shibasa": 6.69E+169,
-            "Hayo": 6.69E+173,
-			"Hayo 20%": 1.34E+173,
-            "Tagamura": 6.69E+177
+            "Masumo": 2.90E+164,
+            "Lu Shaoran": 2.90E+165,
+            "Shiru": 5.22E+166,
+            "Nakumo": 5.63E+167,
+            "Sakomura": 5.93E+168,
+            "Shibasa": 6.25E+169,
+            "Hayo": 6.25E+173,
+			"Hayo 20%": 1.25E+173,
+            "Tagamura": 6.25E+177
         }
     }
 };

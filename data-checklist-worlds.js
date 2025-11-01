@@ -297,9 +297,9 @@ const checklistDataByWorld = {
       { id: 'g27', name: 'Akuma Powers' }
     ],
     progressions: [
-	  { id: 'l30', name: 'Akuma Damage (110)' },
-	  { id: 'l30', name: 'Akuma Energy (160)' },
-      { id: 'l30', name: 'Pokita (50)' }
+	  { id: 'l63', name: 'Akuma Damage (110)' },
+	  { id: 'l64', name: 'Akuma Energy (160)' },
+      { id: 'l65', name: 'Pokita (50)' }
     ],
     sssRank: [
       { id: 's18', name: 'Hero Of Hell' }
@@ -423,8 +423,7 @@ const checklistDataByWorld = {
       { id: 'l52', name: 'Mana Growth (100)' },
       { id: 'l53', name: 'Ultimate Cast (100)' },
       { id: 'l54', name: 'Adventurer Level (50)' },
-      { id: 'l55', name: 'Magic Tier Level (50)' },
-	  { id: '156', name: 'Demon Fruit Leveling (4)' }
+      { id: 'l55', name: 'Magic Tier Level (50)' }
     ],
     sssRank: [
       { id: 's24', name: 'Anz Ool Gawn' }
@@ -441,6 +440,7 @@ const checklistDataByWorld = {
         { id: 'g38', name: 'Thriller Zombie' },
         { id: 'g39', name: 'Nightmare Evolution' },
         { id: 'g40', name: 'Zombie Crafts' },
+        { id: '156', name: 'Demon Fruit Leveling (4)' },
         { id: 'g41', name: 'Special Zombie' },
         { id: 'g42', name: 'Zombie Booster' }
     ],
