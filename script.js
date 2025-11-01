@@ -1,17 +1,9 @@
-// --- OPTIMIZATION: Element Cache ---
-// This object will hold references to all our DOM elements
-// for much faster access. It's populated in DOMContentLoaded.
 const el = {};
-
-// --- Tab Switching Logic ---
 const tabs = ['rankup', 'eta', 'ttk', 'raid', 'checklist'];
 function switchTab(activeTab) {
     tabs.forEach(tab => {
-        // Use cached elements
-        const panel = el[`panel-${tab}`]; // Uses bracket notation (correct)
-        const button = el[`tab-${tab}`]; // Uses bracket notation (correct)
-        
-        // Safety check if elements don't exist
+        const panel = el[`panel-${tab}`]; 
+        const button = el[`tab-${tab}`];
         if (panel && button) {
             if (tab === activeTab) {
                 panel.classList.remove('hidden');
@@ -24,15 +16,66 @@ function switchTab(activeTab) {
     });
 }
 
-// Global objects to hold dynamically loaded data.
-// 'worldData' is now defined in data-core.js!
 const activityData = {};
 
+function setFarmingMode(mode, button) {
+    const buttons = button.parentElement.querySelectorAll('.toggle-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+    
+    if (el.fourSpotFarming) {
+        el.fourSpotFarming.checked = (mode === 'four');
+        calculateTTK();
+    }
+}
 
-// --- Helper Functions ---
+function setClickerSpeed(speed, button) {
+    const buttons = button.parentElement.querySelectorAll('.toggle-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+    
+    const isFast = (speed === 'fast');
+    if (el.clickerSpeed) el.clickerSpeed.checked = isFast;
+    if (el.clickerSpeedETA) el.clickerSpeedETA.checked = isFast;
+    
+    calculateRankUp();
+    calculateEnergyETA();
+}
+
+function copyResult(elementId) {
+    const element = document.getElementById(elementId);
+    if (element && element.innerText !== '0s' && element.innerText !== 'N/A') {
+        navigator.clipboard.writeText(element.innerText).then(() => {
+            const originalBg = element.style.backgroundColor;
+            element.style.backgroundColor = '#10b981';
+            setTimeout(() => {
+                element.style.backgroundColor = originalBg;
+            }, 200);
+        });
+    }
+}
+
+function toggleTheme() {
+    const body = document.body;
+    const currentTheme = localStorage.getItem('ae_theme') || 'dark';
+    
+    if (currentTheme === 'dark') {
+        body.className = 'game-theme';
+        localStorage.setItem('ae_theme', 'game');
+    } else if (currentTheme === 'game') {
+        body.className = 'blue-theme';
+        localStorage.setItem('ae_theme', 'blue');
+    } else {
+        body.className = '';
+        localStorage.setItem('ae_theme', 'dark');
+    }
+}
+
+
+
+
 function getNumberValue(id) {
-    // Use cached element
-    if (el[id]) { // Uses bracket notation (correct)
+    if (el[id]) {
         return parseFloat(el[id].value) || 0;
     }
     return 0;
@@ -41,10 +84,8 @@ function getNumberValue(id) {
 function formatNumber(num) {
     if (num === 0) return '0';
     if (num < 1000) return num.toLocaleString(undefined, { maximumFractionDigits: 2 });
-    // Create a reversed copy to find the largest denomination match first
     const reversedDenominations = [...denominations].reverse();
     for (const denom of reversedDenominations) {
-        // We check for > 1 to skip the 'None' denomination
         if (denom.value > 1 && num >= denom.value) {
             return `${(num / denom.value).toFixed(2)}${denom.name}`;
         }
@@ -52,7 +93,6 @@ function formatNumber(num) {
     return num.toLocaleString(undefined, { maximumFractionDigits: 2 });
 }
 
-// --- Debounce Function ---
 function debounce(func, delay) {
     let timeout;
     return function(...args) {
@@ -61,29 +101,18 @@ function debounce(func, delay) {
     };
 }
 
-// --- NEW SYNC HELPER FUNCTION ---
-/**
- * Creates a sync function for denomination inputs.
- * Uses cached elements.
- */
 function syncDenominationInput(sourceTextId, sourceValueId, destTextId, destValueId, destCallback) {
-    // Get elements from cache
     const sourceTextEl = el[sourceTextId];
     const sourceValueEl = el[sourceValueId];
     const destTextEl = el[destTextId];
     const destValueEl = el[destValueId];
 
     return function() {
-        if (!sourceTextEl || !sourceValueEl || !destTextEl || !destValueEl) {
-            console.warn("Sync function missing elements, aborting.");
-            return;
-        }
+        if (!sourceTextEl || !sourceValueEl || !destTextEl || !destValueEl) return;
         
-        // Copy values from source to destination
         destTextEl.value = sourceTextEl.value;
         destValueEl.value = sourceValueEl.value;
         
-        // Trigger the destination's calculation function
         if (destCallback) {
             destCallback();
         }
@@ -91,10 +120,8 @@ function syncDenominationInput(sourceTextId, sourceValueId, destTextId, destValu
 }
 
 
-// --- LocalStorage Save/Load Functions (Refactored for element cache) ---
 function saveRankUpData() {
     try {
-        // These are all camelCase IDs, so el.dotNotation is fine
         if (el.rankSelect) localStorage.setItem('ae_rankSelect', el.rankSelect.value);
         if (el.rankInput) localStorage.setItem('ae_rankInput', el.rankInput.value);
         if (el.currentEnergy) localStorage.setItem('ae_currentEnergy', el.currentEnergy.value);
@@ -212,7 +239,6 @@ function loadETAData() {
         const clickerSpeed = localStorage.getItem('ae_clickerSpeedETA');
         if (clickerSpeed !== null && el.clickerSpeed && el.clickerSpeedETA) {
             const isChecked = (clickerSpeed === 'true');
-            // Sync both toggles
             el.clickerSpeed.checked = isChecked;
             el.clickerSpeedETA.checked = isChecked;
         }
@@ -305,7 +331,6 @@ function loadRaidData() {
 
         const activity = localStorage.getItem('ae_raid_activity');
         if (activity && el.activitySelect) {
-            // Check if the activity option exists before setting it
             if (el.activitySelect.querySelector(`option[value="${activity}"]`)) {
                 el.activitySelect.value = activity;
             } else {
@@ -320,28 +345,21 @@ function loadRaidData() {
 }
 
 
-// --- Calculator Logics (Refactored for element cache) ---
-
 function calculateEnergyETA() {
-    // Check if all required elements exist
-    if (!el.clickerSpeedETA || !el.currentEnergyETA || !el.currentEnergyETADenominationValue || 
-        !el.targetEnergyETA || !el.targetEnergyETADenominationValue || !el.energyPerClickETA || 
-        !el.energyPerClickETADenominationValue || !el.etaResult || !el.etaReturnTime) {
-        return; // Exit if elements aren't ready
-    }
+    if (!el.etaResult) return;
 
-    const isFastClicker = el.clickerSpeedETA.checked;
+    const isFastClicker = el.clickerSpeedETA ? el.clickerSpeedETA.checked : false;
 
     const currentEnergyValue = getNumberValue('currentEnergyETA');
-    const currentEnergyDenom = (parseFloat(el.currentEnergyETADenominationValue.value) || 1);
+    const currentEnergyDenom = el.currentEnergyETADenominationValue ? (parseFloat(el.currentEnergyETADenominationValue.value) || 1) : 1;
     const currentEnergy = currentEnergyValue * currentEnergyDenom;
 
     const targetEnergyValue = getNumberValue('targetEnergyETA');
-    const targetEnergyDenom = (parseFloat(el.targetEnergyETADenominationValue.value) || 1);
+    const targetEnergyDenom = el.targetEnergyETADenominationValue ? (parseFloat(el.targetEnergyETADenominationValue.value) || 1) : 1;
     const targetEnergy = targetEnergyValue * targetEnergyDenom;
 
     const energyPerClickValue = getNumberValue('energyPerClickETA');
-    const energyPerClickDenom = (parseFloat(el.energyPerClickETADenominationValue.value) || 1);
+    const energyPerClickDenom = el.energyPerClickETADenominationValue ? (parseFloat(el.energyPerClickETADenominationValue.value) || 1) : 1;
     const energyPerClick = energyPerClickValue * energyPerClickDenom;
 
     const SLOW_CPS = 1.0919;
@@ -352,14 +370,12 @@ function calculateEnergyETA() {
 
     if (energyNeeded <= 0) {
         el.etaResult.innerText = 'Target Reached!';
-        returnTimeEl.innerText = "You're already there!";
-        saveETAData();
+        if (returnTimeEl) returnTimeEl.innerText = "You're already there!";
         return;
     }
     if (energyPerClick <= 0 || clicksPerSecond <= 0) {
         el.etaResult.innerText = 'N/A';
-        returnTimeEl.innerText = '';
-        saveETAData();
+        if (returnTimeEl) returnTimeEl.innerText = '';
         return;
     }
 
@@ -378,34 +394,31 @@ function calculateEnergyETA() {
 
     el.etaResult.innerText = resultString.trim();
 
-    const now = new Date();
-    const returnTime = new Date(now.getTime() + timeInSeconds * 1000);
-    const returnString = returnTime.toLocaleString('en-US', { 
-        month: 'short', 
-        day: 'numeric', 
-        hour: 'numeric', 
-        minute: '2-digit', 
-        hour12: true 
-    });
-    returnTimeEl.innerText = `Return on: ${returnString}`;
-    
-    saveETAData();
+    if (returnTimeEl) {
+        const now = new Date();
+        const returnTime = new Date(now.getTime() + timeInSeconds * 1000);
+        const returnString = returnTime.toLocaleString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            hour: 'numeric', 
+            minute: '2-digit', 
+            hour12: true 
+        });
+        returnTimeEl.innerText = `Return on: ${returnString}`;
+    }
 }
 
 
 function calculateTTK() {
-    if (!el.enemyHealth || !el.yourDPS || !el.dpsDenominationValue || !el.enemyQuantity || 
-        !el.fourSpotFarming || !el.ttkResult || !el.questTTKResult || !el.questReturnTime) {
-        return; // Exit if elements aren't ready
-    }
+    if (!el.ttkResult) return;
 
     const enemyHealth = getNumberValue('enemyHealth');
     const dpsInput = getNumberValue('yourDPS');
-    const dpsMultiplier = parseFloat(el.dpsDenominationValue.value) || 1;
+    const dpsMultiplier = el.dpsDenominationValue ? (parseFloat(el.dpsDenominationValue.value) || 1) : 1;
     const yourDPS = dpsInput * dpsMultiplier;
     
     const quantity = Math.floor(getNumberValue('enemyQuantity')) || 0;
-    const isFourSpot = el.fourSpotFarming.checked;
+    const isFourSpot = el.fourSpotFarming ? el.fourSpotFarming.checked : false;
 
     const singleResultEl = el.ttkResult;
     const questResultEl = el.questTTKResult;
@@ -413,8 +426,8 @@ function calculateTTK() {
 
     if (enemyHealth <= 0 || yourDPS <= 0) {
         singleResultEl.innerText = 'N/A';
-        questResultEl.innerText = '';
-        questReturnEl.innerText = '';
+        if (questResultEl) questResultEl.innerText = '';
+        if (questReturnEl) questReturnEl.innerText = '';
         saveTTKData();
         return;
     }
@@ -457,25 +470,25 @@ function calculateTTK() {
         if (totalMinutes > 0 || totalHours > 0 || totalDays > 0) totalResultString += `${totalMinutes}m `;
         totalResultString += `${totalSeconds}s`;
 
-        questResultEl.innerText = `Time for ${quantity} kills: ${totalResultString.trim()}`;
+        if (questResultEl) questResultEl.innerText = `Time for ${quantity} kills: ${totalResultString.trim()}`;
 
-        const now = new Date();
-        const returnTime = new Date(now.getTime() + totalTimeInSeconds * 1000);
-        const returnString = returnTime.toLocaleString('en-US', { 
-            month: 'short', 
-            day: 'numeric', 
-            hour: 'numeric', 
-            minute: '2-digit', 
-            hour12: true 
-        });
-        questReturnEl.innerText = `Mobs killed by: ${returnString}`;
+        if (questReturnEl) {
+            const now = new Date();
+            const returnTime = new Date(now.getTime() + totalTimeInSeconds * 1000);
+            const returnString = returnTime.toLocaleString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                hour: 'numeric', 
+                minute: '2-digit', 
+                hour12: true 
+            });
+            questReturnEl.innerText = `Mobs killed by: ${returnString}`;
+        }
 
     } else {
-        questResultEl.innerText = '';
-        questReturnEl.innerText = '';
+        if (questResultEl) questResultEl.innerText = '';
+        if (questReturnEl) questReturnEl.innerText = '';
     }
-    
-    saveTTKData();
 }
 
 function displayRankRequirement() {
@@ -489,29 +502,29 @@ function displayRankRequirement() {
 }
 
 function calculateRankUp() {
-    if (!el.clickerSpeed || !el.currentEnergy || !el.currentEnergyDenominationValue || !el.energyPerClick ||
-        !el.energyPerClickDenominationValue || !el.rankSelect || !el.rankUpResult || !el.rankUpReturnTime) {
-        return; // Exit if elements aren't ready
+    if (!el.rankUpResult) {
+        console.warn('rankUpResult element not found');
+        return;
     }
-    const isFastClicker = el.clickerSpeed.checked;
+    
+    const isFastClicker = el.clickerSpeed ? el.clickerSpeed.checked : false;
 
-    const currentEnergyValue = (getNumberValue('currentEnergy') || 0);
-    const currentEnergyDenom = (parseFloat(el.currentEnergyDenominationValue.value) || 1);
+    const currentEnergyValue = getNumberValue('currentEnergy');
+    const currentEnergyDenom = el.currentEnergyDenominationValue ? (parseFloat(el.currentEnergyDenominationValue.value) || 1) : 1;
     const currentEnergy = currentEnergyValue * currentEnergyDenom;
 
-    const energyPerClickValue = (getNumberValue('energyPerClick') || 0);
-    const energyPerClickDenom = (parseFloat(el.energyPerClickDenominationValue.value) || 1);
+    const energyPerClickValue = getNumberValue('energyPerClick');
+    const energyPerClickDenom = el.energyPerClickDenominationValue ? (parseFloat(el.energyPerClickDenominationValue.value) || 1) : 1;
     const energyPerClick = energyPerClickValue * energyPerClickDenom;
 
-    const selectedRank = el.rankSelect.value;
+    const selectedRank = el.rankSelect ? el.rankSelect.value : '';
     const energyForRank = rankRequirements[selectedRank] || 0;
 
     const returnTimeEl = el.rankUpReturnTime;
 
-    if (!energyForRank) {
+    if (!selectedRank || !energyForRank) {
         el.rankUpResult.innerText = 'Select a rank';
-        returnTimeEl.innerText = '';
-        saveRankUpData();
+        if (returnTimeEl) returnTimeEl.innerText = '';
         return;
     }
 
@@ -522,13 +535,13 @@ function calculateRankUp() {
 
     if (energyNeeded <= 0) {
         el.rankUpResult.innerText = 'Rank Up Ready!';
-        returnTimeEl.innerText = 'Ready to rank up now!';
+        if (returnTimeEl) returnTimeEl.innerText = 'Ready to rank up now!';
         saveRankUpData();
         return;
     }
     if (energyPerClick <= 0) {
         el.rankUpResult.innerText = 'N/A';
-        returnTimeEl.innerText = '';
+        if (returnTimeEl) returnTimeEl.innerText = '';
         saveRankUpData();
         return;
     }
@@ -548,26 +561,24 @@ function calculateRankUp() {
 
     el.rankUpResult.innerText = resultString.trim();
 
-    const now = new Date();
-    const returnTime = new Date(now.getTime() + timeInSeconds * 1000);
-    const returnString = returnTime.toLocaleString('en-US', { 
-        month: 'short', 
-        day: 'numeric', 
-        hour: 'numeric', 
-        minute: '2-digit', 
-        hour12: true 
-    });
-    returnTimeEl.innerText = `Return on: ${returnString}`;
-    
-    saveRankUpData();
+    if (returnTimeEl) {
+        const now = new Date();
+        const returnTime = new Date(now.getTime() + timeInSeconds * 1000);
+        const returnString = returnTime.toLocaleString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            hour: 'numeric', 
+            minute: '2-digit', 
+            hour12: true 
+        });
+        returnTimeEl.innerText = `Return on: ${returnString}`;
+    }
 }
 
 function populateWorldDropdown() {
-    // worldData is now available globally from data-core.js
     const worldSelect = el.worldSelect;
     if (!worldSelect) return;
     
-    // Clear existing options except the first one
     while (worldSelect.options.length > 1) {
         worldSelect.remove(1);
     }
@@ -585,7 +596,7 @@ function populateEnemyDropdown() {
     if (!enemySelect || !el.worldSelect || !el.enemyHealth || !el.enemyHealthDisplay) return;
 
     const selectedWorldName = el.worldSelect.value;
-    const world = worldData[selectedWorldName]; // Use global worldData
+    const world = worldData[selectedWorldName];
 
     enemySelect.innerHTML = '<option value="">-- Select an Enemy --</option>';
     el.enemyHealth.value = '';
@@ -607,7 +618,7 @@ function displayEnemyHealth() {
 
     const selectedWorldName = el.worldSelect.value;
     const selectedEnemy = el.enemySelect.value;
-    const world = worldData[selectedWorldName]; // Use global worldData
+    const world = worldData[selectedWorldName];
     const enemyHealthInput = el.enemyHealth;
     const enemyHealthDisplay = el.enemyHealthDisplay;
 
@@ -622,31 +633,23 @@ function displayEnemyHealth() {
     calculateTTK();
 }
 
-// --- OPTIMIZATION: Updated Data Loading Function ---
 async function loadAllData() {
-    // This function now *only* loads the activity bundle.
-    // worldData is already defined in data-core.js.
     try {
-        // Fetch the single *activity* bundled data file
-        const response = await fetch('activity-bundle.json'); // <-- CHANGED
+        const response = await fetch('activity-bundle.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const bundle = await response.json();
         
-        // Assign data from the single bundle
-        // We only need to assign activities now
         Object.assign(activityData, bundle.activities || {});
         
         console.log("DEBUG: Successfully loaded and parsed activity-bundle.json");
 
     } catch (error) {
         console.error("Fatal error loading activity-bundle.json:", error);
-        // Alert the user that the app is broken
         alert("Failed to load critical raid/dungeon data. Please refresh the page.");
     }
 }
-// --- END OPTIMIZATION ---
 
 function populateActivityDropdown() {
     const select = el.activitySelect;
@@ -654,7 +657,6 @@ function populateActivityDropdown() {
     
     select.innerHTML = '<option value="">-- Select an Activity --</option>';
 
-    // Sort keys alphabetically for a consistent order
     const sortedActivityNames = Object.keys(activityData).sort((a, b) => a.localeCompare(b));
 
     sortedActivityNames.forEach(name => {
@@ -674,13 +676,12 @@ function handleActivityChange() {
 
     if (!activity) {
         el.activityResult.innerText = '0 / 0';
-        el.activityTimeLimit.value = ''; // Clear time limit
+        el.activityTimeLimit.value = ''; 
         return;
     }
 
     el.activityTimeLimit.value = activity.timeLimit;
 
-    // Use "Wave" for raids, "Room" for dungeons
     if (activity.type === 'raid') {
         resultLabel.innerText = 'Estimated Max Wave:';
     } else {
@@ -692,7 +693,7 @@ function handleActivityChange() {
 function calculateMaxStage() {
     if (!el.activitySelect || !el.yourDPSActivity || !el.dpsActivityDenominationValue || 
         !el.activityTimeLimit || !el.activityResult) {
-        return; // Exit if elements aren't ready
+        return; 
     }
     
     const selection = el.activitySelect.value;
@@ -707,7 +708,6 @@ function calculateMaxStage() {
     const timeLimit = getNumberValue('activityTimeLimit');
     const resultEl = el.activityResult;
 
-    // Default to a maximum of 0 stages if data is missing
     const maxStages = activity ? activity.maxStages : 0;
 
     if (!activity || yourDPS <= 0 || timeLimit <= 0) {
@@ -750,11 +750,9 @@ function calculateMaxStage() {
     }
 
     resultEl.innerText = `${completedStage} / ${maxStages}`;
-    saveRaidData();
 }
 
 
-// --- Searchable Dropdown Logic (Refactored for element cache) ---
 function setupRankSearch(inputId, valueId, listId) {
     const inputEl = el[inputId];
     const valueEl = el[valueId];
@@ -798,7 +796,7 @@ function setupRankSearch(inputId, valueId, listId) {
 
     function handleRankInputBlur() {
         setTimeout(() => {
-            if (!inputEl || !valueEl) return; // Safety check
+            if (!inputEl || !valueEl) return;
             const rankValue = inputEl.value.trim();
             if (rankRequirements[rankValue]) {
                 if (valueEl.value !== rankValue) {
@@ -862,7 +860,7 @@ function setupDenominationSearch(inputId, valueId, listId, callback) {
 
     function handleDenominationBlur() {
          setTimeout(() => {
-            if (!inputEl || !valueEl) return; // Safety check
+            if (!inputEl || !valueEl) return;
             const inputText = inputEl.value.trim();
             const foundDenom = denominations.find(d => d.name.toLowerCase() === inputText.toLowerCase());
 
@@ -891,7 +889,6 @@ function setupDenominationSearch(inputId, valueId, listId, callback) {
     inputEl.addEventListener('blur', handleDenominationBlur);
 }
 
-// --- Global Click Listener to Hide Dropdowns ---
 document.addEventListener('click', (event) => {
     const relativeContainers = document.querySelectorAll('.relative');
     let clickedInsideAContainer = false;
@@ -916,7 +913,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // This finds every element with an ID in your HTML and stores it
     // in the 'el' object for instant access.
     document.querySelectorAll('[id]').forEach(element => {
-        el[element.id] = element; // Store with the exact ID string as the key
+        el[element.id] = element;
     });
     // --- End Element Cache ---
 
@@ -959,35 +956,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- End Background Toggle Logic ---
 
 
-    // Load all data, *then* set up the UI
-    // NOTE: worldData is now instantly available from data-core.js
-    // so populateWorldDropdown can run immediately.
-    // We only need to *wait* for activity data.
     
     // --- UPDATED LOGIC ---
     console.log("DEBUG: DOM fully loaded. Initializing script.");
     switchTab('rankup');
     
-    // Populate worlds immediately, since data is now in data-core.js
-    // This makes the TTK tab work instantly on load.
     populateWorldDropdown(); 
 
     // Load the (now smaller) activity bundle
     loadAllData().then(() => {
         console.log("DEBUG: Activity data loading complete. Setting up raid UI.");
         
-        // Now that activityData is loaded, populate the dropdown
         populateActivityDropdown();
 
-        // Load saved raid data *after* dropdown is populated
         loadRaidData();
     });
     // --- END UPDATED LOGIC ---
 
     // --- Setup Searchable Dropdowns ---
     setupRankSearch('rankInput', 'rankSelect', 'rankList');
-    // populateWorldDropdown(); // <-- Moved up
-    // populateActivityDropdown(); // <-- Moved into .then()
 
     // --- START: Combined Callbacks for Syncing ---
     const syncCE_RankToETA = syncDenominationInput(
@@ -1064,7 +1051,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- Event Listeners for Inputs (Using cached elements) ---
     
-    // Safety check for all elements before adding listeners
     if (el.currentEnergy) {
         const rankUpCE = el.currentEnergy;
         rankUpCE.addEventListener('input', debounce(() => {
@@ -1084,6 +1070,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     if (el.clickerSpeed) el.clickerSpeed.addEventListener('change', calculateRankUp);
+    if (el.rankSelect) el.rankSelect.addEventListener('change', () => {
+        displayRankRequirement();
+        calculateRankUp();
+    });
+    if (el.rankInput) el.rankInput.addEventListener('input', debounce(() => {
+        if (el.rankSelect) el.rankSelect.value = el.rankInput.value;
+        displayRankRequirement();
+        calculateRankUp();
+    }, 300));
 
     if (el.yourDPS) {
         const ttkDPS = el.yourDPS;
@@ -1129,13 +1124,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (el.clickerSpeedETA) el.clickerSpeedETA.addEventListener('change', calculateEnergyETA);
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+            switch(e.key) {
+                case '1': e.preventDefault(); switchTab('rankup'); break;
+                case '2': e.preventDefault(); switchTab('eta'); break;
+                case '3': e.preventDefault(); switchTab('ttk'); break;
+                case '4': e.preventDefault(); switchTab('raid'); break;
+                case '5': e.preventDefault(); switchTab('checklist'); break;
+            }
+        }
+    });
+    
+    if (el['theme-toggle']) {
+        el['theme-toggle'].addEventListener('click', toggleTheme);
+        
+        const savedTheme = localStorage.getItem('ae_theme') || 'dark';
+        if (savedTheme === 'game') {
+            document.body.className = 'game-theme';
+        } else if (savedTheme === 'blue') {
+            document.body.className = 'blue-theme';
+        }
+    }
+    
+    setTimeout(() => {
+        calculateRankUp();
+        calculateEnergyETA();
+        calculateTTK();
+        calculateMaxStage();
+    }, 100);
 
 
     // --- Load Saved Data ---
     loadRankUpData();
     loadETAData();
     loadTTKData();
-    // loadRaidData(); // <-- Moved into .then()
 
     // --- START: NEW CHECKLIST LOGIC ---
     if (typeof checklistDataByWorld !== 'undefined' && typeof worldData !== 'undefined') {
@@ -1198,8 +1222,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // Get all world names from the checklist data
             const worldNames = Object.keys(checklistDataByWorld);
+            let overallTotal = 0;
+            let overallCompleted = 0;
+            let categoryStats = { gachas: {total: 0, completed: 0}, progressions: {total: 0, completed: 0}, ssRank: {total: 0, completed: 0}, auras: {total: 0, completed: 0}, accessories: {total: 0, completed: 0} };
 
             for (const worldName of worldNames) {
                 const world = checklistDataByWorld[worldName];
@@ -1209,34 +1235,55 @@ document.addEventListener('DOMContentLoaded', () => {
                 let totalItems = 0;
                 let completedItems = 0;
 
-                // UPDATED: Added 'auras' and 'accessories'. Fixed 'shinies' typo to 'ssRank'.
                 const categories = ['gachas', 'progressions', 'ssRank', 'auras', 'accessories'];
                 categories.forEach(catKey => {
                     if (world[catKey]) {
                         totalItems += world[catKey].length;
+                        categoryStats[catKey].total += world[catKey].length;
+                        
                         world[catKey].forEach(item => {
                             if (savedData[item.id]) {
                                 completedItems++;
+                                categoryStats[catKey].completed++;
                             }
                         });
                         
-                        // Update sub-category titles
                         const subTitleEl = document.getElementById(`${catKey}-title-${worldNameId}`);
                         if(subTitleEl) {
                             const subTotal = world[catKey].length;
                             const subCompleted = world[catKey].filter(item => savedData[item.id]).length;
-                            // Capitalize first letter
                             let catName = catKey.charAt(0).toUpperCase() + catKey.slice(1);
-                            if (catKey === 'ssRank') catName = 'SS Rank'; // Special case
-                            subTitleEl.innerText = `${catName} (${subCompleted} / ${subTotal})`;
+                            if (catKey === 'ssRank') catName = 'SS Rank';
+                            
+                            subTitleEl.innerHTML = `${catName} <span class="category-badge badge-${catKey}">${subCompleted}/${subTotal}</span>`;
                         }
                     }
                 });
 
                 if (worldTitleEl) {
+                    const percentage = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
                     worldTitleEl.innerText = `${worldName} (${completedItems} / ${totalItems})`;
+                    worldTitleEl.style.setProperty('--progress', `${percentage}%`);
                 }
+                
+                overallTotal += totalItems;
+                overallCompleted += completedItems;
             }
+            
+            const overallProgressText = el['overall-progress-text'];
+            const overallProgressFill = el['overall-progress-fill'];
+            if (overallProgressText && overallProgressFill) {
+                const percentage = overallTotal > 0 ? Math.round((overallCompleted / overallTotal) * 100) : 0;
+                overallProgressText.innerText = `${overallCompleted} / ${overallTotal} (${percentage}%)`;
+                overallProgressFill.style.width = `${percentage}%`;
+            }
+            
+            Object.keys(categoryStats).forEach(cat => {
+                const countEl = document.getElementById(`${cat === 'ssRank' ? 'ssrank' : cat}-count`);
+                if (countEl) {
+                    countEl.innerText = `${categoryStats[cat].completed}/${categoryStats[cat].total}`;
+                }
+            });
         }
 
         function saveChecklistData() {
@@ -1248,16 +1295,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     savedData[cb.id] = true;
                 });
                 localStorage.setItem(CHECKLIST_SAVE_KEY, JSON.stringify(savedData));
-                updateAllWorldTitles(savedData); // Update titles after saving
+                updateAllWorldTitles(savedData);
             } catch (e) {
                 console.error("Failed to save checklist data:", e);
             }
         }
 
         function populateWorldChecklists(savedData) {
-            checklistContainer.innerHTML = ''; // Clear previous content
+            checklistContainer.innerHTML = '';
 
-            // Use worldData keys for order, add Miscellaneous at the end
             const worldOrder = Object.keys(worldData);
             if (checklistDataByWorld["Miscellaneous"]) {
                 worldOrder.push("Miscellaneous");
@@ -1271,14 +1317,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const section = document.createElement('section');
                 
-                // Create main world title
                 const title = document.createElement('h2');
                 title.className = 'world-section-title';
                 title.id = `world-title-${worldNameId}`;
-                title.innerText = `${worldName} (0 / 0)`; // Will be updated
+                title.innerText = `${worldName} (0 / 0)`; 
                 section.appendChild(title);
 
-                // UPDATED: Added 'auras' and 'accessories'
                 const categories = [
                     { key: 'gachas', name: 'Gachas', css: 'gachas' },
                     { key: 'progressions', name: 'Progressions', css: 'progressions' },
@@ -1309,13 +1353,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-                // Only create grid if there are subsections
                 if (subsections.length > 0) {
                     const grid = document.createElement('div');
-                    // Responsive grid: 1 col mobile, 2 tablet, 3 desktop
                     let gridCols = 'md:grid-cols-2 lg:grid-cols-3';
-                    if (subsections.length === 1) gridCols = ''; // 1 col
-                    if (subsections.length === 2) gridCols = 'md:grid-cols-2'; // 2 cols
+                    if (subsections.length === 1) gridCols = ''; 
+                    if (subsections.length === 2) gridCols = 'md:grid-cols-2'; 
                     
                     grid.className = `grid grid-cols-1 ${gridCols} gap-6 mt-4`;
                     
@@ -1339,13 +1381,75 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // --- Add Event Listeners ---
+        function filterChecklistItems(searchTerm = '', categoryFilter = '') {
+            const searchLower = searchTerm.toLowerCase();
+            const worldSections = checklistPanel.querySelectorAll('section');
+            
+            worldSections.forEach(section => {
+                const subsections = section.querySelectorAll('div');
+                let sectionHasVisible = false;
+                
+                subsections.forEach(subsection => {
+                    const subTitle = subsection.querySelector('h3');
+                    if (!subTitle) return;
+                    
+                    const items = subsection.querySelectorAll('.checklist-item');
+                    let visibleItems = 0;
+                    
+                    const subId = subTitle.id;
+                    const categoryMatch = !categoryFilter || subId.includes(`${categoryFilter}-title`);
+                    
+                    items.forEach(item => {
+                        const text = item.textContent.toLowerCase();
+                        const searchMatch = !searchTerm || text.includes(searchLower);
+                        
+                        if (categoryMatch && searchMatch) {
+                            item.style.display = 'flex';
+                            visibleItems++;
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                    
+                    if (visibleItems > 0) {
+                        subsection.style.display = 'block';
+                        sectionHasVisible = true;
+                    } else {
+                        subsection.style.display = 'none';
+                    }
+                });
+                
+                section.style.display = sectionHasVisible ? 'block' : 'none';
+            });
+        }
+        
+
+
         checklistPanel.addEventListener('change', (e) => {
             if (e.target.type === 'checkbox') {
+                const item = e.target.closest('.checklist-item');
+                if (e.target.checked && item) {
+                    item.classList.add('completed');
+                    setTimeout(() => item.classList.remove('completed'), 500);
+                }
                 styleChecklistItem(e.target, e.target.checked);
                 saveChecklistData();
             }
         });
+
+        if (el['checklist-search']) {
+            el['checklist-search'].addEventListener('input', (e) => {
+                const categoryFilter = el['category-filter'] ? el['category-filter'].value : '';
+                filterChecklistItems(e.target.value, categoryFilter);
+            });
+        }
+        
+        if (el['category-filter']) {
+            el['category-filter'].addEventListener('change', (e) => {
+                const searchTerm = el['checklist-search'] ? el['checklist-search'].value : '';
+                filterChecklistItems(searchTerm, e.target.value);
+            });
+        }
 
         if (el['check-all-btn']) {
             el['check-all-btn'].addEventListener('click', () => {
@@ -1370,6 +1474,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 saveChecklistData();
             });
         }
+        
+
+        
+
 
         // Initial load
         loadChecklistData();
