@@ -6,467 +6,467 @@
 const checklistDataByWorld = {
   "Earth City": {
     gachas: [
-      { id: 'g1', name: 'Dragon Race' },
-      { id: 'g2', name: 'Saiyan' }
+      { id: 'c1', name: 'Dragon Race' },
+      { id: 'c2', name: 'Saiyan' }
     ],
     progressions: [],
     sssRank: [
-      { id: 's1', name: 'Kid Kohan' }
+      { id: 'c3', name: 'Kid Kohan' }
     ],
     auras: [
-      { id: 'a1', name: 'Luck Aura (SS)' }
+      { id: 'c4', name: 'Luck Aura (SS)' }
     ],
     accessories: [
-      { id: 'ac1', name: '4 Star Hat (SS)' },
-      { id: 'ac2', name: 'Imp Tail (Halloween)' }
+      { id: 'c5', name: '4 Star Hat (SS)' },
+      { id: 'c6', name: 'Imp Tail (Halloween)' }
     ]
   },
   "Windmill Island": {
     gachas: [
-      { id: 'g3', name: 'Pirate Crew' },
-      { id: 'g5', name: 'Swords' }
+      { id: 'c7', name: 'Pirate Crew' },
+      { id: 'c8', name: 'Swords' }
     ],
     progressions: [
-      { id: 'l1', name: 'Haki (60)' }
+      { id: 'c9', name: 'Haki (60)' }
     ],
     sssRank: [
-      { id: 's2', name: 'Shanks' }
+      { id: 'c10', name: 'Shanks' }
     ],
     auras: [
-      { id: 'a2', name: 'Red Emperor Aura (SS)' }
+      { id: 'c11', name: 'Red Emperor Aura (SS)' }
     ],
     accessories: [
-      { id: 'ac3', name: 'Armless Cloak (SS)' }
+      { id: 'c12', name: 'Armless Cloak (SS)' }
     ]
   },
   "Soul Society": {
     gachas: [
-      { id: 'g6', name: 'Reiatsu Color' },
-      { id: 'g7', name: 'Zanpakuto' }
+      { id: 'c13', name: 'Reiatsu Color' },
+      { id: 'c14', name: 'Zanpakuto' }
     ],
     progressions: [
-      { id: 'l2', name: 'Pressure (210)' }
+      { id: 'c15', name: 'Pressure (210)' }
     ],
     sssRank: [
-      { id: 's3', name: 'Eizen' }
+      { id: 'c16', name: 'Eizen' }
     ],
     auras: [
-      { id: 'a3', name: 'Purple Traitor Aura(SS)' }
+      { id: 'c17', name: 'Purple Traitor Aura(SS)' }
     ],
     accessories: []
   },
   "Cursed School": {
     gachas: [
-      { id: 'g8', name: 'Curses' }
+      { id: 'c18', name: 'Curses' }
     ],
     progressions: [
-      { id: 'l3', name: 'Cursed Progression (410)' }
+      { id: 'c19', name: 'Cursed Progression (410)' }
     ],
     sssRank: [
-      { id: 's4', name: 'Sakuni' }
+      { id: 'c20', name: 'Sakuni' }
     ],
     auras: [
-      { id: 'a4', name: 'Fire King Aura (SS)' }
+      { id: 'c21', name: 'Fire King Aura (SS)' }
     ],
     accessories: []
   },
   "Slayer Village": {
     gachas: [
-	  { id: 'g45', name: 'Breathings'},
-      { id: 'g9', name: 'Demon Arts' }
+	  { id: 'c22', name: 'Breathings'},
+      { id: 'c23', name: 'Demon Arts' }
     ],
     progressions: [
     ],
     sssRank: [
-      { id: 's5', name: 'Rangaki' }
+      { id: 'c24', name: 'Rangaki' }
     ],
     auras: [
-      { id: 'a5', name: 'Flaming Aura (SS)' }
+      { id: 'c25', name: 'Flaming Aura (SS)' }
     ],
     accessories: []
   },
   "Solo Island": {
     gachas: [
-	  { id: 'g10', name: 'Solo Hunter Rank' }
+	  { id: 'c26', name: 'Solo Hunter Rank' }
     ],
     progressions: [
-	  { id: 'l4', name: 'Reawakening (210)' },
-      { id: 'l5', name: 'Monarch (200)' },
-	  { id: 'g46', name: 'Shadow Ugrades' }
+	  { id: 'c27', name: 'Reawakening (210)' },
+      { id: 'c28', name: 'Monarch (200)' },
+	  { id: 'c29', name: 'Shadow Upgrades' }
     ],
     sssRank: [
-      { id: 's6', name: 'Statue of God' }
+      { id: 'c30', name: 'Statue of God' }
     ],
     auras: [
-      { id: 'a6', name: 'Statue Aura (SS)' }
+      { id: 'c31', name: 'Statue Aura (SS)' }
     ],
     accessories: []
   },
   "Clover Village": {
     gachas: [
-      { id: 'g11', name: 'Grimoire' }
+      { id: 'c32', name: 'Grimoire' }
     ],
     progressions: [
-      { id: 'l6', name: 'Water Spirit (100)' },
-      { id: 'l7', name: 'Fire Spirit (100)' },
-      { id: 'l8', name: 'Wind Spirit (10)' }
+      { id: 'c33', name: 'Water Spirit (100)' },
+      { id: 'c34', name: 'Fire Spirit (100)' },
+      { id: 'c35', name: 'Wind Spirit (10)' }
     ],
     sssRank: [
-      { id: 's7', name: 'Novi Chroni' }
+      { id: 'c36', name: 'Novi Chroni' }
     ],
     auras: [],
     accessories: []
   },
   "Leaf Village": {
     gachas: [
-	{ id: 'g12', name: 'Power Eyes' }
+      { id: 'c37', name: 'Power Eyes' }
 	],
     progressions: [
-      { id: 'l9', name: 'Chakra (210)' },
-	  { id: 'l9', name: 'Attack Range 2 (4)' }
+      { id: 'c38', name: 'Chakra (210)' },
+	  { id: 'c39', name: 'Attack Range 2 (4)' }
     ],
     sssRank: [
-      { id: 's8', name: 'Madera/Itachi' }
+      { id: 'c40', name: 'Madera/Itachi' }
     ],
     auras: [
-      { id: 'a7', name: 'Leafy Aura (SS)' }
+      { id: 'c41', name: 'Leafy Aura (SS)' }
     ],
     accessories: [
-      { id: 'ac4', name: 'Shinobi Flops (SS)' }
+      { id: 'c42', name: 'Shinobi Flops (SS)' }
     ]
   },
   "Spirit Residence": {
-    gachas: [      
-	  { id: 'g13', name: 'Psychic Mayhem' }
+    gachas: [
+      { id: 'c43', name: 'Psychic Mayhem' }
 	],
     progressions: [
-	  { id: 'l10', name: 'Spiritual Upgrade (60)' },
-      { id: 'l11', name: 'Lucky Spirit (50)' },
+	  { id: 'c44', name: 'Spiritual Upgrade (60)' },
+      { id: 'c45', name: 'Lucky Spirit (50)' },
 	],
     sssRank: [
-      { id: 's9', name: 'Ken Turbo' }
+      { id: 'c46', name: 'Ken Turbo' }
     ],
     auras: [],
     accessories: []
   },
   "Magic Hunter City": {
     gachas: [
-	  { id: 'g14', name: 'Energy Card Shop' },
-      { id: 'g15', name: 'Damage Card Shop' },
+	  { id: 'c47', name: 'Energy Card Shop' },
+      { id: 'c48', name: 'Damage Card Shop' },
     ],
     progressions: [
-      { id: 'l12', name: 'Ten (110)' },
-	  { id: 'l13', name: 'Contract of Greed (100)' },
-	  { id: 'l13', name: 'Energy Obelisk (30)' }
+      { id: 'c49', name: 'Ten (110)' },
+	  { id: 'c50', name: 'Contract of Greed (100)' },
+	  { id: 'c51', name: 'Energy Obelisk (30)' }
     ],
     sssRank: [
-      { id: 's10', name: 'Killas Godspeed' }
+      { id: 'c52', name: 'Killas Godspeed' }
     ],
     auras: [
-      { id: 'a8', name: 'Energetic Aura (SS)' }
+      { id: 'c53', name: 'Energetic Aura (SS)' }
     ],
     accessories: []
   },
   "Titan City": {
     gachas: [
-      { id: 'g16', name: 'Families' },
-	  { id: 'g16', name: 'Titans' },
-	  { id: 'g16', name: 'Titan Injection' }
+      { id: 'c54', name: 'Families' },
+	  { id: 'c55', name: 'Titans' },
+	  { id: 'c56', name: 'Titan Injection' }
     ],
     progressions: [
     ],
     sssRank: [
-      { id: 's11', name: 'Eran' }
+      { id: 'c57', name: 'Eran' }
     ],
     auras: [
-      { id: 'a9', name: 'Titanic Aura (SS)' }
+      { id: 'c58', name: 'Titanic Aura (SS)' }
     ],
     accessories: [
-      { id: 'ac5', name: 'Red Scarf (C)' },
-      { id: 'ac6', name: 'Clean Hat (S)' },
-      { id: 'ac7', name: 'Scout Cloak (SS)' }
+      { id: 'c59', name: 'Red Scarf (C)' },
+      { id: 'c60', name: 'Clean Hat (S)' },
+      { id: 'c61', name: 'Scout Cloak (SS)' }
     ]
   },
   "Village of Sins": {
     gachas: [
-      { id: 'g17', name: 'Sins' },
-      { id: 'g18', name: 'Commandments' }
+      { id: 'c62', name: 'Sins' },
+      { id: 'c63', name: 'Commandments' }
     ],
     progressions: [
-	  { id: 'l29', name: 'Energy (50)' },
-	  { id: 'l29', name: 'Sin Upgrades' }
+	  { id: 'c64', name: 'Energy (50)' },
+	  { id: 'c65', name: 'Sin Upgrades' }
     ],
     sssRank: [
-      { id: 's12', name: 'Esanor' }
+      { id: 'c66', name: 'Esanor' }
     ],
     auras: [],
     accessories: []
   },
   "Kaiju Base": {
     gachas: [
-      { id: 'g19', name: 'Kaiju Powers' }
+      { id: 'c67', name: 'Kaiju Powers' }
     ],
     progressions: [
-	  { id: 'l17', name: 'Fortitude (210)' },
-      { id: 'l16', name: 'Kaiju Energy (110)' }
+	  { id: 'c68', name: 'Fortitude (210)' },
+      { id: 'c69', name: 'Kaiju Energy (110)' }
     ],
     sssRank: [
-      { id: 's13', name: 'Number 8' }
+      { id: 'c70', name: 'Number 8' }
     ],
     auras: [
-      { id: 'a10', name: 'Monster Aura (SS)' }
+      { id: 'c71', name: 'Monster Aura (SS)' }
     ],
     accessories: []
   },
   "Tempest Capital": {
     gachas: [
-      { id: 'g20', name: 'Ultimate Skill' },
-      { id: 'g21', name: 'Species' }
+      { id: 'c72', name: 'Ultimate Skill' },
+      { id: 'c73', name: 'Species' }
     ],
     progressions: [
-	  { id: 'l18', name: 'Demon Lord Energy (210)' },
-      { id: 'l19', name: 'Demon Lord Damage (210)' },
-      { id: 'l20', name: 'Demon Lord Coins (100)' },
-      { id: 'l21', name: 'Demon Lord Luck (50)' }
+	  { id: 'c74', name: 'Demon Lord Energy (210)' },
+      { id: 'c75', name: 'Demon Lord Damage (210)' },
+      { id: 'c76', name: 'Demon Lord Coins (100)' },
+      { id: 'c77', name: 'Demon Lord Luck (50)' }
 	  ],
     sssRank: [
-      { id: 's14', name: 'Valzora' }
+      { id: 'c78', name: 'Valzora' }
     ],
     auras: [],
     accessories: [
-      { id: 'ac8', name: 'Slime Mask (S)' }
+      { id: 'c79', name: 'Slime Mask (S)' }
     ]
   },
   "Virtual City": {
     gachas: [
-	  { id: 'g47', name: 'Power Energy Runes' },
-      { id: 'g48', name: 'Damage Runes' }
+	  { id: 'c80', name: 'Power Energy Runes' },
+      { id: 'c81', name: 'Damage Runes' }
 	],
     progressions: [
-	  { id: 'l22', name: 'Swordsman Energy (210)' },
-      { id: 'l24', name: 'Swordsman Damage (110)' },
-	  { id: 'l24', name: 'Damage Obelisk (30)' }
+	  { id: 'c82', name: 'Swordsman Energy (210)' },
+      { id: 'c83', name: 'Swordsman Damage (110)' },
+	  { id: 'c84', name: 'Damage Obelisk (30)' }
 	],
     sssRank: [
-      { id: 's15', name: 'The Paladin' }
+      { id: 'c85', name: 'The Paladin' }
     ],
     auras: [
-      { id: 'a11', name: 'Virtual Aura (SS)' }
+      { id: 'c86', name: 'Virtual Aura (SS)' }
     ],
     accessories: []
   },
   "Cairo": {
     gachas: [
-	  { id: 'g23', name: 'Stands' },
-      { id: 'g23', name: 'Onomatopoeia' },
-      { id: 'g49', name: 'Requium Injection'}
+	  { id: 'c87', name: 'Stands' },
+      { id: 'c88', name: 'Onomatopoeia' },
+      { id: 'c89', name: 'Requium Injection'}
     ],
     progressions: [
-      { id: 'l25', name: 'Ripple Energy (110)' }
+      { id: 'c90', name: 'Ripple Energy (110)' }
     ],
     sssRank: [
-      { id: 's16', name: 'Dino' }
+      { id: 'c91', name: 'Dino' }
     ],
     auras: [
-      { id: 'a12', name: 'Hamon Aura (SS)' }
+      { id: 'c92', name: 'Hamon Aura (SS)' }
     ],
     accessories: [
-      { id: 'ac9', name: 'Greenello Scarf (C)' }
+      { id: 'c93', name: 'Greenello Scarf (C)' }
     ]
   },
   "Ghoul City": {
     gachas: [
-      { id: 'g24', name: 'Investigators' },
-      { id: 'g25', name: 'Kagune' }
+      { id: 'c94', name: 'Investigators' },
+      { id: 'c95', name: 'Kagune' }
     ],
     progressions: [
-      { id: 'l26', name: 'Damage Cells (110)' },
-      { id: 'l27', name: 'Kagune Leveling (50)' }
+      { id: 'c96', name: 'Damage Cells (110)' },
+      { id: 'c97', name: 'Kagune Leveling (50)' }
     ],
     sssRank: [
-      { id: 's17', name: 'Arama' }
+      { id: 'c98', name: 'Arama' }
     ],
     auras: [
-      { id: 'a13', name: 'Ghoul Aura (SS)' }
+      { id: 'c99', name: 'Ghoul Aura (SS)' }
     ],
     accessories: []
   },
   "Chainsaw City": {
     gachas: [
-      { id: 'g26', name: 'Debiru Hunter' },
-      { id: 'g27', name: 'Akuma Powers' }
+      { id: 'c100', name: 'Debiru Hunter' },
+      { id: 'c101', name: 'Akuma Powers' }
     ],
     progressions: [
-	  { id: 'l63', name: 'Akuma Damage (110)' },
-	  { id: 'l64', name: 'Akuma Energy (160)' },
-      { id: 'l65', name: 'Pokita (50)' }
+	  { id: 'c102', name: 'Akuma Damage (110)' },
+	  { id: 'c103', name: 'Akuma Energy (160)' },
+      { id: 'c104', name: 'Pokita (50)' }
     ],
     sssRank: [
-      { id: 's18', name: 'Hero Of Hell' }
+      { id: 'c105', name: 'Hero Of Hell' }
     ],
     auras: [],
     accessories: [
-      { id: 'ac10', name: 'Pokita Slides (D)' }
+      { id: 'c106', name: 'Pokita Slides (D)' }
     ]
   },
   "Tokyo Empire": {
     gachas: [
-      { id: 'g28', name: 'Special Fire Force' },
-      { id: 'g50', name: 'Mushi Bite' },
-	  { id: 'g51', name: 'Adolla Blessing' }
+      { id: 'c107', name: 'Special Fire Force' },
+      { id: 'c108', name: 'Mushi Bite' },
+	  { id: 'c109', name: 'Adolla Blessing' }
     ],
     progressions: [
-      { id: 'l31', name: '1st Gen Leveling (20)' },
-      { id: 'l32', name: '2nd Gen Leveling (40)' },
-      { id: 'l33', name: '3rd Gen Leveling (60)' },
-      { id: 'l34', name: '4th Gen Leveling (80)' },
-      { id: 'l35', name: 'Adolla Leveling (100)' }
+      { id: 'c110', name: '1st Gen Leveling (20)' },
+      { id: 'c111', name: '2nd Gen Leveling (40)' },
+      { id: 'c112', name: '3rd Gen Leveling (60)' },
+      { id: 'c113', name: '4th Gen Leveling (80)' },
+      { id: 'c114', name: 'Adolla Leveling (100)' }
     ],
     sssRank: [
-      { id: 's19', name: 'Bansho' }
+      { id: 'c115', name: 'Bansho' }
     ],
     auras: [
-      { id: 'a14', name: 'Fire Captain Aura (SS)' }
+      { id: 'c116', name: 'Fire Captain Aura (SS)' }
     ],
     accessories: [
-      { id: 'ac11', name: 'Fire Force Pants (C)' },
-      { id: 'ac12', name: 'Fire Force Cape (S)' },
-      { id: 'ac13', name: 'Fire Witch Hat (S)' },
-      { id: 'ac14', name: 'Fire Eye Patch (SS)' }
+      { id: 'c117', name: 'Fire Force Pants (C)' },
+      { id: 'c118', name: 'Fire Force Cape (S)' },
+      { id: 'c119', name: 'Fire Witch Hat (S)' },
+      { id: 'c120', name: 'Fire Eye Patch (SS)' }
     ]
   },
   "Green Planet": {
     gachas: [
-      { id: 'g29', name: 'Grand Elder Power' },
-      { id: 'g30', name: 'Frost Demon Evolution' },
+      { id: 'c121', name: 'Grand Elder Power' },
+      { id: 'c122', name: 'Frost Demon Evolution' },
     ],
     progressions: [
-	{ id: 'l38', name: 'Dragon Race Leveling (25)' },
-	{ id: 'l38', name: 'Saiyan Evolution Leveling (25)' },
-	{ id: 'l38', name: 'Eternal Dragon (50)' },
-    { id: 'l39', name: 'Dragon Energy (50)' },
-    { id: 'l40', name: 'Dragon Damage (500)' },
-	{ id: 'l40', name: 'Luck Obelisk (15)' }
+	{ id: 'c123', name: 'Dragon Race Leveling (25)' },
+	{ id: 'c124', name: 'Saiyan Evolution Leveling (25)' },
+	{ id: 'c125', name: 'Eternal Dragon (50)' },
+    { id: 'c126', name: 'Dragon Energy (50)' },
+    { id: 'c127', name: 'Dragon Damage (500)' },
+	{ id: 'c128', name: 'Luck Obelisk (15)' }
 	],
     sssRank: [
-      { id: 's20', name: 'Frezi Final Form' }
+      { id: 'c129', name: 'Frezi Final Form' }
     ],
     auras: [],
     accessories: [
-      { id: 'ac15', name: 'Scarffy (D)' }
+      { id: 'c130', name: 'Scarffy (D)' }
     ]
   },
   "Hollow World": {
     gachas: [
-	{ id: 'g31', name: 'Scythes' },
-	{ id: 'g31', name: 'Bankai' },
-	{ id: 'g31', name: 'Espada' }
+	{ id: 'c131', name: 'Scythes' },
+	{ id: 'c132', name: 'Bankai' },
+	{ id: 'c133', name: 'Espada' }
 	],
     progressions: [
-	{ id: 'g31', name: 'Reiatsu Leveling' },
-	{ id: 'g31', name: 'Zanpakuto Leveling' }
+	{ id: 'c134', name: 'Reiatsu Leveling' },
+	{ id: 'c135', name: 'Zanpakuto Leveling' }
 	],
     sssRank: [      
-	{ id: 's21', name: 'Vasto Ichige' }
+	{ id: 'c136', name: 'Vasto Ichige' }
 	],
     auras: [],
     accessories: []
   },
   "Shadow Academy": {
     gachas: [
-      { id: 'g32', name: 'Shadow Garden' },
-      { id: 'g33', name: 'Shadow Arts' }
+      { id: 'c137', name: 'Shadow Garden' },
+      { id: 'c138', name: 'Shadow Arts' }
     ],
     progressions: [
-      { id: 'l44', name: 'Eminence Energy (100)' },
-      { id: 'l45', name: 'Eminence Damage (100)' },
-      { id: 'l46', name: 'Eminence Luck (100)' },
-      { id: 'l47', name: 'Eminence Coins (100)' },
-      { id: 'l48', name: 'Shadow Garden Leveling (50)' },
-      { id: 'l49', name: 'Shadow Arts Leveling (50)' }
+      { id: 'c139', name: 'Eminence Energy (100)' },
+      { id: 'c140', name: 'Eminence Damage (100)' },
+      { id: 'c141', name: 'Eminence Luck (100)' },
+      { id: 'c142', name: 'Eminence Coins (100)' },
+      { id: 'c143', name: 'Shadow Garden Leveling (50)' },
+      { id: 'c144', name: 'Shadow Arts Leveling (50)' }
     ],
     sssRank: [
-      { id: 's22', name: 'Shadow' }
+      { id: 'c150', name: 'Shadow' }
     ],
     auras: [
-      { id: 'a15', name: 'Bloody Aura (SS)' }
+      { id: 'c160', name: 'Bloody Aura (SS)' }
     ],
     accessories: [
-      { id: 'ac16', name: 'Neck Fur (D)' },
-      { id: 'ac17', name: 'Crested Wingbands (B)' }
+      { id: 'c161', name: 'Neck Fur (D)' },
+      { id: 'c162', name: 'Crested Wingbands (B)' }
     ]
   },
   "Z City": {
     gachas: [
-      { id: 'g34', name: 'Energy Threat Level' },
-      { id: 'g35', name: 'Punch Power' }
+      { id: 'c163', name: 'Energy Threat Level' },
+      { id: 'c164', name: 'Punch Power' }
     ],
     progressions: [
-      { id: 'l50', name: 'Energy Threat Leveling (50)' },
-      { id: 'l51', name: 'Punch Power Leveling (50)' },
-	  { id: 'l51', name: 'Hide N Punch (10)' },
+      { id: 'c165', name: 'Energy Threat Leveling (50)' },
+      { id: 'c166', name: 'Punch Power Leveling (50)' },
+	  { id: 'c167', name: 'Hide N Punch (10)' },
     ],
     sssRank: [
-      { id: 's23', name: 'Galaxy Hunter' }
+      { id: 'c168', name: 'Galaxy Hunter' }
     ],
     auras: [],
     accessories: [
-      { id: 'ac18', name: 'Red Hero Boots (S)' }
+      { id: 'c169', name: 'Red Hero Boots (S)' }
     ]
   },
   "Great Tomb": {
     gachas: [
-      { id: 'g36', name: 'Adventurer Rank' },
-      { id: 'g37', name: 'Magic Tier' }
+      { id: 'c170', name: 'Adventurer Rank' },
+      { id: 'c171', name: 'Magic Tier' }
     ],
     progressions: [
-      { id: 'l52', name: 'Mana Growth (100)' },
-      { id: 'l53', name: 'Ultimate Cast (100)' },
-      { id: 'l54', name: 'Adventurer Level (50)' },
-      { id: 'l55', name: 'Magic Tier Level (50)' }
+      { id: 'c172', name: 'Mana Growth (100)' },
+      { id: 'c173', name: 'Ultimate Cast (100)' },
+      { id: 'c174', name: 'Adventurer Level (50)' },
+      { id: 'c175', name: 'Magic Tier Level (50)' }
     ],
     sssRank: [
-      { id: 's24', name: 'Anz Ool Gawn' }
+      { id: 'c176', name: 'Anz Ool Gawn' }
     ],
     auras: [],
     accessories: [
-      { id: 'ac19', name: 'Jalbathar Tail (Tomb Arena)' },
-      { id: 'ac20', name: 'Jalbathar Mask (Tomb Arena)' },
-      { id: 'ac21', name: 'Jalbathar Wings (Tomb Arena)' }
+      { id: 'c177', name: 'Jalbathar Tail (Tomb Arena)' },
+      { id: 'c178', name: 'Jalbathar Mask (Tomb Arena)' },
+      { id: 'c179', name: 'Jalbathar Wings (Tomb Arena)' }
     ]
   },
   "Thriller Park": {
     gachas: [
-        { id: 'g38', name: 'Thriller Zombie' },
-        { id: 'g39', name: 'Nightmare Evolution' },
-        { id: 'g40', name: 'Zombie Crafts' },
-        { id: 'g41', name: 'Special Zombie' },
-        { id: 'g42', name: 'Zombie Booster' }
+        { id: 'c180', name: 'Thriller Zombie' },
+        { id: 'c181', name: 'Nightmare Evolution' },
+        { id: 'c182', name: 'Zombie Crafts' },
+        { id: 'c183', name: 'Special Zombie' },
+        { id: 'c184', name: 'Zombie Booster' }
     ],
     progressions: [
-        { id: '157', name: 'Special Zombie Crafting (10)' },
-        { id: '158', name: 'Special Zombie Fusion (2)' },
-        { id: '156', name: 'Demon Fruit Leveling (4)' }
+        { id: 'c185', name: 'Special Zombie Crafting (10)' },
+        { id: 'c186', name: 'Special Zombie Fusion (2)' },
+        { id: 'c187', name: 'Demon Fruit Leveling (4)' }
     ],
     sssRank: [
-        { id: 's25', name: 'Gekar Morra' }
+        { id: 'c188', name: 'Gekar Morra' }
     ],
     auras: [],
     accessories: []
   },
   "Amusement Park": {
       gachas: [
-          { id: 'g43', name: 'Assasin Grade' },
-          { id: 'g44', name: 'Assasin Skill' }
+          { id: 'c189', name: 'Assasin Grade' },
+          { id: 'c190', name: 'Assasin Skill' }
       ],
       progressions: [
-        { id: '159', name: 'Assassin Energy (100)' },
-        { id: '160', name: 'Assassin Damage (100)' },
-        { id: '161', name: 'Assassin Critical Energy (10)' },
-        { id: '162', name: 'Assassin Critical Damage (10)' }
+        { id: 'c191', name: 'Assassin Energy (100)' },
+        { id: 'c192', name: 'Assassin Damage (100)' },
+        { id: 'c193', name: 'Assassin Critical Energy (10)' },
+        { id: 'c194', name: 'Assassin Critical Damage (10)' }
       ],
       sssRank: [
-          { id: 's26', name: 'Tagamura' }
+          { id: 'c195', name: 'Tagamura' }
       ],
       auras: [],
       accessories: []
