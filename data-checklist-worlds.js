@@ -20,7 +20,11 @@ const checklistDataByWorld = {
       { id: 'c5', name: '4 Star Hat (SS)' },
       { id: 'c6', name: 'Imp Tail (Halloween)' }
     ],
-    quests: []
+    quests: [
+      { id: 'cq1', name: 'Hero License'},
+      { id: 'cq2', name: 'Key Quests'},
+      { id: 'cq3', name: 'Obelisk Quest'}
+    ]
   },
   "Windmill Island": {
     gachas: [
@@ -39,7 +43,10 @@ const checklistDataByWorld = {
     accessories: [
       { id: 'c12', name: 'Armless Cloak (SS)' }
     ],
-    quests: []
+    quests: [
+      { id: 'cq4', name: 'Key Quests'},
+      { id: 'cq5', name: 'Obelisk Quest'}
+    ]
   },
   "Soul Society": {
     gachas: [
@@ -56,7 +63,10 @@ const checklistDataByWorld = {
       { id: 'c17', name: 'Purple Traitor Aura(SS)' }
     ],
     accessories: [],
-    quests: []
+    quests: [
+      { id: 'cq6', name: 'Key Quests'},
+      { id: 'cq7', name: 'Obelisk Quest'}
+    ]
   },
   "Cursed School": {
     gachas: [
@@ -72,7 +82,10 @@ const checklistDataByWorld = {
       { id: 'c21', name: 'Fire King Aura (SS)' }
     ],
     accessories: [],
-    quests: []
+    quests: [
+      { id: 'cq8', name: 'Key Quests'},
+      { id: 'cq9', name: 'Obelisk Quest'}
+    ]
   },
   "Slayer Village": {
     gachas: [
@@ -88,7 +101,10 @@ const checklistDataByWorld = {
       { id: 'c25', name: 'Flaming Aura (SS)' }
     ],
     accessories: [],
-    quests: []
+    quests: [
+      { id: 'cq10', name: 'Key Quests'},
+      { id: 'cq11', name: 'Obelisk Quest'}
+    ]
   },
   "Solo Island": {
     gachas: [
@@ -106,7 +122,11 @@ const checklistDataByWorld = {
       { id: 'c31', name: 'Statue Aura (SS)' }
     ],
     accessories: [],
-    quests: []
+    quests: [
+      { id: 'cq12', name: 'Hero License Quest'},
+      { id: 'cq13', name: 'Key Quests'},
+      { id: 'cq14', name: 'Obelisk Quest'}
+    ]
   },
   "Clover Village": {
     gachas: [
@@ -122,7 +142,10 @@ const checklistDataByWorld = {
     ],
     auras: [],
     accessories: [],
-    quests: []
+    quests: [
+      { id: 'cq15', name: 'Key Quests'},
+      { id: 'cq16', name: 'Obelisk Quest'}
+    ]
   },
   "Leaf Village": {
     gachas: [
@@ -141,7 +164,10 @@ const checklistDataByWorld = {
     accessories: [
       { id: 'c42', name: 'Shinobi Flops (SS)' }
     ],
-    quests: []
+    quests: [
+      { id: 'cq17', name: 'Key Quests'},
+      { id: 'cq18', name: 'Obelisk Quest'}
+    ]
   },
   "Spirit Residence": {
     gachas: [
@@ -156,7 +182,10 @@ const checklistDataByWorld = {
     ],
     auras: [],
     accessories: [],
-    quests: []
+    quests: [
+      { id: 'cq19', name: 'Key Quests'},
+      { id: 'cq20', name: 'Obelisk Quest'}
+    ]
   },
   "Magic Hunter City": {
     gachas: [
@@ -175,7 +204,11 @@ const checklistDataByWorld = {
       { id: 'c53', name: 'Energetic Aura (SS)' }
     ],
     accessories: [],
-    quests: []
+    quests: [
+      { id: 'cq21', name: 'Hero License Quests'},
+      { id: 'cq22', name: 'Key Quests'},
+      { id: 'cq23', name: 'Obelisk Quest'}
+    ]
   },
   "Titan City": {
     gachas: [
@@ -196,7 +229,10 @@ const checklistDataByWorld = {
       { id: 'c60', name: 'Clean Hat (S)' },
       { id: 'c61', name: 'Scout Cloak (SS)' }
     ],
-    quests: []
+    quests: [
+      { id: 'cq24', name: 'Key Quests'},
+      { id: 'cq25', name: 'Obelisk Quest'}
+    ]
   },
   "Village of Sins": {
     gachas: [
@@ -212,7 +248,10 @@ const checklistDataByWorld = {
     ],
     auras: [],
     accessories: [],
-    quests: []
+    quests: [
+      { id: 'cq24', name: 'Key Quests'},
+      { id: 'cq25', name: 'Obelisk Quest'}
+    ]
   },
   "Kaiju Base": {
     gachas: [
@@ -229,7 +268,10 @@ const checklistDataByWorld = {
       { id: 'c71', name: 'Monster Aura (SS)' }
     ],
     accessories: [],
-    quests: []
+    quests: [
+      { id: 'cq26', name: 'Key Quests'},
+      { id: 'cq27', name: 'Obelisk Quest'}
+    ]
   },
   "Tempest Capital": {
     gachas: [
@@ -249,7 +291,10 @@ const checklistDataByWorld = {
     accessories: [
       { id: 'c79', name: 'Slime Mask (S)' }
     ],
-    quests: []
+    quests: [
+      { id: 'cq28', name: 'Key Quests'},
+      { id: 'cq29', name: 'Obelisk Quest'}
+    ]
   },
   "Virtual City": {
     gachas: [
@@ -268,7 +313,11 @@ const checklistDataByWorld = {
       { id: 'c86', name: 'Virtual Aura (SS)' }
     ],
     accessories: [],
-    quests: []
+    quests: [
+      { id: 'cq30', name: 'Hero License Quest'},
+      { id: 'cq31', name: 'Key Quests'},
+      { id: 'cq32', name: 'Obelisk Quest'}
+    ]
   },
   "Cairo": {
     gachas: [
@@ -288,7 +337,10 @@ const checklistDataByWorld = {
     accessories: [
       { id: 'c93', name: 'Greenello Scarf (C)' }
     ],
-    quests: []
+    quests: [
+      { id: 'cq33', name: 'Key Quests'},
+      { id: 'cq34', name: 'Obelisk Quest'}
+    ]
   },
   "Ghoul City": {
     gachas: [
@@ -306,7 +358,11 @@ const checklistDataByWorld = {
       { id: 'c99', name: 'Ghoul Aura (SS)' }
     ],
     accessories: [],
-    quests: []
+    quests: [
+      { id: 'cq35', name: 'CCG Quests'},
+      { id: 'cq36', name: 'Key Quests'},
+      { id: 'cq37', name: 'Obelisk Quest'}
+    ]
   },
   "Chainsaw City": {
     gachas: [
@@ -325,7 +381,11 @@ const checklistDataByWorld = {
     accessories: [
       { id: 'c106', name: 'Pokita Slides (D)' }
     ],
-    quests: []
+    quests: [
+      { id: 'cq38', name: 'Hero License Quests'},
+      { id: 'cq39', name: 'Key Quests'},
+      { id: 'cq40', name: 'Obelisk Quest'}
+    ]
   },
   "Tokyo Empire": {
     gachas: [
@@ -352,7 +412,10 @@ const checklistDataByWorld = {
       { id: 'c119', name: 'Fire Witch Hat (S)' },
       { id: 'c120', name: 'Fire Eye Patch (SS)' }
     ],
-    quests: []
+    quests: [
+      { id: 'cq42', name: 'Key Quests'},
+      { id: 'cq43', name: 'Obelisk Quest'}
+    ]
   },
   "Green Planet": {
     gachas: [
@@ -374,7 +437,11 @@ const checklistDataByWorld = {
     accessories: [
       { id: 'c130', name: 'Scarffy (D)' }
     ],
-    quests: []
+    quests: [
+      { id: 'cq43', name: 'Green Planet Quests'},
+      { id: 'cq44', name: 'Key Quests'},
+      { id: 'cq45', name: 'Obelisk Quest'}
+    ]
   },
   "Hollow World": {
     gachas: [
@@ -391,7 +458,10 @@ const checklistDataByWorld = {
 	],
     auras: [],
     accessories: [],
-    quests: []
+    quests: [
+      { id: 'cq46', name: 'Key Quests'},
+      { id: 'cq47', name: 'Obelisk Quest'}
+    ]
   },
   "Shadow Academy": {
     gachas: [
@@ -416,7 +486,11 @@ const checklistDataByWorld = {
       { id: 'c161', name: 'Neck Fur (D)' },
       { id: 'c162', name: 'Crested Wingbands (B)' }
     ],
-    quests: []
+    quests: [
+      { id: 'cq48', name: 'Hero License Quests'},
+      { id: 'cq49', name: 'Key Quests'},
+      { id: 'cq50', name: 'Obelisk Quest'}
+    ]
   },
   "Z City": {
     gachas: [
@@ -435,7 +509,10 @@ const checklistDataByWorld = {
     accessories: [
       { id: 'c169', name: 'Red Hero Boots (S)' }
     ],
-    quests: []
+    quests: [
+      { id: 'cq51', name: 'Key Quests'},
+      { id: 'cq52', name: 'Obelisk Quest'}
+    ]
   },
   "Great Tomb": {
     gachas: [
@@ -457,7 +534,10 @@ const checklistDataByWorld = {
       { id: 'c178', name: 'Jalbathar Mask (Tomb Arena)' },
       { id: 'c179', name: 'Jalbathar Wings (Tomb Arena)' }
     ],
-    quests: []
+    quests: [
+      { id: 'cq53', name: 'Key Quests'},
+      { id: 'cq54', name: 'Obelisk Quest'}
+    ]
   },
   "Thriller Park": {
     gachas: [
@@ -477,7 +557,11 @@ const checklistDataByWorld = {
     ],
     auras: [],
     accessories: [],
-    quests: []
+    quests: [
+      { id: 'cq56', name: 'Demon Fruit Quest'},
+      { id: 'cq56', name: 'Key Quests'},
+      { id: 'cq57', name: 'Obelisk Quest'}
+    ]
   },
   "Amusement Park": {
       gachas: [
@@ -495,6 +579,9 @@ const checklistDataByWorld = {
       ],
       auras: [],
       accessories: [],
-      quests: []
+    quests: [
+      { id: 'cq58', name: 'Key Quests'},
+      { id: 'cq59', name: 'Obelisk Quest'}
+    ]
   },
 };

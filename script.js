@@ -1480,18 +1480,7 @@ if (el.energyPerClickTTE) {
     if (el.activityTimeLimit) el.activityTimeLimit.addEventListener('input', debounce(calculateMaxStage, 300));
 
     
-    document.addEventListener('keydown', (e) => {
-        if (e.ctrlKey || e.metaKey) {
-            switch(e.key) {
-                case '1': e.preventDefault(); switchTab('rankup'); break;
-                case '2': e.preventDefault(); switchTab('eta'); break;
-                case '3': e.preventDefault(); switchTab('time-to-energy'); break;
-                case '4': e.preventDefault(); switchTab('ttk'); break;
-                case '5': e.preventDefault(); switchTab('raid'); break;
-                case '6': e.preventDefault(); switchTab('checklist'); break;
-            }
-        }
-    });
+    // **** KEYDOWN LISTENER REMOVED ****
     
     if (el['theme-toggle']) {
         el['theme-toggle'].addEventListener('click', toggleTheme);
@@ -1599,8 +1588,8 @@ if (el.energyPerClickTTE) {
                 const worldTitleEl = document.getElementById(`world-title-${worldNameId}`);
 
                 let totalItems = 0;
-                let completedItems = 0;
-
+                let completedItems = 0; // **** THIS WAS THE MISSING LINE ****
+        
                 // ADDED 'quests' to categories array
                 const categories = ['gachas', 'progressions', 'sssRank', 'auras', 'accessories', 'quests'];
                 categories.forEach(catKey => {
@@ -1638,7 +1627,6 @@ if (el.energyPerClickTTE) {
                     worldTitleEl.innerText = `${worldName} (${completedItems} / ${totalItems})`;
                     worldTitleEl.style.setProperty('--progress', `${percentage}%`);
                 }
-                
                 overallTotal += totalItems;
                 overallCompleted += completedItems;
             }
@@ -1646,7 +1634,8 @@ if (el.energyPerClickTTE) {
             const overallProgressText = el['overall-progress-text'];
             const overallProgressFill = el['overall-progress-fill'];
             if (overallProgressText && overallProgressFill) {
-                const percentage = overallTotal > 0 ? Math.round((overallCompleted / overallTotal) * 100) : 0;
+                completedItems = 0
+                const percentage = overallTotal > 0 ? Math.round((completedItems / overallTotal) * 100) : 0;
                 overallProgressText.innerText = `${overallCompleted} / ${overallTotal} (${percentage}%)`;
                 overallProgressFill.style.width = `${percentage}%`;
             }
