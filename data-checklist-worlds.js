@@ -559,8 +559,8 @@ const checklistDataByWorld = {
     accessories: [],
     quests: [
       { id: 'cq56', name: 'Demon Fruit Quest'},
-      { id: 'cq56', name: 'Key Quests'},
-      { id: 'cq57', name: 'Obelisk Quest'}
+      { id: 'cq57', name: 'Key Quests'},
+      { id: 'cq58', name: 'Obelisk Quest'}
     ]
   },
   "Amusement Park": {
@@ -580,8 +580,8 @@ const checklistDataByWorld = {
       auras: [],
       accessories: [],
     quests: [
-      { id: 'cq58', name: 'Key Quests'},
-      { id: 'cq59', name: 'Obelisk Quest'}
+      { id: 'cq59', name: 'Key Quests'},
+      { id: 'cq60', name: 'Obelisk Quest'}
     ]
   },
 };
