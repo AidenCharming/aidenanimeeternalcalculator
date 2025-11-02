@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-AR">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anime Eternal Calculator</title>
 	<link rel="icon" href="icon.webp" type="image/webp">
@@ -51,7 +51,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter&family=Metal+Mania&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3.0">
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2070779794600099"
      crossorigin="anonymous"></script>
@@ -64,9 +64,14 @@
             <div class="topbar-content">
                 <h1 class="topbar-title">Anime Eternal Calculator</h1>
                 <div class="topbar-credits">Coded By: AidenCharming and Ray. | Data From: AE Spreadsheet, KodakUSA and Ra.</div>
-                <button id="theme-toggle" class="topbar-theme-btn">
-                    Switch Theme
-                </button>
+                
+                <div class="topbar-right">
+                    <span class="version-text">Version 3.0</span>
+                    <button id="theme-toggle" class="topbar-theme-btn">
+                        Switch Theme
+                    </button>
+                </div>
+
             </div>
         </header>
 
@@ -82,316 +87,334 @@
             
             <div class="content-wrapper">
 
-            <div id="panel-rankup" class="space-y-6">
-                <div class="toggle-container">
-                    <button class="toggle-btn active" onclick="setClickerSpeed('slow', this)">Slow Clicker</button>
-                    <button class="toggle-btn" onclick="setClickerSpeed('fast', this)">Fast Clicker</button>
-                </div>
-                <div>
-                    <label for="rankInput">Select Target Rank</label>
-                    <div class="relative">
-                        <input type="text" id="rankInput" class="input-field w-full rounded-lg" placeholder="e.g., 109" autocomplete="off">
-                        <input type="hidden" id="rankSelect" value="">
-                        <div id="rankList" class="search-list absolute z-10 w-full bg-[#131320] border border-[#3a3a5a] rounded-lg mt-1 max-h-48 overflow-y-auto hidden"></div>
+            <div id="panel-rankup">
+                <div class="max-w-xl space-y-6"> 
+                    <div class="toggle-container">
+                        <button class="toggle-btn active" onclick="setClickerSpeed('slow', this)">Slow Clicker</button>
+                        <button class="toggle-btn" onclick="setClickerSpeed('fast', this)">Fast Clicker</button>
                     </div>
-                </div>
-                <div>
-                    <label for="currentEnergy">Your Current Energy</label>
-                    <div class="grid-cols-2">
-                        <input type="number" id="currentEnergy" class="input-field w-full" placeholder="e.g., 5000">
+                    <div>
+                        <label for="rankInput">Select Target Rank</label>
                         <div class="relative">
-                            <input type="text" id="currentEnergyDenominationInput" class="input-field w-full" placeholder="e.g., K" autocomplete="off">
-                            <input type="hidden" id="currentEnergyDenominationValue" value="1">
-                            <div id="currentEnergyDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                            <input type="text" id="rankInput" class="input-field w-full rounded-lg" placeholder="e.g., 109" autocomplete="off">
+                            <input type="hidden" id="rankSelect" value="">
+                            <div id="rankList" class="search-list absolute z-10 w-full bg-[#131320] border border-[#3a3a5a] rounded-lg mt-1 max-h-48 overflow-y-auto hidden"></div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <label for="energyPerClick">Energy per Click</label>
-                    <div class="grid-cols-2">
-                        <input type="number" id="energyPerClick" class="input-field w-full" placeholder="e.g., 150">
-                        <div class="relative">
-                            <input type="text" id="energyPerClickDenominationInput" class="input-field w-full" placeholder="e.g., B" autocomplete="off">
-                            <input type="hidden" id="energyPerClickDenominationValue" value="1">
-                            <div id="energyPerClickDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                    <div>
+                        <label for="currentEnergy">Your Current Energy</label>
+                        <div class="grid-denom">
+                            <input type="number" id="currentEnergy" class="input-field w-full" placeholder="e.g., 5000">
+                            <div class="relative">
+                                <input type="text" id="currentEnergyDenominationInput" class="input-field w-full" placeholder="e.g., K" autocomplete="off">
+                                <input type="hidden" id="currentEnergyDenominationValue" value="1">
+                                <div id="currentEnergyDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <label for="energyForRankFormatted">Energy Needed for Selected Rank</label>
-                    <div id="energyForRankFormatted" class="input-field w-full text-orange-400 font-semibold">Select a rank to see requirement</div>
-                </div>
-                <input type="checkbox" id="clickerSpeed" class="hidden">
-                <div class="result-box p-4 rounded-lg text-center" onclick="copyResult('rankUpResult')" title="Click to copy result">
-                    <p class="text-gray-400">Time to next rank:</p>
-                    <p id="rankUpResult" class="text-2xl font-bold text-orange-400">0s</p>
-                    <p id="rankUpReturnTime" class="text-sm text-gray-400 mt-1"></p>
+                    <div>
+                        <label for="energyPerClick">Energy per Click</label>
+                        <div class="grid-denom">
+                            <input type="number" id="energyPerClick" class="input-field w-full" placeholder="e.g., 150">
+                            <div class="relative">
+                                <input type="text" id="energyPerClickDenominationInput" class="input-field w-full" placeholder="e.g., B" autocomplete="off">
+                                <input type="hidden" id="energyPerClickDenominationValue" value="1">
+                                <div id="energyPerClickDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="energyForRankFormatted">Energy Needed for Selected Rank</label>
+                        <div id="energyForRankFormatted" class="input-field w-full text-orange-400 font-semibold">Select a rank to see requirement</div>
+                    </div>
+                    <input type="checkbox" id="clickerSpeed" class="hidden">
+                    <div class="result-box p-4 rounded-lg text-center" onclick="copyResult('rankUpResult')" title="Click to copy result">
+                        <p class="text-gray-400">Time to next rank:</p>
+                        <p id="rankUpResult" class="text-2xl font-bold text-orange-400">0s</p>
+                        <p id="rankUpReturnTime" class="text-sm text-gray-400 mt-1"></p>
+                    </div>
                 </div>
             </div>
 
-            <div id="panel-eta" class="hidden space-y-6">
-                <div class="toggle-container">
-                    <button class="toggle-btn active" onclick="setClickerSpeed('slow', this)">Slow Clicker</button>
-                    <button class="toggle-btn" onclick="setClickerSpeed('fast', this)">Fast Clicker</button>
-                </div>
-                <div>
-                    <label for="currentEnergyETA">Your Current Energy</label>
-                    <div class="grid-cols-2">
-                        <input type="number" id="currentEnergyETA" class="input-field w-full" placeholder="e.g., 5000">
-                        <div class="relative">
-                            <input type="text" id="currentEnergyETADenominationInput" class="input-field w-full" placeholder="e.g., K" autocomplete="off">
-                            <input type="hidden" id="currentEnergyETADenominationValue" value="1">
-                            <div id="currentEnergyETADenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+            <div id="panel-eta" class="hidden">
+                <div class="max-w-xl space-y-6">
+                    <div class="toggle-container">
+                        <button class="toggle-btn active" onclick="setClickerSpeed('slow', this)">Slow Clicker</button>
+                        <button class="toggle-btn" onclick="setClickerSpeed('fast', this)">Fast Clicker</button>
+                    </div>
+                    <div>
+                        <label for="currentEnergyETA">Your Current Energy</label>
+                        <div class="grid-denom">
+                            <input type="number" id="currentEnergyETA" class="input-field w-full" placeholder="e.g., 5000">
+                            <div class="relative">
+                                <input type="text" id="currentEnergyETADenominationInput" class="input-field w-full" placeholder="e.g., K" autocomplete="off">
+                                <input type="hidden" id="currentEnergyETADenominationValue" value="1">
+                                <div id="currentEnergyETADenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <label for="targetEnergyETA">Your Target Energy</label>
-                    <div class="grid-cols-2">
-                        <input type="number" id="targetEnergyETA" class="input-field w-full" placeholder="e.g., 10000">
-                        <div class="relative">
-                            <input type="text" id="targetEnergyETADenominationInput" class="input-field w-full" placeholder="e.g., M" autocomplete="off">
-                            <input type="hidden" id="targetEnergyETADenominationValue" value="1">
-                            <div id="targetEnergyETADenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                    <div>
+                        <label for="targetEnergyETA">Your Target Energy</label>
+                        <div class="grid-denom">
+                            <input type="number" id="targetEnergyETA" class="input-field w-full" placeholder="e.g., 10000">
+                            <div class="relative">
+                                <input type="text" id="targetEnergyETADenominationInput" class="input-field w-full" placeholder="e.g., M" autocomplete="off">
+                                <input type="hidden" id="targetEnergyETADenominationValue" value="1">
+                                <div id="targetEnergyETADenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <label for="energyPerClickETA">Energy per Click</label>
-                    <div class="grid-cols-2">
-                        <input type="number" id="energyPerClickETA" class="input-field w-full" placeholder="e.g., 150">
-                        <div class="relative">
-                            <input type="text" id="energyPerClickETADenominationInput" class="input-field w-full" placeholder="e.g., B" autocomplete="off">
-                            <input type="hidden" id="energyPerClickETADenominationValue" value="1">
-                            <div id="energyPerClickETADenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                    <div>
+                        <label for="energyPerClickETA">Energy per Click</label>
+                        <div class="grid-denom">
+                            <input type="number" id="energyPerClickETA" class="input-field w-full" placeholder="e.g., 150">
+                            <div class="relative">
+                                <input type="text" id="energyPerClickETADenominationInput" class="input-field w-full" placeholder="e.g., B" autocomplete="off">
+                                <input type="hidden" id="energyPerClickETADenominationValue" value="1">
+                                <div id="energyPerClickETADenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <input type="checkbox" id="clickerSpeedETA" class="hidden">
-                <div class="result-box p-4 rounded-lg text-center" onclick="copyResult('etaResult')" title="Click to copy result">
-                    <p class="text-gray-400">Time to target energy:</p>
-                    <p id="etaResult" class="text-2xl font-bold text-orange-400">0s</p>
-                    <p id="etaReturnTime" class="text-sm text-gray-400 mt-1"></p>
+                    <input type="checkbox" id="clickerSpeedETA" class="hidden">
+                    <div class="result-box p-4 rounded-lg text-center" onclick="copyResult('etaResult')" title="Click to copy result">
+                        <p class="text-gray-400">Time to target energy:</p>
+                        <p id="etaResult" class="text-2xl font-bold text-orange-400">0s</p>
+                        <p id="etaReturnTime" class="text-sm text-gray-400 mt-1"></p>
+                    </div>
                 </div>
             </div>
 
-            <div id="panel-time-to-energy" class="hidden space-y-6">
-                <div class="toggle-container">
-                    <button class="toggle-btn active" onclick="setClickerSpeed('slow', this)">Slow Clicker</button>
-                    <button class="toggle-btn" onclick="setClickerSpeed('fast', this)">Fast Clicker</button>
-                </div>
-                <div>
-                    <label for="currentEnergyTTE">Your Current Energy</label>
-                    <div class="grid-cols-2">
-                        <input type="number" id="currentEnergyTTE" class="input-field w-full" placeholder="e.g., 5000">
-                        <div class="relative">
-                            <input type="text" id="currentEnergyTTEDenominationInput" class="input-field w-full" placeholder="e.g., K" autocomplete="off">
-                            <input type="hidden" id="currentEnergyTTEDenominationValue" value="1">
-                            <div id="currentEnergyTTEDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+            <div id="panel-time-to-energy" class="hidden">
+                <div class="max-w-xl space-y-6">
+                    <div class="toggle-container">
+                        <button class="toggle-btn active" onclick="setClickerSpeed('slow', this)">Slow Clicker</button>
+                        <button class="toggle-btn" onclick="setClickerSpeed('fast', this)">Fast Clicker</button>
+                    </div>
+                    <div>
+                        <label for="currentEnergyTTE">Your Current Energy</label>
+                        <div class="grid-denom">
+                            <input type="number" id="currentEnergyTTE" class="input-field w-full" placeholder="e.g., 5000">
+                            <div class="relative">
+                                <input type="text" id="currentEnergyTTEDenominationInput" class="input-field w-full" placeholder="e.g., K" autocomplete="off">
+                                <input type="hidden" id="currentEnergyTTEDenominationValue" value="1">
+                                <div id="currentEnergyTTEDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <label for="energyPerClickTTE">Energy per Click (BASE, NO POTIONS OR FOODS)</label>
-                    <div class="grid-cols-2">
-                        <input type="number" id="energyPerClickTTE" class="input-field w-full" placeholder="e.g., 150">
-                        <div class="relative">
-                            <input type="text" id="energyPerClickTTEDenominationInput" class="input-field w-full" placeholder="e.g., B" autocomplete="off">
-                            <input type="hidden" id="energyPerClickTTEDenominationValue" value="1">
-                            <div id="energyPerClickTTEDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                    <div>
+                        <label for="energyPerClickTTE">Energy per Click (BASE, NO POTIONS OR FOODS)</label>
+                        <div class="grid-denom">
+                            <input type="number" id="energyPerClickTTE" class="input-field w-full" placeholder="e.g., 150">
+                            <div class="relative">
+                                <input type="text" id="energyPerClickTTEDenominationInput" class="input-field w-full" placeholder="e.g., B" autocomplete="off">
+                                <input type="hidden" id="energyPerClickTTEDenominationValue" value="1">
+                                <div id="energyPerClickTTEDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <label for="timeToReturnSelect">Return Time</label>
-                    <div class="grid-cols-2">
-                    <select id="timeToReturnSelect" class="select-field w-full p-3 rounded-lg">
-                        </select>
-                    <select id="timeToReturnSelectMinutes" class="select-field w-full p-3 rounded-lg">
-                        </select>
+                    <div>
+                        <label for="timeToReturnSelect">Return Time</label>
+                        <div class="grid-time">
+                        <select id="timeToReturnSelect" class="select-field w-full rounded-lg">
+                            </select>
+                        <select id="timeToReturnSelectMinutes" class="select-field w-full rounded-lg">
+                            </select>
+        </div>
     </div>
-</div>
-                
-                <div>
-                    <h3 class="subsection-title">Active Boost Durations</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                        
-                        <div>
-                            <label for="boost-spooky-energy-potion-hours">Spooky Energy Potion (x2.5)</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <select id="boost-spooky-energy-potion-hours" class="select-field"></select>
-                                <select id="boost-spooky-energy-potion-minutes" class="select-field"></select>
+                    
+                    <div>
+                        <h3 class="subsection-title">Active Boost Durations</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                            
+                            <div>
+                                <label for="boost-spooky-energy-potion-hours">Spooky Energy Potion (x2.5)</label>
+                                <div class="grid grid-cols-2 gap-1">
+                                    <select id="boost-spooky-energy-potion-hours" class="select-field"></select>
+                                    <select id="boost-spooky-energy-potion-minutes" class="select-field"></select>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <label for="boost-energy-potion-hours">Energy Potion (x2.0)</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <select id="boost-energy-potion-hours" class="select-field"></select>
-                                <select id="boost-energy-potion-minutes" class="select-field"></select>
+                            <div>
+                                <label for="boost-energy-potion-hours">Energy Potion (x2.0)</label>
+                                <div class="grid grid-cols-2 gap-1">
+                                    <select id="boost-energy-potion-hours" class="select-field"></select>
+                                    <select id="boost-energy-potion-minutes" class="select-field"></select>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <label for="boost-small-potion-hours">Small Potion (x1.5)</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <select id="boost-small-potion-hours" class="select-field"></select>
-                                <select id="boost-small-potion-minutes" class="select-field"></select>
+                            <div>
+                                <label for="boost-small-potion-hours">Small Potion (x1.5)</label>
+                                <div class="grid grid-cols-2 gap-1">
+                                    <select id="boost-small-potion-hours" class="select-field"></select>
+                                    <select id="boost-small-potion-minutes" class="select-field"></select>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <label for="boost-energy-macaron-hours">Energy Macaron (x1.25)</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <select id="boost-energy-macaron-hours" class="select-field"></select>
-                                <select id="boost-energy-macaron-minutes" class="select-field"></select>
+                            <div>
+                                <label for="boost-energy-macaron-hours">Energy Macaron (x1.25)</label>
+                                <div class="grid grid-cols-2 gap-1">
+                                    <select id="boost-energy-macaron-hours" class="select-field"></select>
+                                    <select id="boost-energy-macaron-minutes" class="select-field"></select>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <label for="boost-chocolat-bar-hours">Chocolat Bar (x1.10)</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <select id="boost-chocolat-bar-hours" class="select-field"></select>
-                                <select id="boost-chocolat-bar-minutes" class="select-field"></select>
+                            <div>
+                                <label for="boost-chocolat-bar-hours">Chocolat Bar (x1.10)</label>
+                                <div class="grid grid-cols-2 gap-1">
+                                    <select id="boost-chocolat-bar-hours" class="select-field"></select>
+                                    <select id="boost-chocolat-bar-minutes" class="select-field"></select>
+                                </div>
                             </div>
-                        </div>
 
+                        </div>
                     </div>
-                </div>
-                
-                <input type="checkbox" id="clickerSpeedTTE" class="hidden">
-                <div class="result-box p-4 rounded-lg text-center" onclick="copyResult('timeToEnergyResult')" title="Click to copy result">
-                    <p class="text-gray-400">Total Energy on Return:</p>
-                    <p id="timeToEnergyResult" class="text-2xl font-bold text-orange-400">0</p>
-                    <p id="timeToEnergyReturnTime" class="text-sm text-gray-400 mt-1"></p>
+                    
+                    <input type="checkbox" id="clickerSpeedTTE" class="hidden">
+                    <div class="result-box p-4 rounded-lg text-center" onclick="copyResult('timeToEnergyResult')" title="Click to copy result">
+                        <p class="text-gray-400">Total Energy on Return:</p>
+                        <p id="timeToEnergyResult" class="text-2xl font-bold text-orange-400">0</p>
+                        <p id="timeToEnergyReturnTime" class="text-sm text-gray-400 mt-1"></p>
+                    </div>
+
+                </div> 
+            </div>
+
+            <div id="panel-ttk" class="hidden">
+                <div class="max-w-xl space-y-6">
+                    <div>
+                        <label for="worldSelect" class="block mb-2 text-sm font-medium">Select World</label>
+                        <select id="worldSelect" class="select-field w-full rounded-lg" onchange="populateEnemyDropdown()">
+                            <option value="">-- Select a World --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="enemySelect" class="block mb-2 text-sm font-medium">Select Enemy</label>
+                        <select id="enemySelect" class="select-field w-full rounded-lg" onchange="displayEnemyHealth()">
+                            <option value="">-- Select an Enemy --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="enemyHealthDisplay" class="block mb-2 text-sm font-medium">Enemy Health (Single)</label>
+                        <div id="enemyHealthDisplay" class="input-field w-full text-orange-400 font-semibold">Select an enemy to see health</div>
+                        <input type="hidden" id="enemyHealth">
+                    </div>
+                    <div>
+                        <label for="yourDPS">Your Damage Per Second (DPS)</label>
+                        <div class="grid-denom">
+                            <input type="number" id="yourDPS" class="input-field w-full" placeholder="e.g., 500">
+                            <div class="relative">
+                                <input type="text" id="dpsDenominationInput" class="input-field w-full" placeholder="e.g., B" autocomplete="off">
+                                <input type="hidden" id="dpsDenominationValue" value="1">
+                                <div id="dpsDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="enemyQuantity">Enemy Quantity</label>
+                        <input type="number" id="enemyQuantity" class="input-field w-full" placeholder="e.g., 25">
+                    </div>
+                    
+                    <div class="toggle-container">
+                        <button class="toggle-btn active" onclick="setFarmingMode('single', this)">Single Mob (1)</button>
+                        <button class="toggle-btn" onclick="setFarmingMode('four', this)">4-Spot Farm (4)</button>
+                    </div>
+
+                    <input type="checkbox" id="fourSpotFarming" class="hidden">
+                    <div class="result-box p-4 rounded-lg text-center" onclick="copyResult('ttkResult')" title="Click to copy result">
+                        <p class="text-gray-400">Time to Kill (Single):</p>
+                        <p id="ttkResult" class="text-2xl font-bold text-orange-400">0s</p>
+                        <p id="questTTKResult" class="text-lg font-bold text-orange-400 mt-2"></p>
+                        <p id="questReturnTime" class="text-sm text-gray-400 mt-1"></p>
+                    </div>
                 </div>
             </div>
 
-            <div id="panel-ttk" class="hidden space-y-6">
-                <div>
-                    <label for="worldSelect" class="block mb-2 text-sm font-medium">Select World</label>
-                    <select id="worldSelect" class="select-field w-full p-3 rounded-lg" onchange="populateEnemyDropdown()">
-                        <option value="">-- Select a World --</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="enemySelect" class="block mb-2 text-sm font-medium">Select Enemy</label>
-                    <select id="enemySelect" class="select-field w-full p-3 rounded-lg" onchange="displayEnemyHealth()">
-                        <option value="">-- Select an Enemy --</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="enemyHealthDisplay" class="block mb-2 text-sm font-medium">Enemy Health (Single)</label>
-                    <div id="enemyHealthDisplay" class="input-field w-full text-orange-400 font-semibold">Select an enemy to see health</div>
-                    <input type="hidden" id="enemyHealth">
-                </div>
-                <div>
-                    <label for="yourDPS">Your Damage Per Second (DPS)</label>
-                    <div class="grid-cols-2">
-                        <input type="number" id="yourDPS" class="input-field w-full" placeholder="e.g., 500">
-                        <div class="relative">
-                            <input type="text" id="dpsDenominationInput" class="input-field w-full" placeholder="e.g., B" autocomplete="off">
-                            <input type="hidden" id="dpsDenominationValue" value="1">
-                            <div id="dpsDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+            <div id="panel-raid" class="hidden">
+                <div class="max-w-xl space-y-6">
+                    <div>
+                        <label for="activitySelect" class="block mb-2 text-sm font-medium">Select Raid / Dungeon</label>
+                        <select id="activitySelect" class="select-field w-full rounded-lg" onchange="handleActivityChange()">
+                            <option value="">-- Select an Activity --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="yourDPSActivity">Your Damage Per Second (DPS)</label>
+                        <div class="grid-denom">
+                            <input type="number" id="yourDPSActivity" class="input-field w-full" placeholder="e.g., 500">
+                            <div class="relative">
+                                <input type="text" id="dpsActivityDenominationInput" class="input-field w-full" placeholder="e.g., Sx" autocomplete="off">
+                                <input type="hidden" id="dpsActivityDenominationValue" value="1">
+                                <div id="dpsActivityDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <label for="enemyQuantity">Enemy Quantity</label>
-                    <input type="number" id="enemyQuantity" class="input-field w-full" placeholder="e.g., 25">
-                </div>
-                
-                <div class="toggle-container">
-                    <button class="toggle-btn active" onclick="setFarmingMode('single', this)">Single Mob (1)</button>
-                    <button class="toggle-btn" onclick="setFarmingMode('four', this)">4-Spot Farm (4)</button>
-                </div>
-
-                <input type="checkbox" id="fourSpotFarming" class="hidden">
-                <div class="result-box p-4 rounded-lg text-center" onclick="copyResult('ttkResult')" title="Click to copy result">
-                    <p class="text-gray-400">Time to Kill (Single):</p>
-                    <p id="ttkResult" class="text-2xl font-bold text-orange-400">0s</p>
-                    <p id="questTTKResult" class="text-lg font-bold text-orange-400 mt-2"></p>
-                    <p id="questReturnTime" class="text-sm text-gray-400 mt-1"></p>
+                    <div>
+                        <label for="activityTimeLimit">Time Limit per Stage (seconds)</label>
+                        <input type="number" id="activityTimeLimit" class="input-field w-full">
+                    </div>
+                    <div class="result-box p-4 rounded-lg text-center">
+                        <p id="activityResultLabel" class="text-gray-400">Estimated Max Stage:</p>
+                        <p id="activityResult" class="text-2xl font-bold text-orange-400">0 / 0</p>
+                    </div>
                 </div>
             </div>
 
-            <div id="panel-raid" class="hidden space-y-6">
-                 <div>
-                    <label for="activitySelect" class="block mb-2 text-sm font-medium">Select Raid / Dungeon</label>
-                    <select id="activitySelect" class="select-field w-full p-3 rounded-lg" onchange="handleActivityChange()">
-                        <option value="">-- Select an Activity --</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="yourDPSActivity">Your Damage Per Second (DPS)</label>
-                    <div class="grid-cols-2">
-                        <input type="number" id="yourDPSActivity" class="input-field w-full" placeholder="e.g., 500">
-                        <div class="relative">
-                            <input type="text" id="dpsActivityDenominationInput" class="input-field w-full" placeholder="e.g., Sx" autocomplete="off">
-                            <input type="hidden" id="dpsActivityDenominationValue" value="1">
-                            <div id="dpsActivityDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+            <div id="panel-checklist" class="hidden">
+                <div class="max-w-xl space-y-6">
+                
+                    <div class="progress-indicator">
+                        <div class="text-sm text-gray-400 mb-2">Overall Progress</div>
+                        <div id="overall-progress-text" class="text-lg font-bold text-orange-400">0 / 0 (0%)</div>
+                        <div class="progress-bar">
+                            <div id="overall-progress-fill" class="progress-fill" style="width: 0%"></div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <label for="activityTimeLimit">Time Limit per Stage (seconds)</label>
-                    <input type="number" id="activityTimeLimit" class="input-field w-full">
-                </div>
-                <div class="result-box p-4 rounded-lg text-center">
-                    <p id="activityResultLabel" class="text-gray-400">Estimated Max Stage:</p>
-                    <p id="activityResult" class="text-2xl font-bold text-orange-400">0 / 0</p>
-                </div>
-            </div>
-
-            <div id="panel-checklist" class="hidden space-y-6">
-                
-                <div class="progress-indicator">
-                    <div class="text-sm text-gray-400 mb-2">Overall Progress</div>
-                    <div id="overall-progress-text" class="text-lg font-bold text-orange-400">0 / 0 (0%)</div>
-                    <div class="progress-bar">
-                        <div id="overall-progress-fill" class="progress-fill" style="width: 0%"></div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="checklist-search" class="search-filter" placeholder="Search checklist items...">
+                        <select id="category-filter" class="search-filter">
+                            <option value="">All Categories</option>
+                            <option value="gachas">Gachas</option>
+                            <option value="progressions">Progressions</option>
+                            <option value="sssrank">SSS Rank</option>
+                            <option value="auras">Auras</option>
+                            <option value="accessories">Accessories</option>
+                            <option value="quests">Quests</option> 
+                        </select>
                     </div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="text" id="checklist-search" class="search-filter" placeholder="Search checklist items...">
-                    <select id="category-filter" class="search-filter">
-                        <option value="">All Categories</option>
-                        <option value="gachas">Gachas</option>
-                        <option value="progressions">Progressions</option>
-                        <option value="sssrank">SSS Rank</option>
-                        <option value="auras">Auras</option>
-                        <option value="accessories">Accessories</option>
-                    </select>
-                </div>
-                
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
-                    <div class="bg-[#1a1a1a] p-3 rounded-lg border border-[#404040]">
-                        <div class="text-orange-400 font-bold" id="gachas-count">0</div>
-                        <div class="text-xs text-gray-400">Gachas</div>
+                    
+                    <div class="grid grid-cols-3 md:grid-cols-2 gap-4 text-center">
+                        <div class="bg-[#1a1a1a] p-3 rounded-lg border border-[#404040]">
+                            <div class="text-orange-400 font-bold" id="gachas-count">0/0</div>
+                            <div class="text-xs text-gray-400">Gachas</div>
+                        </div>
+                        <div class="bg-[#1a1a1a] p-3 rounded-lg border border-[#404040]">
+                            <div class="text-green-400 font-bold" id="progressions-count">0/0</div>
+                            <div class="text-xs text-gray-400">Progressions</div>
+                        </div>
+                        <div class="bg-[#1a1a1a] p-3 rounded-lg border border-[#404040]">
+                            <div class="text-red-400 font-bold" id="sssrank-count">0/0</div>
+                            <div class="text-xs text-gray-400">SSS Rank</div>
+                        </div>
+                        <div class="bg-[#1a1a1a] p-3 rounded-lg border border-[#404040]">
+                            <div class="text-purple-400 font-bold" id="auras-count">0/0</div>
+                            <div class="text-xs text-gray-400">Auras</div>
+                        </div>
+                        <div class="bg-[#1a1a1a] p-3 rounded-lg border border-[#404040]">
+                            <div class="text-cyan-400 font-bold" id="accessories-count">0/0</div>
+                            <div class="text-xs text-gray-400">Accessories</div>
+                        </div>
+                        <div class="bg-[#1a1a1a] p-3 rounded-lg border border-[#404040]">
+                            <div class="text-yellow-300 font-bold" id="quests-count">0/0</div>
+                            <div class="text-xs text-gray-400">Quests</div>
+                        </div>
                     </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-lg border border-[#404040]">
-                        <div class="text-green-400 font-bold" id="progressions-count">0</div>
-                        <div class="text-xs text-gray-400">Progressions</div>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-lg border border-[#404040]">
-                        <div class="text-red-400 font-bold" id="sssrank-count">0</div>
-                        <div class="text-xs text-gray-400">SSS Rank</div>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-lg border border-[#404040]">
-                        <div class="text-purple-400 font-bold" id="auras-count">0</div>
-                        <div class="text-xs text-gray-400">Auras</div>
-                    </div>
-                    <div class="bg-[#1a1a1a] p-3 rounded-lg border border-[#404040]">
-                        <div class="text-cyan-400 font-bold" id="accessories-count">0</div>
-                        <div class="text-xs text-gray-400">Accessories</div>
-                    </div>
-                </div>
-                
-                <div class="toggle-container">
-                    <button id="check-all-btn" class="toggle-btn">Check All</button>
-                    <button id="uncheck-all-btn" class="toggle-btn">Uncheck All</button>
-                </div>
-
-                <div id="checklist-worlds-container" class="space-y-8">
+                    
+                    <div class="toggle-container">
+                        <button id="check-all-btn" class="toggle-btn">Check All (Global)</button>
+                        <button id="uncheck-all-btn" class="toggle-btn">Uncheck All (Global)</button>
                     </div>
 
+                    <div id="checklist-worlds-container" class="space-y-8">
+                        </div>
+
+                </div>
             </div>
             </div>
         </main>

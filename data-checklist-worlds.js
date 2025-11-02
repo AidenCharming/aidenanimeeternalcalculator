@@ -19,7 +19,8 @@ const checklistDataByWorld = {
     accessories: [
       { id: 'c5', name: '4 Star Hat (SS)' },
       { id: 'c6', name: 'Imp Tail (Halloween)' }
-    ]
+    ],
+    quests: []
   },
   "Windmill Island": {
     gachas: [
@@ -37,7 +38,8 @@ const checklistDataByWorld = {
     ],
     accessories: [
       { id: 'c12', name: 'Armless Cloak (SS)' }
-    ]
+    ],
+    quests: []
   },
   "Soul Society": {
     gachas: [
@@ -53,7 +55,8 @@ const checklistDataByWorld = {
     auras: [
       { id: 'c17', name: 'Purple Traitor Aura(SS)' }
     ],
-    accessories: []
+    accessories: [],
+    quests: []
   },
   "Cursed School": {
     gachas: [
@@ -68,7 +71,8 @@ const checklistDataByWorld = {
     auras: [
       { id: 'c21', name: 'Fire King Aura (SS)' }
     ],
-    accessories: []
+    accessories: [],
+    quests: []
   },
   "Slayer Village": {
     gachas: [
@@ -83,7 +87,8 @@ const checklistDataByWorld = {
     auras: [
       { id: 'c25', name: 'Flaming Aura (SS)' }
     ],
-    accessories: []
+    accessories: [],
+    quests: []
   },
   "Solo Island": {
     gachas: [
@@ -100,7 +105,8 @@ const checklistDataByWorld = {
     auras: [
       { id: 'c31', name: 'Statue Aura (SS)' }
     ],
-    accessories: []
+    accessories: [],
+    quests: []
   },
   "Clover Village": {
     gachas: [
@@ -115,7 +121,8 @@ const checklistDataByWorld = {
       { id: 'c36', name: 'Novi Chroni' }
     ],
     auras: [],
-    accessories: []
+    accessories: [],
+    quests: []
   },
   "Leaf Village": {
     gachas: [
@@ -133,7 +140,8 @@ const checklistDataByWorld = {
     ],
     accessories: [
       { id: 'c42', name: 'Shinobi Flops (SS)' }
-    ]
+    ],
+    quests: []
   },
   "Spirit Residence": {
     gachas: [
@@ -147,7 +155,8 @@ const checklistDataByWorld = {
       { id: 'c46', name: 'Ken Turbo' }
     ],
     auras: [],
-    accessories: []
+    accessories: [],
+    quests: []
   },
   "Magic Hunter City": {
     gachas: [
@@ -165,7 +174,8 @@ const checklistDataByWorld = {
     auras: [
       { id: 'c53', name: 'Energetic Aura (SS)' }
     ],
-    accessories: []
+    accessories: [],
+    quests: []
   },
   "Titan City": {
     gachas: [
@@ -185,7 +195,8 @@ const checklistDataByWorld = {
       { id: 'c59', name: 'Red Scarf (C)' },
       { id: 'c60', name: 'Clean Hat (S)' },
       { id: 'c61', name: 'Scout Cloak (SS)' }
-    ]
+    ],
+    quests: []
   },
   "Village of Sins": {
     gachas: [
@@ -200,7 +211,8 @@ const checklistDataByWorld = {
       { id: 'c66', name: 'Esanor' }
     ],
     auras: [],
-    accessories: []
+    accessories: [],
+    quests: []
   },
   "Kaiju Base": {
     gachas: [
@@ -216,7 +228,8 @@ const checklistDataByWorld = {
     auras: [
       { id: 'c71', name: 'Monster Aura (SS)' }
     ],
-    accessories: []
+    accessories: [],
+    quests: []
   },
   "Tempest Capital": {
     gachas: [
@@ -235,7 +248,8 @@ const checklistDataByWorld = {
     auras: [],
     accessories: [
       { id: 'c79', name: 'Slime Mask (S)' }
-    ]
+    ],
+    quests: []
   },
   "Virtual City": {
     gachas: [
@@ -253,7 +267,8 @@ const checklistDataByWorld = {
     auras: [
       { id: 'c86', name: 'Virtual Aura (SS)' }
     ],
-    accessories: []
+    accessories: [],
+    quests: []
   },
   "Cairo": {
     gachas: [
@@ -272,7 +287,8 @@ const checklistDataByWorld = {
     ],
     accessories: [
       { id: 'c93', name: 'Greenello Scarf (C)' }
-    ]
+    ],
+    quests: []
   },
   "Ghoul City": {
     gachas: [
@@ -289,7 +305,8 @@ const checklistDataByWorld = {
     auras: [
       { id: 'c99', name: 'Ghoul Aura (SS)' }
     ],
-    accessories: []
+    accessories: [],
+    quests: []
   },
   "Chainsaw City": {
     gachas: [
@@ -307,7 +324,8 @@ const checklistDataByWorld = {
     auras: [],
     accessories: [
       { id: 'c106', name: 'Pokita Slides (D)' }
-    ]
+    ],
+    quests: []
   },
   "Tokyo Empire": {
     gachas: [
@@ -333,7 +351,8 @@ const checklistDataByWorld = {
       { id: 'c118', name: 'Fire Force Cape (S)' },
       { id: 'c119', name: 'Fire Witch Hat (S)' },
       { id: 'c120', name: 'Fire Eye Patch (SS)' }
-    ]
+    ],
+    quests: []
   },
   "Green Planet": {
     gachas: [
@@ -354,7 +373,8 @@ const checklistDataByWorld = {
     auras: [],
     accessories: [
       { id: 'c130', name: 'Scarffy (D)' }
-    ]
+    ],
+    quests: []
   },
   "Hollow World": {
     gachas: [
@@ -370,7 +390,8 @@ const checklistDataByWorld = {
 	{ id: 'c136', name: 'Vasto Ichige' }
 	],
     auras: [],
-    accessories: []
+    accessories: [],
+    quests: []
   },
   "Shadow Academy": {
     gachas: [
@@ -394,7 +415,8 @@ const checklistDataByWorld = {
     accessories: [
       { id: 'c161', name: 'Neck Fur (D)' },
       { id: 'c162', name: 'Crested Wingbands (B)' }
-    ]
+    ],
+    quests: []
   },
   "Z City": {
     gachas: [
@@ -412,7 +434,8 @@ const checklistDataByWorld = {
     auras: [],
     accessories: [
       { id: 'c169', name: 'Red Hero Boots (S)' }
-    ]
+    ],
+    quests: []
   },
   "Great Tomb": {
     gachas: [
@@ -433,7 +456,8 @@ const checklistDataByWorld = {
       { id: 'c177', name: 'Jalbathar Tail (Tomb Arena)' },
       { id: 'c178', name: 'Jalbathar Mask (Tomb Arena)' },
       { id: 'c179', name: 'Jalbathar Wings (Tomb Arena)' }
-    ]
+    ],
+    quests: []
   },
   "Thriller Park": {
     gachas: [
@@ -452,7 +476,8 @@ const checklistDataByWorld = {
         { id: 'c188', name: 'Gekar Morra' }
     ],
     auras: [],
-    accessories: []
+    accessories: [],
+    quests: []
   },
   "Amusement Park": {
       gachas: [
@@ -469,6 +494,7 @@ const checklistDataByWorld = {
           { id: 'c195', name: 'Tagamura' }
       ],
       auras: [],
-      accessories: []
+      accessories: [],
+      quests: []
   },
 };

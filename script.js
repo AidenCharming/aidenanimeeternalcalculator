@@ -335,8 +335,8 @@ function loadRaidData() {
         if (dpsDenomInput && el.dpsActivityDenominationInput) el.dpsActivityDenominationInput.value = dpsDenomInput;
         
         const dpsDenom = denominations.find(d => d.name === dpsDenomInput);
-        if (el.dpsActivityDenominationValue) {
-            el.dpsActivityDenominationValue.value = dpsDenom ? dpsDenom.value : '1';
+        if (el.dpsDenominationValue) {
+            el.dpsDenominationValue.value = dpsDenom ? dpsDenom.value : '1';
         }
 
         const timeLimit = localStorage.getItem('ae_raid_timeLimit');
@@ -1519,7 +1519,7 @@ if (el.energyPerClickTTE) {
     loadTimeToEnergyData();
     loadTTKData();
 
-    // --- START: NEW CHECKLIST LOGIC ---
+    // --- START: MODIFIED CHECKLIST LOGIC ---
     if (typeof checklistDataByWorld !== 'undefined' && typeof worldData !== 'undefined') {
         console.log("DEBUG: World and Checklist data found! Initializing new checklist UI...");
 
@@ -1545,7 +1545,7 @@ if (el.energyPerClickTTE) {
                     span.style.color = '#888';
                 } else {
                     span.style.textDecoration = 'none';
-                    span.style.color = 'var(--muted)';
+                    span.style.color = '#ccc'; // Reverted to #ccc for better visibility
                 }
             }
         }
@@ -1583,7 +1583,15 @@ if (el.energyPerClickTTE) {
             const worldNames = Object.keys(checklistDataByWorld);
             let overallTotal = 0;
             let overallCompleted = 0;
-            let categoryStats = { gachas: {total: 0, completed: 0}, progressions: {total: 0, completed: 0}, sssRank: {total: 0, completed: 0}, auras: {total: 0, completed: 0}, accessories: {total: 0, completed: 0} };
+            // ADDED 'quests' to categoryStats
+            let categoryStats = { 
+                gachas: {total: 0, completed: 0}, 
+                progressions: {total: 0, completed: 0}, 
+                sssRank: {total: 0, completed: 0}, 
+                auras: {total: 0, completed: 0}, 
+                accessories: {total: 0, completed: 0},
+                quests: {total: 0, completed: 0} 
+            };
 
             for (const worldName of worldNames) {
                 const world = checklistDataByWorld[worldName];
@@ -1593,16 +1601,23 @@ if (el.energyPerClickTTE) {
                 let totalItems = 0;
                 let completedItems = 0;
 
-                const categories = ['gachas', 'progressions', 'sssRank', 'auras', 'accessories'];
+                // ADDED 'quests' to categories array
+                const categories = ['gachas', 'progressions', 'sssRank', 'auras', 'accessories', 'quests'];
                 categories.forEach(catKey => {
                     if (world[catKey]) {
                         totalItems += world[catKey].length;
-                        categoryStats[catKey].total += world[catKey].length;
+                        // Check if categoryStats[catKey] exists before adding
+                        if (categoryStats[catKey]) {
+                            categoryStats[catKey].total += world[catKey].length;
+                        }
                         
                         world[catKey].forEach(item => {
                             if (savedData[item.id]) {
                                 completedItems++;
-                                categoryStats[catKey].completed++;
+                                // Check if categoryStats[catKey] exists before adding
+                                if (categoryStats[catKey]) {
+                                    categoryStats[catKey].completed++;
+                                }
                             }
                         });
                         
@@ -1636,10 +1651,17 @@ if (el.energyPerClickTTE) {
                 overallProgressFill.style.width = `${percentage}%`;
             }
             
+            // UPDATED to dynamically find the count element ID
             Object.keys(categoryStats).forEach(cat => {
-                const countEl = document.getElementById(`${cat === 'sssRank' ? 'sssrank' : cat}-count`);
+                let elId;
+                if (cat === 'sssRank') elId = 'sssrank-count';
+                else elId = `${cat}-count`; // Works for 'gachas', 'progressions', 'auras', 'accessories', and 'quests'
+                
+                const countEl = document.getElementById(elId);
                 if (countEl) {
                     countEl.innerText = `${categoryStats[cat].completed}/${categoryStats[cat].total}`;
+                } else {
+                    console.warn(`Count element with ID '${elId}' not found.`);
                 }
             });
         }
@@ -1675,18 +1697,43 @@ if (el.energyPerClickTTE) {
 
                 const section = document.createElement('section');
                 
+                // --- START: MODIFIED HEADER CREATION ---
+                const worldHeader = document.createElement('div');
+                worldHeader.className = 'world-section-header'; // New class for flex layout
+                
                 const title = document.createElement('h2');
                 title.className = 'world-section-title';
                 title.id = `world-title-${worldNameId}`;
                 title.innerText = `${worldName} (0 / 0)`; 
-                section.appendChild(title);
+                worldHeader.appendChild(title); // Add title to header
+
+                const worldToggleContainer = document.createElement('div');
+                worldToggleContainer.className = 'toggle-container world-toggle';
+
+                const checkAllWorldBtn = document.createElement('button');
+                checkAllWorldBtn.className = 'toggle-btn world-check-all';
+                checkAllWorldBtn.innerText = 'Check All';
+                checkAllWorldBtn.dataset.worldId = worldNameId; 
+
+                const uncheckAllWorldBtn = document.createElement('button');
+                uncheckAllWorldBtn.className = 'toggle-btn world-uncheck-all';
+                uncheckAllWorldBtn.innerText = 'Uncheck All';
+                uncheckAllWorldBtn.dataset.worldId = worldNameId; 
+
+                worldToggleContainer.appendChild(checkAllWorldBtn);
+                worldToggleContainer.appendChild(uncheckAllWorldBtn);
+                worldHeader.appendChild(worldToggleContainer); // Add toggles to header
+                
+                section.appendChild(worldHeader); // Add the combined header to the section
+                // --- END: MODIFIED HEADER CREATION ---
 
                 const categories = [
                     { key: 'gachas', name: 'Gachas', css: 'gachas' },
                     { key: 'progressions', name: 'Progressions', css: 'progressions' },
                     { key: 'sssRank', name: 'SSS Rank', css: 'sssRank' },
                     { key: 'auras', name: 'Auras', css: 'auras' },
-                    { key: 'accessories', name: 'Accessories', css: 'accessories' }
+                    { key: 'accessories', name: 'Accessories', css: 'accessories' },
+                    { key: 'quests', name: 'Quests', css: 'quests' } // ADDED QUESTS
                 ];
 
                 const subsections = [];
@@ -1694,6 +1741,8 @@ if (el.energyPerClickTTE) {
                 categories.forEach(cat => {
                     if (world[cat.key] && world[cat.key].length > 0) {
                         const subSection = document.createElement('div');
+                        // ADDED class for better selection
+                        subSection.className = 'checklist-category-subsection';
                         
                         const subTitle = document.createElement('h3');
                         subTitle.className = `world-subsection-title ${cat.css}`;
@@ -1744,7 +1793,8 @@ if (el.energyPerClickTTE) {
             const worldSections = checklistPanel.querySelectorAll('section');
             
             worldSections.forEach(section => {
-                const subsections = section.querySelectorAll('div');
+                // UPDATED to select only category subsections
+                const subsections = section.querySelectorAll('.checklist-category-subsection');
                 let sectionHasVisible = false;
                 
                 subsections.forEach(subsection => {
@@ -1755,7 +1805,8 @@ if (el.energyPerClickTTE) {
                     let visibleItems = 0;
                     
                     const subId = subTitle.id;
-                    const categoryMatch = !categoryFilter || subId.includes(`${categoryFilter}-title`);
+                    // UPDATED category filter logic
+                    const categoryMatch = !categoryFilter || (categoryFilter === 'sssrank' ? subId.includes('sssRank-title') : subId.includes(`${categoryFilter}-title`));
                     
                     items.forEach(item => {
                         const text = item.textContent.toLowerCase();
@@ -1770,7 +1821,9 @@ if (el.energyPerClickTTE) {
                     });
                     
                     if (visibleItems > 0) {
-                        subsection.style.display = 'block';
+                        // --- THIS IS THE BUG FIX ---
+                        // Revert to default display (grid item) instead of forcing 'block'
+                        subsection.style.display = ''; 
                         sectionHasVisible = true;
                     } else {
                         subsection.style.display = 'none';
@@ -1794,6 +1847,34 @@ if (el.energyPerClickTTE) {
                 saveChecklistData();
             }
         });
+
+        // --- ADDED Event Listener for Per-World Toggles ---
+        checklistContainer.addEventListener('click', (e) => {
+            const target = e.target;
+            let checkValue;
+
+            if (target.classList.contains('world-check-all')) {
+                checkValue = true;
+            } else if (target.classList.contains('world-uncheck-all')) {
+                checkValue = false;
+            } else {
+                return; // Not one of our new buttons
+            }
+
+            // Find the parent section of the button
+            const section = target.closest('section');
+            if (!section) return;
+
+            const checkboxes = section.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                cb.checked = checkValue;
+                styleChecklistItem(cb, checkValue);
+            });
+
+            saveChecklistData(); // Save changes
+        });
+        // --- END Event Listener ---
+
 
         if (el['checklist-search']) {
             el['checklist-search'].addEventListener('input', (e) => {
@@ -1843,5 +1924,5 @@ if (el.energyPerClickTTE) {
     } else {
         console.warn("DEBUG: Checklist data (checklistDataByWorld) or World data (worldData) NOT found. Checklist will not load.");
     }
-    // --- END OF NEW CHECKLIST LOGIC ---
+    // --- END OF MODIFIED CHECKLIST LOGIC ---
 });
