@@ -635,6 +635,24 @@ function calculateTTK() {
 
     const timeInSeconds = enemyHealth / yourDPS;
 
+    // --- BUG FIX: Add a check for extremely large times ---
+    // This prevents "Invalid Date" errors and unreadable scientific notation.
+    // Max safe value for Date() is ~8.64e12 seconds. We'll cap it much lower
+    // for a more practical and readable limit (1000 years).
+    const MAX_SECONDS_CAP = 3.154e10; // 1,000 years in seconds
+
+    if (timeInSeconds > MAX_SECONDS_CAP || !isFinite(timeInSeconds)) {
+        singleResultEl.innerText = "Over 1000 Years";
+        if (questResultEl) {
+            const kills = quantity > 0 ? quantity : 1;
+            questResultEl.innerText = `Time for ${kills} kills: Over 1000 Years`;
+        }
+        if (questReturnEl) questReturnEl.innerText = 'ETA: Eternity';
+        saveTTKData();
+        return;
+    }
+    // --- END BUG FIX ---
+
     const days = Math.floor(timeInSeconds / 86400);
     const hours = Math.floor((timeInSeconds % 86400) / 3600);
     const minutes = Math.floor((timeInSeconds % 3600) / 60);
@@ -659,6 +677,15 @@ function calculateTTK() {
         const yourTimePerKill = timeInSeconds + 0.5; 
         const effectiveTimePerKill = Math.max(yourTimePerKill, respawnLimitPerKill);
         const totalTimeInSeconds = effectiveTimePerKill * quantity;
+
+        // --- BUG FIX: Add the same cap check for the total time ---
+        if (totalTimeInSeconds > MAX_SECONDS_CAP || !isFinite(totalTimeInSeconds)) {
+            if (questResultEl) questResultEl.innerText = `Time for ${quantity} kills: Over 1000 Years`;
+            if (questReturnEl) questReturnEl.innerText = 'ETA: Eternity';
+            saveTTKData();
+            return; // Exit here to avoid the final date calculation
+        }
+        // --- END BUG FIX ---
 
         const totalDays = Math.floor(totalTimeInSeconds / 86400);
         const totalHours = Math.floor((totalTimeInSeconds % 86400) / 3600);

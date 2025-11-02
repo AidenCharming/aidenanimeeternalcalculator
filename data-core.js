@@ -129,6 +129,15 @@ const rankRequirements = {
 // --- NEWLY ADDED ---
 // World data is now static and part of this core file.
 const worldData = {
+    "Halloween World": {
+        "enemies": {
+            "Carrotto": 3.12E+33,
+            "Evil Bald Man": 2.96E+59,
+            "Pumpkinado": 9.67E+86,
+            "Bald Warlock": 1.52E+120,
+            "Spook-suke": 3.88E+164,
+        }
+    },
     "Earth City": {
         "enemies": {
             "Kriluni": 5000.0,

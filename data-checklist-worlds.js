@@ -4,6 +4,26 @@
 // UPDATED: Added 'auras' and 'accessories' categories with data from images.
 
 const checklistDataByWorld = {
+  "Halloween World": {
+    gachas: [
+      { id: 'h1', name: 'Halloween Gacha' }
+    ],
+    progressions: [
+      { id: 'h2', name: 'Haki (60)' },
+      { id: 'h3', name: 'Ghost Leveling' },
+      { id: 'h4', name: 'Overdrive Saw' }
+    ],
+    sssRank: [],
+    auras: [
+      { id: 'h4', name: 'Candy Aura (Carotto)' },
+      { id: 'h5', name: 'Pumpkin Aura (Evil Bald Man)' },
+      { id: 'h6', name: 'Plague Aura (Pumpkinado)' },
+      { id: 'h7', name: 'Spookweb Aura (Bald Warlock)' },
+      { id: 'h8', name: 'Demonflame Aura (Spook-Suke)' }
+    ],
+    accessories: [],
+    quests: []
+  },
   "Earth City": {
     gachas: [
       { id: 'c1', name: 'Dragon Race' },
