@@ -9,7 +9,6 @@ const checklistDataByWorld = {
       { id: 'h1', name: 'Halloween Gacha' }
     ],
     progressions: [
-      { id: 'h2', name: 'Haki (60)' },
       { id: 'h3', name: 'Ghost Leveling' },
       { id: 'h4', name: 'Overdrive Saw' }
     ],
