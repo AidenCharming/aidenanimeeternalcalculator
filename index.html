@@ -82,7 +82,7 @@
                 <button id="tab-time-to-energy" class="tab-btn" onclick="switchTab('time-to-energy')">Time to Energy</button>
                 <button id="tab-ttk" class="tab-btn" onclick="switchTab('ttk')">Time to Kill</button>
                 <button id="tab-raid" class="tab-btn" onclick="switchTab('raid')">Raids / Dungeons</button>
-                <button id="tab-checklist" class="tab-btn" onclick="switchTab('checklist')">Checklist</button>
+                <button id="tab-star" class="tab-btn" onclick="switchTab('star')">Star Calc</button> <button id="tab-checklist" class="tab-btn" onclick="switchTab('checklist')">Checklist</button>
             </div>
             
             <div class="content-wrapper">
@@ -355,6 +355,59 @@
                 </div>
             </div>
 
+            <div id="panel-star" class="hidden">
+                <div class="max-w-xl space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        <div>
+                            <label for="starLevelSelect">Star Level</label>
+                            <select id="starLevelSelect" class="select-field w-full rounded-lg"></select>
+                        </div>
+                        <div>
+                            <label for="starCostDisplay">Cost per Star</label>
+                            <div id="starCostDisplay" class="input-field w-full text-orange-400 font-semibold">Select a level</div>
+                        </div>
+                        <div>
+                            <label for="starSpeedSelect">Star Speed (Dungeon Upgrade)</label>
+                            <select id="starSpeedSelect" class="select-field w-full rounded-lg"></select>
+                        </div>
+                        <div>
+                            <label for="starAmount">Star Amount (From Stats)</label>
+                            <input type="number" id="starAmount" class="input-field w-full" placeholder="e.g., 19">
+                        </div>
+                        <div>
+                            <label for="starBaseLuck">Star Luck (From Stats)</label>
+                            <input type="number" id="starBaseLuck" class="input-field w-full" placeholder="e.g., 333">
+                        </div>
+                        <div>
+                            <label for="starTimeHours">Time (Hours)</label>
+                            <input type="number" id="starTimeHours" class="input-field w-full" value="1" placeholder="e.g., 1">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+                        <div class="result-box p-4 rounded-lg">
+                            <p class="text-gray-400">Total Stars Opened</p>
+                            <p id="starTotalPulls" class="text-2xl font-bold text-orange-400">0</p>
+                        </div>
+                        <div class="result-box p-4 rounded-lg">
+                            <p class="text-gray-400">Total Coin Cost</p>
+                            <p id="starTotalCost" class="text-2xl font-bold text-orange-400">0</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="subsection-title">Estimated Stars by Rarity</h3>
+                        <p class="text-sm text-gray-400 -mt-3 mb-3">Note: Rarity percentages are calculated based on your Star Luck.</p>
+                        <div class="bg-[#1a1a1a] border border-[#404040] rounded-lg p-4">
+                            <table class="w-full">
+                                <tbody id="starRarityTableBody">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
             <div id="panel-checklist" class="hidden">
                 <div class="max-w-xl space-y-6"> 
                 
@@ -423,7 +476,7 @@
     <script src="data-core.js" defer></script>
     <script src="data-checklist-worlds.js" defer></script>
     <script src="data-boosts.js" defer></script>
-    <script src="script.js" defer></script>
+    <script src="data-stars.js" defer></script> <script src="script.js" defer></script>
 
     <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
     <script>

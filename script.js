@@ -1,5 +1,7 @@
 const el = {};
-const tabs = ['rankup', 'eta', 'time-to-energy', 'ttk', 'raid', 'checklist'];
+// 1. ADDED 'star' to the tabs list
+const tabs = ['rankup', 'eta', 'time-to-energy', 'ttk', 'raid', 'star', 'checklist'];
+
 function switchTab(activeTab) {
     tabs.forEach(tab => {
         const panel = el[`panel-${tab}`]; 
@@ -441,6 +443,51 @@ function loadTimeToEnergyData() {
         calculateTimeToEnergy();
     } catch(e) {
         console.error("Failed to load TimeToEnergy data from localStorage", e);
+    }
+}
+
+// --- MODIFIED ---
+// 2. NEW SAVE FUNCTION FOR STAR CALC (SIMPLIFIED)
+function saveStarData() {
+    try {
+        if (el.starLevelSelect) localStorage.setItem('ae_star_level', el.starLevelSelect.value);
+        if (el.starSpeedSelect) localStorage.setItem('ae_star_speed', el.starSpeedSelect.value);
+        if (el.starAmount) localStorage.setItem('ae_star_amount', el.starAmount.value);
+        if (el.starBaseLuck) localStorage.setItem('ae_star_baseLuck', el.starBaseLuck.value);
+        if (el.starTimeHours) localStorage.setItem('ae_star_timeHours', el.starTimeHours.value);
+        // REMOVED boostPotion and boostMacaron
+    } catch(e) {
+        console.error("Failed to save Star data to localStorage", e);
+    }
+}
+
+// --- MODIFIED ---
+// 3. NEW LOAD FUNCTION FOR STAR CALC (SIMPLIFIED)
+function loadStarData() {
+    try {
+        const level = localStorage.getItem('ae_star_level');
+        if (level && el.starLevelSelect) el.starLevelSelect.value = level;
+
+        const speed = localStorage.getItem('ae_star_speed');
+        if (speed && el.starSpeedSelect) el.starSpeedSelect.value = speed;
+
+        const amount = localStorage.getItem('ae_star_amount');
+        if (amount && el.starAmount) el.starAmount.value = amount;
+
+        const baseLuck = localStorage.getItem('ae_star_baseLuck');
+        if (baseLuck && el.starBaseLuck) el.starBaseLuck.value = baseLuck;
+        
+        const timeHours = localStorage.getItem('ae_star_timeHours');
+        if (timeHours && el.starTimeHours) el.starTimeHours.value = timeHours;
+
+        // REMOVED boostPotion and boostMacaron
+
+        // Initial display and calculation
+        displayStarCost();
+        calculateStarCalc();
+
+    } catch(e) {
+        console.error("Failed to load Star data from localStorage", e);
     }
 }
 
@@ -919,6 +966,150 @@ function populateBoostDurations() {
     });
 }
 
+// --- NEW ---
+// 4. NEW FUNCTIONS FOR STAR CALC DROPDOWNS
+function populateStarLevelDropdown() {
+    const select = el.starLevelSelect;
+    if (!select || typeof starCostData === 'undefined') return;
+    
+    select.innerHTML = '<option value="">-- Select Level --</option>';
+    Object.keys(starCostData).forEach(level => {
+        const option = document.createElement('option');
+        option.value = level;
+        option.innerText = `Star ${level}`;
+        select.appendChild(option);
+    });
+}
+
+function populateStarSpeedDropdown() {
+    const select = el.starSpeedSelect;
+    if (!select || typeof starSpeedData === 'undefined') return;
+
+    select.innerHTML = '<option value="">-- Select Speed --</option>';
+    Object.keys(starSpeedData).forEach(level => {
+        const option = document.createElement('option');
+        option.value = level;
+        option.innerText = `Star Speed ${level}`;
+        select.appendChild(option);
+    });
+}
+
+// --- NEW ---
+// 5. NEW FUNCTION TO DISPLAY STAR COST
+function displayStarCost() {
+    if (!el.starLevelSelect || !el.starCostDisplay || typeof starCostData === 'undefined') return;
+
+    const selectedLevel = el.starLevelSelect.value;
+    const cost = starCostData[selectedLevel];
+
+    if (cost) {
+        el.starCostDisplay.innerText = formatNumber(cost);
+    } else {
+        el.starCostDisplay.innerText = 'Select a level';
+    }
+    calculateStarCalc(); // Recalculate when cost changes
+}
+
+// --- COMPLETELY REWRITTEN ---
+// 6. CALCULATE FUNCTION FOR STAR CALC (Using new data and formula)
+function calculateStarCalc() {
+    if (typeof starCostData === 'undefined' || typeof starSpeedData === 'undefined' || 
+        typeof starRarityDataByLevel === 'undefined') {
+        // Data files not loaded yet
+        return;
+    }
+
+    // --- 1. Get Inputs ---
+    const level = el.starLevelSelect ? el.starLevelSelect.value : '1';
+    const speedLevel = el.starSpeedSelect ? el.starSpeedSelect.value : '';
+    const starAmount = getNumberValue('starAmount');
+    const luck = getNumberValue('starBaseLuck') || 1; // Default to 1 if 0 or empty
+    const timeHours = getNumberValue('starTimeHours');
+    const timeInSeconds = timeHours * 3600;
+
+    const costPerStar = starCostData[level] || 0;
+    const timePerBatch = starSpeedData[speedLevel] || 0;
+    
+    // --- 2. Calculate Total Pulls & Cost ---
+    let totalBatches = 0;
+    if (timePerBatch > 0) {
+        totalBatches = Math.floor(timeInSeconds / timePerBatch);
+    }
+    
+    const totalStarsOpened = totalBatches * starAmount;
+    const totalCost = totalStarsOpened * costPerStar;
+
+    if (el.starTotalPulls) el.starTotalPulls.innerText = formatNumber(totalStarsOpened);
+    if (el.starTotalCost) el.starTotalCost.innerText = formatNumber(totalCost);
+
+    // --- 3. Calculate new Rarity Percentages ---
+    // Get the base rarities for the selected star level, default to Star 1
+    const baseRarities = starRarityDataByLevel[level] || starRarityDataByLevel["1"];
+    const cap = 1/8; // 0.125
+    
+    let boostedSum = 0;
+    let unchangedCount = 0; // <-- This is the variable we need to fix
+    const finalRarities = [];
+
+    // First pass: Calculate boosted rates and count *valid* unchanged
+    baseRarities.forEach(rarity => {
+        const basePercent = rarity.percent;
+        
+        // Check if rarity is boostable (Epic or rarer) and NOT 0%
+        if (basePercent <= cap && basePercent > 0) {
+            // This is a "boosted" rarity
+            const newRate = Math.min(basePercent * luck, cap);
+            boostedSum += newRate;
+            finalRarities.push({ name: rarity.name, percent: newRate, isUnchanged: false });
+        } else {
+            // This is an "unchanged" rarity (Common, Uncommon, Rare, or 0%)
+            if (basePercent > 0) {
+                unchangedCount++; // <-- THE FIX: Only count if its base percent is > 0
+            }
+            finalRarities.push({ name: rarity.name, percent: 0, isUnchanged: true, basePercent: basePercent });
+        }
+    });
+
+    // Second pass: Calculate the "leftover" and distribute it EQUALLY
+    const leftover = 1 - boostedSum;
+    // 'unchangedCount' is now correct (e.g., 3 instead of 4)
+    const sharePerUnchanged = (leftover > 0 && unchangedCount > 0) ? leftover / unchangedCount : 0;
+
+    finalRarities.forEach(rarity => {
+        if (rarity.isUnchanged) {
+            // Only assign the share if the base rate wasn't 0
+            rarity.percent = (rarity.basePercent > 0) ? sharePerUnchanged : 0;
+        }
+    });
+
+    // --- 4. Display Rarity Table ---
+    const tableBody = el.starRarityTableBody;
+    if (tableBody) {
+        tableBody.innerHTML = ''; // Clear old results
+
+        finalRarities.forEach((rarity, index) => {
+            const estimatedHatches = totalStarsOpened * rarity.percent;
+            
+            const row = document.createElement('tr');
+            // Remove border from the last item in the list
+            if (index < finalRarities.length - 1) {
+                row.className = 'border-b border-gray-700';
+            }
+
+            row.innerHTML = `
+                <td class="py-2 px-1 text-sm text-gray-300">${rarity.name}</td>
+                <td class="py-2 px-1 text-sm text-gray-400 text-right">${(rarity.percent * 100).toFixed(4)}%</td>
+                <td class="py-2 px-1 text-lg text-white font-semibold text-right">${formatNumber(Math.floor(estimatedHatches))}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Save all inputs
+    saveStarData();
+}
+
+
 async function loadAllData() {
     try {
         const response = await fetch('activity-bundle.json');
@@ -1253,6 +1444,11 @@ document.addEventListener('DOMContentLoaded', () => {
     populateTimeToReturnMinutesDropdown(); // <-- ADD THIS LINE
     populateBoostDurations(); // <-- NEW
 
+    // --- NEW ---
+    // 7. POPULATE STAR CALC DROPDOWNS
+    populateStarLevelDropdown();
+    populateStarSpeedDropdown();
+
     // Load the (now smaller) activity bundle
     loadAllData().then(() => {
         console.log("DEBUG: Activity data loading complete. Setting up raid UI.");
@@ -1506,6 +1702,14 @@ if (el.energyPerClickTTE) {
     }
     if (el.activityTimeLimit) el.activityTimeLimit.addEventListener('input', debounce(calculateMaxStage, 300));
 
+    // --- MODIFIED ---
+    // 8. EVENT LISTENERS FOR STAR CALC (SIMPLIFIED)
+    if (el.starLevelSelect) el.starLevelSelect.addEventListener('change', displayStarCost); // displayStarCost also calls calculateStarCalc
+    if (el.starSpeedSelect) el.starSpeedSelect.addEventListener('change', calculateStarCalc);
+    if (el.starAmount) el.starAmount.addEventListener('input', debounce(calculateStarCalc, 300));
+    if (el.starBaseLuck) el.starBaseLuck.addEventListener('input', debounce(calculateStarCalc, 300));
+    if (el.starTimeHours) el.starTimeHours.addEventListener('input', debounce(calculateStarCalc, 300));
+    // REMOVED boost listeners
     
     // **** KEYDOWN LISTENER REMOVED ****
     
@@ -1526,6 +1730,7 @@ if (el.energyPerClickTTE) {
         calculateTimeToEnergy();
         calculateTTK();
         calculateMaxStage();
+        calculateStarCalc(); // <-- NEW
     }, 100);
 
 
@@ -1534,6 +1739,7 @@ if (el.energyPerClickTTE) {
     loadETAData();
     loadTimeToEnergyData();
     loadTTKData();
+    loadStarData(); // <-- NEW
 
     // --- START: MODIFIED CHECKLIST LOGIC ---
     if (typeof checklistDataByWorld !== 'undefined' && typeof worldData !== 'undefined') {
