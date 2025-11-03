@@ -10,7 +10,7 @@ const checklistDataByWorld = {
     ],
     progressions: [
       { id: 'h3', name: 'Ghost Leveling' },
-      { id: 'h4', name: 'Overdrive Saw' }
+      { id: 'h999', name: 'Overdrive Saw' }
     ],
     sssRank: [],
     auras: [
