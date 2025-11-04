@@ -165,7 +165,7 @@ function loadRankUpData() {
         calculateRankUp();
 
     } catch (e) {
-        console.error("Failed to load rankup data from localStorage", e);
+        console.error("Failed to load rankup data to localStorage", e);
     }
 }
 
@@ -206,7 +206,7 @@ function loadETAData() {
         const targetEnergyNum = localStorage.getItem('ae_targetEnergyETA') || '';
         if (el.targetEnergyETA) el.targetEnergyETA.value = targetEnergyNum;
 
-        const targetEnergyDenomText = localStorage.getItem('ae_targetEnergyETADenomInput') || '';
+        const targetEnergyDenomText = localStorage.getItem('ae_targetEnergyETADenominationInput') || '';
         if (el.targetEnergyETADenominationInput) el.targetEnergyETADenominationInput.value = targetEnergyDenomText;
 
         const targetDenom = denominations.find(d => d.name === targetEnergyDenomText);
@@ -237,20 +237,22 @@ function saveTTKData() {
 function loadTTKData() {
     try {
         const dps = localStorage.getItem('ae_ttk_dps');
-        if (dps && el.yourDPS) el.yourDPS.value = dps;
-
         const dpsDenomInput = localStorage.getItem('ae_ttk_dpsDenomInput');
-        if (dpsDenomInput && el.dpsDenominationInput) el.dpsDenominationInput.value = dpsDenomInput;
+        const quantity = localStorage.getItem('ae_ttk_quantity');
+        const fourSpot = localStorage.getItem('ae_ttk_fourSpot');
+        const world = localStorage.getItem('ae_ttk_world');
+        const enemy = localStorage.getItem('ae_ttk_enemy');
+
+        if (el.yourDPS) el.yourDPS.value = dps || '';
+        if (el.dpsDenominationInput) el.dpsDenominationInput.value = dpsDenomInput || '';
         
         const dpsDenom = denominations.find(d => d.name === dpsDenomInput);
         if (el.dpsDenominationValue) {
             el.dpsDenominationValue.value = dpsDenom ? dpsDenom.value : '1';
         }
 
-        const quantity = localStorage.getItem('ae_ttk_quantity');
         if (quantity && el.enemyQuantity) el.enemyQuantity.value = quantity;
         
-        const fourSpot = localStorage.getItem('ae_ttk_fourSpot');
         if (fourSpot !== null && el.fourSpotFarming) {
             el.fourSpotFarming.checked = (fourSpot === 'true');
         }
@@ -270,19 +272,15 @@ function loadTTKData() {
                 }
             }
         }
-
-        const world = localStorage.getItem('ae_ttk_world');
+        
         if (world && el.worldSelect) {
             el.worldSelect.value = world;
-            populateEnemyDropdown(); 
-            
-            const enemy = localStorage.getItem('ae_ttk_enemy');
-            if (enemy && el.enemySelect) {
-                el.enemySelect.value = enemy;
-                displayEnemyHealth(); 
-            }
         }
-        calculateTTK();
+
+        if (enemy && el.enemySelect) {
+             el.tempWorld = world;
+             el.tempEnemy = enemy;
+        }
     } catch(e) {
         console.error("Failed to load TTK data from localStorage", e);
     }
@@ -685,7 +683,7 @@ function calculateTTK() {
         let totalResultString = '';
         if (totalDays > 0) totalResultString += `${totalDays}d `;
         if (totalHours > 0 || totalDays > 0) totalResultString += `${totalHours}h `;
-        if (totalMinutes > 0 || totalHours > 0 || totalDays > 0) totalResultString += `${totalMinutes}m `;
+        if (totalMinutes > 0 || totalHours > 0 || days > 0) totalResultString += `${totalMinutes}m `;
         totalResultString += `${totalSeconds}s`;
 
         if (questResultEl) questResultEl.innerText = `Time for ${quantity} kills: ${totalResultString.trim()}`;
@@ -830,6 +828,12 @@ function populateEnemyDropdown() {
             option.innerText = enemyName;
             enemySelect.appendChild(option);
         });
+
+        if (el.tempWorld === selectedWorldName && el.tempEnemy && enemySelect.querySelector(`option[value="${el.tempEnemy}"]`)) {
+            enemySelect.value = el.tempEnemy;
+            el.tempWorld = null; 
+            el.tempEnemy = null;
+        }
     }
     displayEnemyHealth();
 }
@@ -1558,6 +1562,7 @@ if (el.energyPerClickTTE) {
             calculateTTK();
             if (el.yourDPSActivity) el.yourDPSActivity.value = el.yourDPS.value;
             calculateMaxStage();
+            saveTTKData();
         }, 300));
     }
     if (el.enemyQuantity) el.enemyQuantity.addEventListener('input', debounce(calculateTTK, 300));
@@ -1589,6 +1594,33 @@ if (el.energyPerClickTTE) {
         }
     }
     
+    loadRankUpData();
+    loadETAData();
+    loadTimeToEnergyData();
+    loadTTKData();
+    loadStarData();
+
+    if (el.worldSelect) {
+        el.worldSelect.addEventListener('change', () => {
+            populateEnemyDropdown();
+            saveTTKData(); 
+        });
+    }
+
+    if (el.enemySelect) {
+        el.enemySelect.addEventListener('change', () => {
+            displayEnemyHealth();
+            saveTTKData(); 
+        });
+    }
+
+    if (el.worldSelect) {
+        populateEnemyDropdown(); 
+    } else {
+        calculateTTK();
+    }
+
+
     setTimeout(() => {
         calculateRankUp();
         calculateEnergyETA();
@@ -1598,11 +1630,6 @@ if (el.energyPerClickTTE) {
         calculateStarCalc();
     }, 100);
 
-    loadRankUpData();
-    loadETAData();
-    loadTimeToEnergyData();
-    loadTTKData();
-    loadStarData();
 
     if (typeof checklistDataByWorld !== 'undefined' && typeof worldData !== 'undefined') {
         console.log("DEBUG: World and Checklist data found! Initializing new checklist UI...");
@@ -1725,8 +1752,7 @@ if (el.energyPerClickTTE) {
             const overallProgressText = el['overall-progress-text'];
             const overallProgressFill = el['overall-progress-fill'];
             if (overallProgressText && overallProgressFill) {
-                completedItems = 0
-                const percentage = overallTotal > 0 ? Math.round((completedItems / overallTotal) * 100) : 0;
+                const percentage = overallTotal > 0 ? Math.round((overallCompleted / overallTotal) * 100) : 0;
                 overallProgressText.innerText = `${overallCompleted} / ${overallTotal} (${percentage}%)`;
                 overallProgressFill.style.width = `${percentage}%`;
             }
