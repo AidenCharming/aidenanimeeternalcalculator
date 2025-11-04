@@ -1,5 +1,4 @@
 const el = {};
-// 1. ADDED 'star' to the tabs list
 const tabs = ['rankup', 'eta', 'time-to-energy', 'ttk', 'raid', 'star', 'checklist'];
 
 function switchTab(activeTab) {
@@ -105,26 +104,6 @@ function debounce(func, delay) {
     };
 }
 
-// THIS FUNCTION IS NO LONGER USED FOR 3-WAY SYNC
-// function syncDenominationInput(sourceTextId, sourceValueId, destTextId, destValueId, destCallback) {
-//     const sourceTextEl = el[sourceTextId];
-//     const sourceValueEl = el[sourceValueId];
-//     const destTextEl = el[destTextId];
-//     const destValueEl = el[destValueId];
-
-//     return function() {
-//         if (!sourceTextEl || !sourceValueEl || !destTextEl || !destValueEl) return;
-        
-//         destTextEl.value = sourceTextEl.value;
-//         destValueEl.value = sourceValueEl.value;
-        
-//         if (destCallback) {
-//             destCallback();
-//         }
-//     }
-// }
-
-
 function saveRankUpData() {
     try {
         if (el.rankSelect) localStorage.setItem('ae_rankSelect', el.rankSelect.value);
@@ -192,7 +171,6 @@ function loadRankUpData() {
 
 function saveETAData() {
     try {
-        // Current/EPC/Clicker is saved by saveRankUpData, so we only save target
         if (el.targetEnergyETA) localStorage.setItem('ae_targetEnergyETA', el.targetEnergyETA.value);
         if (el.targetEnergyETADenominationInput) localStorage.setItem('ae_targetEnergyETADenomInput', el.targetEnergyETADenominationInput.value);
         if (el.targetEnergyETADenominationValue) localStorage.setItem('ae_targetEnergyETADenomValue', el.targetEnergyETADenominationValue.value);
@@ -203,7 +181,6 @@ function saveETAData() {
 
 function loadETAData() {
     try {
-        // Load Current/EPC/Clicker from RankUp storage
         const currentEnergyNum = localStorage.getItem('ae_currentEnergy') || '';
         if (el.currentEnergyETA) el.currentEnergyETA.value = currentEnergyNum;
 
@@ -226,7 +203,6 @@ function loadETAData() {
             el.energyPerClickETADenominationValue.value = energyPerClickDenom ? energyPerClickDenom.value : '1';
         }
         
-        // Load Target (which is unique to this tab)
         const targetEnergyNum = localStorage.getItem('ae_targetEnergyETA') || '';
         if (el.targetEnergyETA) el.targetEnergyETA.value = targetEnergyNum;
 
@@ -279,8 +255,6 @@ function loadTTKData() {
             el.fourSpotFarming.checked = (fourSpot === 'true');
         }
 
-        // --- NEW CODE TO FIX UI SYNC ---
-        // Find the toggle buttons inside the TTK panel
         const ttkPanel = el['panel-ttk'];
         if (ttkPanel) {
             const singleBtn = ttkPanel.querySelector('.toggle-btn[onclick*="\'single\'"]');
@@ -296,8 +270,6 @@ function loadTTKData() {
                 }
             }
         }
-
-// --- END NEW CODE ---
 
         const world = localStorage.getItem('ae_ttk_world');
         if (world && el.worldSelect) {
@@ -361,11 +333,9 @@ function loadRaidData() {
 
 function saveTimeToEnergyData() {
     try {
-        // Current/EPC/Clicker is saved by saveRankUpData
-        if (el.timeToReturnSelect) localStorage.setItem('ae_tte_returnTime', el.timeToReturnSelect.value); // This was missing too
+        if (el.timeToReturnSelect) localStorage.setItem('ae_tte_returnTime', el.timeToReturnSelect.value); 
         if (el.timeToReturnSelectMinutes) localStorage.setItem('ae_tte_returnTimeMinutes', el.timeToReturnSelectMinutes.value);
-        
-        // Save boost item durations
+
         if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
             boostItems.forEach(item => {
                 const hoursEl = el[`boost-${item.id}-hours`];
@@ -389,7 +359,6 @@ function loadTimeToEnergyData() {
         if (returnTimeMinutes && el.timeToReturnSelectMinutes) {
             el.timeToReturnSelectMinutes.value = returnTimeMinutes;
 }
-        // Load TTE-specific energy per click
         const energyPerClickTTE_Num = localStorage.getItem('ae_tte_energyPerClick') || '';
         if (el.energyPerClickTTE) el.energyPerClickTTE.value = energyPerClickTTE_Num;
 
@@ -412,18 +381,15 @@ function loadTimeToEnergyData() {
             el.energyPerClickTTEDenominationValue.value = energyPerClickDenom ? energyPerClickDenom.value : '1';
         }
 
-        // Save TTE-specific energy per click
         if (el.energyPerClickTTE) localStorage.setItem('ae_tte_energyPerClick', el.energyPerClickTTE.value);
         if (el.energyPerClickTTEDenominationInput) localStorage.setItem('ae_tte_energyPerClickDenomInput', el.energyPerClickTTEDenominationInput.value);
         if (el.energyPerClickTTEDenominationValue) localStorage.setItem('ae_tte_energyPerClickDenomValue', el.energyPerClickTTEDenominationValue.value);
 
-        // Load TTE-specific data
         const returnTime = localStorage.getItem('ae_tte_returnTime');
         if (returnTime && el.timeToReturnSelect) {
             el.timeToReturnSelect.value = returnTime;
         }
 
-        // Load boost item durations
         if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
             boostItems.forEach(item => {
                 const hoursEl = el[`boost-${item.id}-hours`];
@@ -446,8 +412,6 @@ function loadTimeToEnergyData() {
     }
 }
 
-// --- MODIFIED ---
-// 2. NEW SAVE FUNCTION FOR STAR CALC (SIMPLIFIED)
 function saveStarData() {
     try {
         if (el.starLevelSelect) localStorage.setItem('ae_star_level', el.starLevelSelect.value);
@@ -455,14 +419,11 @@ function saveStarData() {
         if (el.starAmount) localStorage.setItem('ae_star_amount', el.starAmount.value);
         if (el.starBaseLuck) localStorage.setItem('ae_star_baseLuck', el.starBaseLuck.value);
         if (el.starTimeHours) localStorage.setItem('ae_star_timeHours', el.starTimeHours.value);
-        // REMOVED boostPotion and boostMacaron
     } catch(e) {
         console.error("Failed to save Star data to localStorage", e);
     }
 }
 
-// --- MODIFIED ---
-// 3. NEW LOAD FUNCTION FOR STAR CALC (SIMPLIFIED)
 function loadStarData() {
     try {
         const level = localStorage.getItem('ae_star_level');
@@ -480,9 +441,6 @@ function loadStarData() {
         const timeHours = localStorage.getItem('ae_star_timeHours');
         if (timeHours && el.starTimeHours) el.starTimeHours.value = timeHours;
 
-        // REMOVED boostPotion and boostMacaron
-
-        // Initial display and calculation
         displayStarCost();
         calculateStarCalc();
 
@@ -518,7 +476,6 @@ function calculateEnergyETA() {
     if (energyNeeded <= 0) {
         el.etaResult.innerText = 'Target Reached!';
         if (returnTimeEl) returnTimeEl.innerText = "You're already there!";
-        saveETAData(); // Save target energy
         return;
     }
     if (energyPerClick <= 0 || clicksPerSecond <= 0) {
@@ -558,11 +515,9 @@ function calculateEnergyETA() {
     saveETAData();
 }
 
-// --- NEW CALCULATOR (REWRITTEN) ---
 function calculateTimeToEnergy() {
     if (!el.timeToEnergyResult || typeof boostItems === 'undefined') return;
 
-    // 1. Get Base Inputs
     const isFastClicker = el.clickerSpeedTTE ? el.clickerSpeedTTE.checked : false;
 
     const currentEnergyValue = getNumberValue('currentEnergyTTE');
@@ -592,8 +547,7 @@ function calculateTimeToEnergy() {
         return;
     }
 
-    // 2. Build Boost & Event List
-    const events = [0]; // Start at time 0
+    const events = [0];
     const activeBoosts = [];
 
     boostItems.forEach(item => {
@@ -609,12 +563,10 @@ function calculateTimeToEnergy() {
             }
         }
     });
-    events.push(timeInSeconds); // Add the final calculation endpoint
+    events.push(timeInSeconds);
 
-    // Get unique, sorted event timestamps
     const uniqueSortedEvents = [...new Set(events)].sort((a, b) => a - b);
 
-    // 3. Calculate in Segments
     let totalEnergyGained = 0;
 
     for (let i = 0; i < uniqueSortedEvents.length - 1; i++) {
@@ -622,7 +574,6 @@ function calculateTimeToEnergy() {
         const endTime = uniqueSortedEvents[i+1];
         const segmentDuration = endTime - startTime;
         
-        // Find midpoint of the segment to check which buffs are active
         const midpointTime = startTime + 1; 
 
         let segmentMultiplier = 1.0;
@@ -638,7 +589,6 @@ function calculateTimeToEnergy() {
 
     const finalTotalEnergy = currentEnergy + totalEnergyGained;
 
-    // 4. Display Results
     resultEl.innerText = formatNumber(finalTotalEnergy);
 
     if (returnTimeEl) {
@@ -682,11 +632,7 @@ function calculateTTK() {
 
     const timeInSeconds = enemyHealth / yourDPS;
 
-    // --- BUG FIX: Add a check for extremely large times ---
-    // This prevents "Invalid Date" errors and unreadable scientific notation.
-    // Max safe value for Date() is ~8.64e12 seconds. We'll cap it much lower
-    // for a more practical and readable limit (1000 years).
-    const MAX_SECONDS_CAP = 3.154e10; // 1,000 years in seconds
+    const MAX_SECONDS_CAP = 3.154e10;
 
     if (timeInSeconds > MAX_SECONDS_CAP || !isFinite(timeInSeconds)) {
         singleResultEl.innerText = "Over 1000 Years";
@@ -698,7 +644,6 @@ function calculateTTK() {
         saveTTKData();
         return;
     }
-    // --- END BUG FIX ---
 
     const days = Math.floor(timeInSeconds / 86400);
     const hours = Math.floor((timeInSeconds % 86400) / 3600);
@@ -725,14 +670,12 @@ function calculateTTK() {
         const effectiveTimePerKill = Math.max(yourTimePerKill, respawnLimitPerKill);
         const totalTimeInSeconds = effectiveTimePerKill * quantity;
 
-        // --- BUG FIX: Add the same cap check for the total time ---
         if (totalTimeInSeconds > MAX_SECONDS_CAP || !isFinite(totalTimeInSeconds)) {
             if (questResultEl) questResultEl.innerText = `Time for ${quantity} kills: Over 1000 Years`;
             if (questReturnEl) questReturnEl.innerText = 'ETA: Eternity';
             saveTTKData();
-            return; // Exit here to avoid the final date calculation
+            return;
         }
-        // --- END BUG FIX ---
 
         const totalDays = Math.floor(totalTimeInSeconds / 86400);
         const totalHours = Math.floor((totalTimeInSeconds % 86400) / 3600);
@@ -927,7 +870,6 @@ function populateTimeToReturnMinutesDropdown() {
     const select = el.timeToReturnSelectMinutes;
     if (!select) return;
 
-    // Add "0 Minutes" option
     const zeroOption = document.createElement('option');
     zeroOption.value = 0;
     zeroOption.innerText = '0 Minutes';
@@ -941,8 +883,6 @@ function populateTimeToReturnMinutesDropdown() {
     }
 }
 
-// --- NEW FUNCTION ---
-// Populates all the boost duration dropdowns
 function populateBoostDurations() {
     if (typeof boostItems === 'undefined') return;
 
@@ -966,8 +906,6 @@ function populateBoostDurations() {
     });
 }
 
-// --- NEW ---
-// 4. NEW FUNCTIONS FOR STAR CALC DROPDOWNS
 function populateStarLevelDropdown() {
     const select = el.starLevelSelect;
     if (!select || typeof starCostData === 'undefined') return;
@@ -994,8 +932,6 @@ function populateStarSpeedDropdown() {
     });
 }
 
-// --- NEW ---
-// 5. NEW FUNCTION TO DISPLAY STAR COST
 function displayStarCost() {
     if (!el.starLevelSelect || !el.starCostDisplay || typeof starCostData === 'undefined') return;
 
@@ -1007,30 +943,25 @@ function displayStarCost() {
     } else {
         el.starCostDisplay.innerText = 'Select a level';
     }
-    calculateStarCalc(); // Recalculate when cost changes
+    calculateStarCalc();
 }
 
-// --- COMPLETELY REWRITTEN ---
-// 6. CALCULATE FUNCTION FOR STAR CALC (Using new data and formula)
 function calculateStarCalc() {
     if (typeof starCostData === 'undefined' || typeof starSpeedData === 'undefined' || 
         typeof starRarityDataByLevel === 'undefined') {
-        // Data files not loaded yet
         return;
     }
 
-    // --- 1. Get Inputs ---
     const level = el.starLevelSelect ? el.starLevelSelect.value : '1';
     const speedLevel = el.starSpeedSelect ? el.starSpeedSelect.value : '';
     const starAmount = getNumberValue('starAmount');
-    const luck = getNumberValue('starBaseLuck') || 1; // Default to 1 if 0 or empty
+    const luck = getNumberValue('starBaseLuck') || 1;
     const timeHours = getNumberValue('starTimeHours');
     const timeInSeconds = timeHours * 3600;
 
     const costPerStar = starCostData[level] || 0;
     const timePerBatch = starSpeedData[speedLevel] || 0;
     
-    // --- 2. Calculate Total Pulls & Cost ---
     let totalBatches = 0;
     if (timePerBatch > 0) {
         totalBatches = Math.floor(timeInSeconds / timePerBatch);
@@ -1042,56 +973,45 @@ function calculateStarCalc() {
     if (el.starTotalPulls) el.starTotalPulls.innerText = formatNumber(totalStarsOpened);
     if (el.starTotalCost) el.starTotalCost.innerText = formatNumber(totalCost);
 
-    // --- 3. Calculate new Rarity Percentages ---
-    // Get the base rarities for the selected star level, default to Star 1
     const baseRarities = starRarityDataByLevel[level] || starRarityDataByLevel["1"];
-    const cap = 1/8; // 0.125
+    const cap = 1/8;
     
     let boostedSum = 0;
-    let unchangedCount = 0; // <-- This is the variable we need to fix
+    let unchangedCount = 0;
     const finalRarities = [];
 
-    // First pass: Calculate boosted rates and count *valid* unchanged
     baseRarities.forEach(rarity => {
         const basePercent = rarity.percent;
         
-        // Check if rarity is boostable (Epic or rarer) and NOT 0%
         if (basePercent <= cap && basePercent > 0) {
-            // This is a "boosted" rarity
             const newRate = Math.min(basePercent * luck, cap);
             boostedSum += newRate;
             finalRarities.push({ name: rarity.name, percent: newRate, isUnchanged: false });
         } else {
-            // This is an "unchanged" rarity (Common, Uncommon, Rare, or 0%)
             if (basePercent > 0) {
-                unchangedCount++; // <-- THE FIX: Only count if its base percent is > 0
+                unchangedCount++;
             }
             finalRarities.push({ name: rarity.name, percent: 0, isUnchanged: true, basePercent: basePercent });
         }
     });
 
-    // Second pass: Calculate the "leftover" and distribute it EQUALLY
     const leftover = 1 - boostedSum;
-    // 'unchangedCount' is now correct (e.g., 3 instead of 4)
     const sharePerUnchanged = (leftover > 0 && unchangedCount > 0) ? leftover / unchangedCount : 0;
 
     finalRarities.forEach(rarity => {
         if (rarity.isUnchanged) {
-            // Only assign the share if the base rate wasn't 0
             rarity.percent = (rarity.basePercent > 0) ? sharePerUnchanged : 0;
         }
     });
 
-    // --- 4. Display Rarity Table ---
     const tableBody = el.starRarityTableBody;
     if (tableBody) {
-        tableBody.innerHTML = ''; // Clear old results
+        tableBody.innerHTML = '';
 
         finalRarities.forEach((rarity, index) => {
             const estimatedHatches = totalStarsOpened * rarity.percent;
             
             const row = document.createElement('tr');
-            // Remove border from the last item in the list
             if (index < finalRarities.length - 1) {
                 row.className = 'border-b border-gray-700';
             }
@@ -1105,7 +1025,6 @@ function calculateStarCalc() {
         });
     }
 
-    // Save all inputs
     saveStarData();
 }
 
@@ -1384,18 +1303,12 @@ document.addEventListener('click', (event) => {
 });
 
 
-// --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- OPTIMIZATION: Cache All Elements by ID ---
-    // This finds every element with an ID in your HTML and stores it
-    // in the 'el' object for instant access.
     document.querySelectorAll('[id]').forEach(element => {
         el[element.id] = element;
     });
-    // --- End Element Cache ---
 
-    // --- Background Toggle Logic ---
     const BACKGROUND_KEY = 'ae_image_background';
 
     function applyBackgroundPreference(isImage) {
@@ -1431,25 +1344,17 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("Failed to load background preference", e);
         applyBackgroundPreference(false);
     }
-    // --- End Background Toggle Logic ---
 
-
-    
-    // --- UPDATED LOGIC ---
     console.log("DEBUG: DOM fully loaded. Initializing script.");
     switchTab('rankup');
     
     populateWorldDropdown(); 
     populateTimeToReturnDropdown();
-    populateTimeToReturnMinutesDropdown(); // <-- ADD THIS LINE
-    populateBoostDurations(); // <-- NEW
-
-    // --- NEW ---
-    // 7. POPULATE STAR CALC DROPDOWNS
+    populateTimeToReturnMinutesDropdown();
+    populateBoostDurations();
     populateStarLevelDropdown();
     populateStarSpeedDropdown();
 
-    // Load the (now smaller) activity bundle
     loadAllData().then(() => {
         console.log("DEBUG: Activity data loading complete. Setting up raid UI.");
         
@@ -1457,22 +1362,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         loadRaidData();
     });
-    // --- END UPDATED LOGIC ---
 
-    // --- Setup Searchable Dropdowns ---
     setupRankSearch('rankInput', 'rankSelect', 'rankList');
-
-    // --- START: REBUILT 3-WAY SYNC LOGIC ---
-
-    // -- Callbacks for Denomination Dropdowns --
 
     function onRankUpCEDenomChange() {
         calculateRankUp();
-        // Sync to ETA
         if(el.currentEnergyETADenominationInput) el.currentEnergyETADenominationInput.value = el.currentEnergyDenominationInput.value;
         if(el.currentEnergyETADenominationValue) el.currentEnergyETADenominationValue.value = el.currentEnergyDenominationValue.value;
         calculateEnergyETA();
-        // Sync to TTE
         if(el.currentEnergyTTEDenominationInput) el.currentEnergyTTEDenominationInput.value = el.currentEnergyDenominationInput.value;
         if(el.currentEnergyTTEDenominationValue) el.currentEnergyTTEDenominationValue.value = el.currentEnergyDenominationValue.value;
         calculateTimeToEnergy();
@@ -1480,11 +1377,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function onETACEDenomChange() {
         calculateEnergyETA();
-        // Sync to RankUp
         if(el.currentEnergyDenominationInput) el.currentEnergyDenominationInput.value = el.currentEnergyETADenominationInput.value;
         if(el.currentEnergyDenominationValue) el.currentEnergyDenominationValue.value = el.currentEnergyETADenominationValue.value;
         calculateRankUp();
-        // Sync to TTE
         if(el.currentEnergyTTEDenominationInput) el.currentEnergyTTEDenominationInput.value = el.currentEnergyETADenominationInput.value;
         if(el.currentEnergyTTEDenominationValue) el.currentEnergyTTEDenominationValue.value = el.currentEnergyETADenominationValue.value;
         calculateTimeToEnergy();
@@ -1492,11 +1387,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function onTTECEDenomChange() {
         calculateTimeToEnergy();
-        // Sync to RankUp
         if(el.currentEnergyDenominationInput) el.currentEnergyDenominationInput.value = el.currentEnergyTTEDenominationInput.value;
         if(el.currentEnergyDenominationValue) el.currentEnergyDenominationValue.value = el.currentEnergyTTEDenominationValue.value;
         calculateRankUp();
-        // Sync to ETA
         if(el.currentEnergyETADenominationInput) el.currentEnergyETADenominationInput.value = el.currentEnergyTTEDenominationInput.value;
         if(el.currentEnergyETADenominationValue) el.currentEnergyETADenominationValue.value = el.currentEnergyETADenominationValue.value;
         calculateEnergyETA();
@@ -1504,11 +1397,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function onRankUpEPCDenomChange() {
         calculateRankUp();
-        // Sync to ETA
         if(el.energyPerClickETADenominationInput) el.energyPerClickETADenominationInput.value = el.energyPerClickDenominationInput.value;
         if(el.energyPerClickETADenominationValue) el.energyPerClickETADenominationValue.value = el.energyPerClickDenominationValue.value;
         calculateEnergyETA();
-        // Sync to TTE
         if(el.energyPerClickTTEDenominationInput) el.energyPerClickTTEDenominationInput.value = el.energyPerClickDenominationInput.value;
         if(el.energyPerClickTTEDenominationValue) el.energyPerClickTTEDenominationValue.value = el.energyPerClickDenominationValue.value;
         calculateTimeToEnergy();
@@ -1516,7 +1407,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function onETAEPCdenomChange() {
         calculateEnergyETA();
-        // Sync to RankUp
         if(el.energyPerClickDenominationInput) el.energyPerClickDenominationInput.value = el.energyPerClickETADenominationInput.value;
         if(el.energyPerClickDenominationValue) el.energyPerClickDenominationValue.value = el.energyPerClickETADenominationValue.value;
         calculateRankUp();
@@ -1525,8 +1415,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function onTTEEPCDenomChange() {
         calculateTimeToEnergy();
     }
-
-    // -- Callbacks for DPS Syncing (2-way) --
 
     const syncDPS_TTKToRaid = () => {
         if(el.yourDPSActivity) el.yourDPSActivity.value = el.yourDPS.value;
@@ -1549,29 +1437,20 @@ document.addEventListener('DOMContentLoaded', () => {
         calculateMaxStage();
         syncDPS_RaidToTTK();
     }
-    // --- END: SYNC LOGIC ---
 
-
-    // --- Denomination Searches (Now use updated callbacks) ---
     setupDenominationSearch('dpsDenominationInput', 'dpsDenominationValue', 'dpsDenominationList', onTTKDenomChange);
     setupDenominationSearch('dpsActivityDenominationInput', 'dpsActivityDenominationValue', 'dpsActivityDenominationList', onRaidDenomChange);
     
-    // Energy / Clicker Sync
     setupDenominationSearch('currentEnergyDenominationInput', 'currentEnergyDenominationValue', 'currentEnergyDenominationList', onRankUpCEDenomChange);
     setupDenominationSearch('energyPerClickDenominationInput', 'energyPerClickDenominationValue', 'energyPerClickDenominationList', onRankUpEPCDenomChange);
     
     setupDenominationSearch('currentEnergyETADenominationInput', 'currentEnergyETADenominationValue', 'currentEnergyETADenominationList', onETACEDenomChange);
-    setupDenominationSearch('targetEnergyETADenominationInput', 'targetEnergyETADenominationValue', 'targetEnergyETADenominationList', calculateEnergyETA); // Not linked
+    setupDenominationSearch('targetEnergyETADenominationInput', 'targetEnergyETADenominationValue', 'targetEnergyETADenominationList', calculateEnergyETA);
     setupDenominationSearch('energyPerClickETADenominationInput', 'energyPerClickETADenominationValue', 'energyPerClickETADenominationList', onETAEPCdenomChange);
 
-    // NEW Denomination Searches
     setupDenominationSearch('currentEnergyTTEDenominationInput', 'currentEnergyTTEDenominationValue', 'currentEnergyTTEDenominationList', onTTECEDenomChange);
     setupDenominationSearch('energyPerClickTTEDenominationInput', 'energyPerClickTTEDenominationValue', 'energyPerClickTTEDenominationList', onTTEEPCDenomChange);
 
-    
-    // --- Event Listeners for Inputs (Using cached elements & 3-way sync) ---
-    
-    // -- Current Energy Sync --
     if (el.currentEnergy) {
         el.currentEnergy.addEventListener('input', debounce(() => {
             if (el.currentEnergyETA) el.currentEnergyETA.value = el.currentEnergy.value;
@@ -1600,11 +1479,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300));
     }
 
-    // -- Energy Per Click Sync --
     if (el.energyPerClick) {
     el.energyPerClick.addEventListener('input', debounce(() => {
         if (el.energyPerClickETA) el.energyPerClickETA.value = el.energyPerClick.value;
-        // Removed sync to TTE
         calculateRankUp();
         calculateEnergyETA();
     }, 300));
@@ -1612,17 +1489,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el.energyPerClickETA) {
         el.energyPerClickETA.addEventListener('input', debounce(() => {
             if (el.energyPerClick) el.energyPerClick.value = el.energyPerClickETA.value;
-            // Removed sync to TTE
             calculateRankUp();
             calculateEnergyETA();
         }, 300));
     }
 if (el.energyPerClickTTE) {
-    // This field is now independent and only calculates its own tab
     el.energyPerClickTTE.addEventListener('input', debounce(calculateTimeToEnergy, 300));
 }
     
-    // -- Clicker Speed Sync --
     if (el.clickerSpeed) el.clickerSpeed.addEventListener('change', () => {
         const isChecked = el.clickerSpeed.checked;
         if (el.clickerSpeedETA) el.clickerSpeedETA.checked = isChecked;
@@ -1648,7 +1522,7 @@ if (el.energyPerClickTTE) {
         calculateTimeToEnergy();
     });
 
-    // -- RankUp Listeners --
+
     if (el.rankSelect) el.rankSelect.addEventListener('change', () => {
         displayRankRequirement();
         calculateRankUp();
@@ -1659,10 +1533,8 @@ if (el.energyPerClickTTE) {
         calculateRankUp();
     }, 300));
 
-    // -- ETA Listeners (Target is not synced) --
     if (el.targetEnergyETA) el.targetEnergyETA.addEventListener('input', debounce(calculateEnergyETA, 300));
 
-    // -- Time To Energy Listeners (Boosts/Time are not synced) --
     if (el.timeToReturnSelect) el.timeToReturnSelect.addEventListener('change', calculateTimeToEnergy);
     if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
         boostItems.forEach(item => {
@@ -1679,9 +1551,8 @@ if (el.energyPerClickTTE) {
 
     if (el.timeToReturnSelect) el.timeToReturnSelect.addEventListener('change', calculateTimeToEnergy);
 
-    if (el.timeToReturnSelectMinutes) el.timeToReturnSelectMinutes.addEventListener('change', calculateTimeToEnergy); // <-- ADD THIS LINE
+    if (el.timeToReturnSelectMinutes) el.timeToReturnSelectMinutes.addEventListener('change', calculateTimeToEnergy);
 
-    // -- TTK Listeners (2-way sync) --
     if (el.yourDPS) {
         el.yourDPS.addEventListener('input', debounce(() => {
             calculateTTK();
@@ -1692,7 +1563,6 @@ if (el.energyPerClickTTE) {
     if (el.enemyQuantity) el.enemyQuantity.addEventListener('input', debounce(calculateTTK, 300));
     if (el.fourSpotFarming) el.fourSpotFarming.addEventListener('change', calculateTTK);
 
-    // -- Raid Listeners (2-way sync) --
     if (el.yourDPSActivity) {
         el.yourDPSActivity.addEventListener('input', debounce(() => {
             calculateMaxStage();
@@ -1702,17 +1572,12 @@ if (el.energyPerClickTTE) {
     }
     if (el.activityTimeLimit) el.activityTimeLimit.addEventListener('input', debounce(calculateMaxStage, 300));
 
-    // --- MODIFIED ---
-    // 8. EVENT LISTENERS FOR STAR CALC (SIMPLIFIED)
-    if (el.starLevelSelect) el.starLevelSelect.addEventListener('change', displayStarCost); // displayStarCost also calls calculateStarCalc
+    if (el.starLevelSelect) el.starLevelSelect.addEventListener('change', displayStarCost);
     if (el.starSpeedSelect) el.starSpeedSelect.addEventListener('change', calculateStarCalc);
     if (el.starAmount) el.starAmount.addEventListener('input', debounce(calculateStarCalc, 300));
     if (el.starBaseLuck) el.starBaseLuck.addEventListener('input', debounce(calculateStarCalc, 300));
     if (el.starTimeHours) el.starTimeHours.addEventListener('input', debounce(calculateStarCalc, 300));
-    // REMOVED boost listeners
-    
-    // **** KEYDOWN LISTENER REMOVED ****
-    
+
     if (el['theme-toggle']) {
         el['theme-toggle'].addEventListener('click', toggleTheme);
         
@@ -1730,18 +1595,15 @@ if (el.energyPerClickTTE) {
         calculateTimeToEnergy();
         calculateTTK();
         calculateMaxStage();
-        calculateStarCalc(); // <-- NEW
+        calculateStarCalc();
     }, 100);
 
-
-    // --- Load Saved Data ---
     loadRankUpData();
     loadETAData();
     loadTimeToEnergyData();
     loadTTKData();
-    loadStarData(); // <-- NEW
+    loadStarData();
 
-    // --- START: MODIFIED CHECKLIST LOGIC ---
     if (typeof checklistDataByWorld !== 'undefined' && typeof worldData !== 'undefined') {
         console.log("DEBUG: World and Checklist data found! Initializing new checklist UI...");
 
@@ -1767,7 +1629,7 @@ if (el.energyPerClickTTE) {
                     span.style.color = '#888';
                 } else {
                     span.style.textDecoration = 'none';
-                    span.style.color = '#ccc'; // Reverted to #ccc for better visibility
+                    span.style.color = '#ccc';
                 }
             }
         }
@@ -1805,7 +1667,6 @@ if (el.energyPerClickTTE) {
             const worldNames = Object.keys(checklistDataByWorld);
             let overallTotal = 0;
             let overallCompleted = 0;
-            // ADDED 'quests' to categoryStats
             let categoryStats = { 
                 gachas: {total: 0, completed: 0}, 
                 progressions: {total: 0, completed: 0}, 
@@ -1821,14 +1682,12 @@ if (el.energyPerClickTTE) {
                 const worldTitleEl = document.getElementById(`world-title-${worldNameId}`);
 
                 let totalItems = 0;
-                let completedItems = 0; // **** THIS WAS THE MISSING LINE ****
+                let completedItems = 0;
         
-                // ADDED 'quests' to categories array
                 const categories = ['gachas', 'progressions', 'sssRank', 'auras', 'accessories', 'quests'];
                 categories.forEach(catKey => {
                     if (world[catKey]) {
                         totalItems += world[catKey].length;
-                        // Check if categoryStats[catKey] exists before adding
                         if (categoryStats[catKey]) {
                             categoryStats[catKey].total += world[catKey].length;
                         }
@@ -1836,7 +1695,6 @@ if (el.energyPerClickTTE) {
                         world[catKey].forEach(item => {
                             if (savedData[item.id]) {
                                 completedItems++;
-                                // Check if categoryStats[catKey] exists before adding
                                 if (categoryStats[catKey]) {
                                     categoryStats[catKey].completed++;
                                 }
@@ -1873,11 +1731,10 @@ if (el.energyPerClickTTE) {
                 overallProgressFill.style.width = `${percentage}%`;
             }
             
-            // UPDATED to dynamically find the count element ID
             Object.keys(categoryStats).forEach(cat => {
                 let elId;
                 if (cat === 'sssRank') elId = 'sssrank-count';
-                else elId = `${cat}-count`; // Works for 'gachas', 'progressions', 'auras', 'accessories', and 'quests'
+                else elId = `${cat}-count`;
                 
                 const countEl = document.getElementById(elId);
                 if (countEl) {
@@ -1919,15 +1776,14 @@ if (el.energyPerClickTTE) {
 
                 const section = document.createElement('section');
                 
-                // --- START: MODIFIED HEADER CREATION ---
                 const worldHeader = document.createElement('div');
-                worldHeader.className = 'world-section-header'; // New class for flex layout
+                worldHeader.className = 'world-section-header';
                 
                 const title = document.createElement('h2');
                 title.className = 'world-section-title';
                 title.id = `world-title-${worldNameId}`;
                 title.innerText = `${worldName} (0 / 0)`; 
-                worldHeader.appendChild(title); // Add title to header
+                worldHeader.appendChild(title);
 
                 const worldToggleContainer = document.createElement('div');
                 worldToggleContainer.className = 'toggle-container world-toggle';
@@ -1944,10 +1800,9 @@ if (el.energyPerClickTTE) {
 
                 worldToggleContainer.appendChild(checkAllWorldBtn);
                 worldToggleContainer.appendChild(uncheckAllWorldBtn);
-                worldHeader.appendChild(worldToggleContainer); // Add toggles to header
+                worldHeader.appendChild(worldToggleContainer);
                 
-                section.appendChild(worldHeader); // Add the combined header to the section
-                // --- END: MODIFIED HEADER CREATION ---
+                section.appendChild(worldHeader);
 
                 const categories = [
                     { key: 'gachas', name: 'Gachas', css: 'gachas' },
@@ -1955,7 +1810,7 @@ if (el.energyPerClickTTE) {
                     { key: 'sssRank', name: 'SSS Rank', css: 'sssRank' },
                     { key: 'auras', name: 'Auras', css: 'auras' },
                     { key: 'accessories', name: 'Accessories', css: 'accessories' },
-                    { key: 'quests', name: 'Quests', css: 'quests' } // ADDED QUESTS
+                    { key: 'quests', name: 'Quests', css: 'quests' }
                 ];
 
                 const subsections = [];
@@ -1963,7 +1818,6 @@ if (el.energyPerClickTTE) {
                 categories.forEach(cat => {
                     if (world[cat.key] && world[cat.key].length > 0) {
                         const subSection = document.createElement('div');
-                        // ADDED class for better selection
                         subSection.className = 'checklist-category-subsection';
                         
                         const subTitle = document.createElement('h3');
@@ -2015,7 +1869,6 @@ if (el.energyPerClickTTE) {
             const worldSections = checklistPanel.querySelectorAll('section');
             
             worldSections.forEach(section => {
-                // UPDATED to select only category subsections
                 const subsections = section.querySelectorAll('.checklist-category-subsection');
                 let sectionHasVisible = false;
                 
@@ -2027,7 +1880,6 @@ if (el.energyPerClickTTE) {
                     let visibleItems = 0;
                     
                     const subId = subTitle.id;
-                    // UPDATED category filter logic
                     const categoryMatch = !categoryFilter || (categoryFilter === 'sssrank' ? subId.includes('sssRank-title') : subId.includes(`${categoryFilter}-title`));
                     
                     items.forEach(item => {
@@ -2043,8 +1895,6 @@ if (el.energyPerClickTTE) {
                     });
                     
                     if (visibleItems > 0) {
-                        // --- THIS IS THE BUG FIX ---
-                        // Revert to default display (grid item) instead of forcing 'block'
                         subsection.style.display = ''; 
                         sectionHasVisible = true;
                     } else {
@@ -2070,7 +1920,6 @@ if (el.energyPerClickTTE) {
             }
         });
 
-        // --- ADDED Event Listener for Per-World Toggles ---
         checklistContainer.addEventListener('click', (e) => {
             const target = e.target;
             let checkValue;
@@ -2080,10 +1929,9 @@ if (el.energyPerClickTTE) {
             } else if (target.classList.contains('world-uncheck-all')) {
                 checkValue = false;
             } else {
-                return; // Not one of our new buttons
+                return;
             }
 
-            // Find the parent section of the button
             const section = target.closest('section');
             if (!section) return;
 
@@ -2093,9 +1941,8 @@ if (el.energyPerClickTTE) {
                 styleChecklistItem(cb, checkValue);
             });
 
-            saveChecklistData(); // Save changes
+            saveChecklistData();
         });
-        // --- END Event Listener ---
 
 
         if (el['checklist-search']) {
@@ -2136,15 +1983,9 @@ if (el.energyPerClickTTE) {
             });
         }
         
-
-        
-
-
-        // Initial load
         loadChecklistData();
 
     } else {
         console.warn("DEBUG: Checklist data (checklistDataByWorld) or World data (worldData) NOT found. Checklist will not load.");
     }
-    // --- END OF MODIFIED CHECKLIST LOGIC ---
 });
