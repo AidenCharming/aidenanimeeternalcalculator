@@ -161,7 +161,6 @@ function loadRankUpData() {
         if (el.clickerSpeed) {
             el.clickerSpeed.checked = isFast;
             
-            // Explicitly set the visual state
             const parentDiv = el.clickerSpeed.parentElement;
             if (parentDiv) {
                 const buttonToActivate = isFast ? parentDiv.querySelector('.toggle-btn[onclick*="\'fast\'"]') : parentDiv.querySelector('.toggle-btn[onclick*="\'slow\'"]');
@@ -230,7 +229,6 @@ function loadETAData() {
         if (el.clickerSpeedETA) {
             el.clickerSpeedETA.checked = isFast;
             
-            // Explicitly set the visual state
             const parentDiv = el.clickerSpeedETA.parentElement;
             if (parentDiv) {
                 const buttonToActivate = isFast ? parentDiv.querySelector('.toggle-btn[onclick*="\'fast\'"]') : parentDiv.querySelector('.toggle-btn[onclick*="\'slow\'"]');
@@ -269,16 +267,13 @@ function loadTTKData() {
         const world = localStorage.getItem('ae_ttk_world');
         const enemy = localStorage.getItem('ae_ttk_enemy');
 
-        // --- START FIX: Ensure input and hidden values are set synchronously before calculation ---
         if (el.yourDPS) el.yourDPS.value = dps || '';
         if (el.dpsDenominationInput) el.dpsDenominationInput.value = dpsDenomInput || '';
         
         const dpsDenom = denominations.find(d => d.name === dpsDenomInput);
         if (el.dpsDenominationValue) {
-            // This line ensures the hidden value used in the calculation is correctly set, fixing the N/A bug.
             el.dpsDenominationValue.value = dpsDenom ? dpsDenom.value : '1';
         }
-        // --- END FIX ---
 
         if (quantity && el.enemyQuantity) el.enemyQuantity.value = quantity;
         
@@ -392,7 +387,6 @@ function saveTimeToEnergyData() {
 
 function loadTimeToEnergyData() {
      try {
-        // Load Current Energy Data
         const currentEnergyNum = localStorage.getItem('ae_tte_currentEnergy') || '';
         if (el.currentEnergyTTE) el.currentEnergyTTE.value = currentEnergyNum;
         
@@ -404,7 +398,6 @@ function loadTimeToEnergyData() {
             el.currentEnergyTTEDenominationValue.value = currentDenom ? currentDenom.value : '1';
         }
 
-        // Load Energy Per Click Data
         const energyPerClickNum = localStorage.getItem('ae_tte_energyPerClick') || '';
         if (el.energyPerClickTTE) el.energyPerClickTTE.value = energyPerClickNum;
 
@@ -416,7 +409,6 @@ function loadTimeToEnergyData() {
             el.energyPerClickTTEDenominationValue.value = energyPerClickDenom ? energyPerClickDenom.value : '1';
         }
 
-        // Load Return Time
         const returnTime = localStorage.getItem('ae_tte_returnTime');
         if (returnTime && el.timeToReturnSelect) {
             el.timeToReturnSelect.value = returnTime;
@@ -426,14 +418,12 @@ function loadTimeToEnergyData() {
             el.timeToReturnSelectMinutes.value = returnTimeMinutes;
         }
 
-        // Load Clicker Speed
         const clickerSpeed = localStorage.getItem('ae_clickerSpeed');
         const isFast = (clickerSpeed === 'true');
         
         if (el.clickerSpeedTTE) {
             el.clickerSpeedTTE.checked = isFast;
             
-            // Explicitly set the visual state by calling setClickerSpeed
             const parentDiv = el.clickerSpeedTTE.parentElement;
             if (parentDiv) {
                 const buttonToActivate = isFast ? parentDiv.querySelector('.toggle-btn[onclick*="\'fast\'"]') : parentDiv.querySelector('.toggle-btn[onclick*="\'slow\'"]');
@@ -443,8 +433,6 @@ function loadTimeToEnergyData() {
             }
         }
 
-
-        // Load Boost Durations
         if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
             boostItems.forEach(item => {
                 const hoursEl = el[`boost-${item.id}-hours`];
@@ -510,7 +498,6 @@ function saveEnergyCalcData() {
         if (el.baseEnergyPerClickDenominationInput) localStorage.setItem('ae_calc_baseEPC_denomInput', el.baseEnergyPerClickDenominationInput.value);
         if (el.baseEnergyPerClickDenominationValue) localStorage.setItem('ae_calc_baseEPC_denomValue', el.baseEnergyPerClickDenominationValue.value);
         
-        // Save boost activation state
         if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
             boostItems.forEach(item => {
                 const checkbox = document.getElementById(`boost-calc-${item.id}`);
@@ -527,7 +514,6 @@ function saveEnergyCalcData() {
 
 function loadEnergyCalcData() {
     try {
-        // Load base EPC value and denomination
         const baseEPC = localStorage.getItem('ae_calc_baseEPC') || '';
         if (el.baseEnergyPerClickCalc) el.baseEnergyPerClickCalc.value = baseEPC;
 
@@ -539,13 +525,11 @@ function loadEnergyCalcData() {
             el.baseEnergyPerClickDenominationValue.value = baseEPCDenom ? baseEPCDenom.value : '1';
         }
         
-        // Load clicker speed toggle state
         const clickerSpeed = localStorage.getItem('ae_clickerSpeed');
         if (clickerSpeed !== null && el.clickerSpeedCalc) {
             el.clickerSpeedCalc.checked = (clickerSpeed === 'true');
         }
 
-        // Load boost activation state
         if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
             boostItems.forEach(item => {
                 const checkbox = document.getElementById(`boost-calc-${item.id}`);
@@ -590,7 +574,6 @@ function populateEnergyCalcBoosts() {
         wrapper.appendChild(label);
         container.appendChild(wrapper);
 
-        // Make elements accessible in the el object for loading via ID later
         el[checkboxId] = checkbox;
     });
 }
@@ -738,8 +721,6 @@ function calculateTimeToEnergy() {
         saveTimeToEnergyData();
         return;
     }
-
-    // --- NEW BOOST LOGIC SETUP (Sequential Chains) ---
     
     const allActiveBoosts = [];
     boostItems.forEach(item => {
@@ -763,7 +744,6 @@ function calculateTimeToEnergy() {
         let currentTotalEnergyGained = 0;
         let remainingDuration = targetDuration;
         
-        // Clone and filter active boosts for this simulation run
         const primaryQueue = allActiveBoosts.filter(b => primaryChainIds.includes(b.id))
                                          .sort((a, b) => primaryChainIds.indexOf(a.id) - primaryChainIds.indexOf(b.id));
         
@@ -775,14 +755,12 @@ function calculateTimeToEnergy() {
 
         while (remainingDuration > 0 && (primaryQueue.length > 0 || secondaryQueue.length > 0)) {
             
-            // Determine current active multiplier for each chain
             const currentPrimary = primaryQueue.length > 0 ? primaryQueue[0] : null;
             const currentSecondary = secondaryQueue.length > 0 ? secondaryQueue[0] : null;
 
             let currentPrimaryMultiplier = currentPrimary ? currentPrimary.multiplier : 1.0;
             let currentSecondaryMultiplier = currentSecondary ? currentSecondary.multiplier : 1.0;
             
-            // Determine how long this multiplier combination remains active
             let segmentDuration = remainingDuration;
 
             if (currentPrimary) {
@@ -792,15 +770,12 @@ function calculateTimeToEnergy() {
                 segmentDuration = Math.min(segmentDuration, secondaryRemaining.get(currentSecondary.id));
             }
 
-            // Calculate Energy in this time segment
             const totalMultiplier = currentPrimaryMultiplier * currentSecondaryMultiplier;
             const energyInSegment = baseEnergyPerSecond * totalMultiplier * segmentDuration;
             currentTotalEnergyGained += energyInSegment;
             
-            // Update remaining time for the simulation
             remainingDuration -= segmentDuration;
 
-            // Update individual boost durations and advance queues if exhausted
             if (currentPrimary) {
                 const newTime = primaryRemaining.get(currentPrimary.id) - segmentDuration;
                 primaryRemaining.set(currentPrimary.id, newTime);
@@ -817,17 +792,13 @@ function calculateTimeToEnergy() {
             }
         }
         
-        // Add energy gained during the 'no boost' period, if targetDuration is longer than boost life
         if (remainingDuration > 0) {
             currentTotalEnergyGained += baseEnergyPerSecond * 1.0 * remainingDuration;
         }
 
         return currentEnergy + currentTotalEnergyGained;
     };
-    // --- END NEW BOOST LOGIC ---
 
-
-    // --- 1. Calculate main result based on user input return time ---
     const finalTotalEnergy = calculateEnergyForDuration(targetTimeInSeconds);
 
     resultEl.innerText = formatNumber(finalTotalEnergy);
@@ -845,7 +816,6 @@ function calculateTimeToEnergy() {
         returnTimeEl.innerText = `Return on: ${returnString}`;
     }
     
-    // --- 2. Remove Boost Simulation Table content ---
     if (tableBody) {
         tableBody.innerHTML = ''; 
     }
@@ -1077,14 +1047,12 @@ function populateEnemyDropdown() {
             enemySelect.appendChild(option);
         });
 
-        // Restore saved enemy selection and clear temporary flags
         if (el.tempWorld === selectedWorldName && el.tempEnemy && enemySelect.querySelector(`option[value="${el.tempEnemy}"]`)) {
             enemySelect.value = el.tempEnemy;
             el.tempWorld = null; 
             el.tempEnemy = null;
         }
     }
-    // Now display the health of the currently selected enemy (which might be the loaded one) and calculate TTK.
     displayEnemyHealth();
 }
 
@@ -1601,7 +1569,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("DEBUG: DOM fully loaded. Initializing script.");
     switchTab('rankup');
     
-    // 1. Populate all dropdowns (needed before loading state for them)
     populateWorldDropdown(); 
     populateTimeToReturnDropdown();
     populateTimeToReturnMinutesDropdown();
@@ -1726,7 +1693,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupDenominationSearch('energyPerClickETADenominationInput', 'energyPerClickETADenominationValue', 'energyPerClickETADenominationList', onETAEPCdenomChange);
 
     setupDenominationSearch('currentEnergyTTEDenominationInput', 'currentEnergyTTEDenominationValue', 'currentEnergyTTEDenominationList', onTTECEDenomChange);
-    setupDenominationSearch('energyPerClickTTEDenominationInput', 'energyPerClickTTEDenominationValue', 'energyPerClickTTEDenominationList', onRankUpEPCDenomChange); // Use RankUpEPC Change to sync all EPC inputs
+    setupDenominationSearch('energyPerClickTTEDenominationInput', 'energyPerClickTTEDenominationValue', 'energyPerClickTTEDenominationList', onRankUpEPCDenomChange);
     
     setupDenominationSearch('baseEnergyPerClickDenominationInput', 'baseEnergyPerClickDenominationValue', 'baseEnergyPerClickDenominationList', onCalcEPCChange);
 
@@ -1893,7 +1860,6 @@ if (el.baseEnergyPerClickCalc) {
         }
     }
     
-    // 2. Set up TTK load sequence listeners
     if (el.worldSelect) {
         el.worldSelect.addEventListener('change', () => {
             populateEnemyDropdown();
@@ -1908,7 +1874,6 @@ if (el.baseEnergyPerClickCalc) {
         });
     }
 
-    // 3. Initial Loads (must be after listeners and populations above)
     loadRankUpData();
     loadETAData();
     loadTimeToEnergyData(); 
@@ -1916,7 +1881,6 @@ if (el.baseEnergyPerClickCalc) {
     loadEnergyCalcData(); 
     loadStarData();
 
-    // 4. Manual trigger for TTK final state application/calc
     if (el.worldSelect) {
         populateEnemyDropdown(); 
     } else {
