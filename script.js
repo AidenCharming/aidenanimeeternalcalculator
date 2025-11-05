@@ -909,7 +909,7 @@ function calculateLootDrops() {
     }
     
     // Results Calculation (Time to Target Drop Count)
-    const overallAvgDropRatePerSecond = targetTimeInSeconds > 0 ? totalDropsEstimate / targetTimeInSeconds : 0;
+    const overallAvgDropRatePerSecond = totalDropsEstimate / targetTimeInSeconds;
     let timeToTargetDrops = 0;
     
     if (overallAvgDropRatePerSecond > 0) {
@@ -1330,7 +1330,7 @@ function calculateStarCalc() {
 
 async function loadAllData() {
     try {
-        const response = await fetch('activity-bundle.json');
+        const response = await fetch('activity-bundle.json?v=V_CACHE_BUST');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -1906,7 +1906,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupDenominationSearch('energyPerClickTTEDenominationInput', 'energyPerClickTTEDenominationValue', 'energyPerClickTTEDenominationList', onTTEEPCDenomChange); 
     
 
-    // Initial value synchronization and calculation triggers (input value changes)
     if (el.currentEnergy) {
         el.currentEnergy.addEventListener('input', debounce(() => {
             syncEnergyData('currentEnergy', 'currentEnergyDenominationInput', 'currentEnergyDenominationValue');
@@ -2091,7 +2090,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadTimeToEnergyData(); 
     loadLootData();
     loadTTKData();
-    loadStarData(); // THIS CALL IS NOW SAFE
+    loadStarData();
 
     if (el.worldSelect) {
         populateEnemyDropdown(); 
