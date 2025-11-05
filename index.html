@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-AR">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anime Eternal Calculator</title>
 	<link rel="icon" href="icon.webp" type="image/webp">
@@ -9,7 +9,6 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Configure Tailwind to use the Poppins font
         tailwind.config = {
           theme: {
             extend: {
@@ -40,7 +39,7 @@
       var pref = localStorage.getItem('ae_low_power');
       if (pref === null) {
         pref = isLowPower() ? '1' : '0';
-        localStorage.setItem('ae_low-power', pref);
+        localStorage.setItem('ae_low_power', pref);
       }
       if (pref === '1') document.documentElement.classList.add('ae-low-power');
       else document.documentElement.classList.add('ae-high-power');
@@ -82,8 +81,8 @@
                 <button id="tab-time-to-energy" class="tab-btn" onclick="switchTab('time-to-energy')">Time to Energy</button>
                 <button id="tab-ttk" class="tab-btn" onclick="switchTab('ttk')">Time to Kill</button>
                 <button id="tab-raid" class="tab-btn" onclick="switchTab('raid')">Raids / Dungeons</button>
-                <button id="tab-energy-calc" class="tab-btn" onclick="switchTab('energy-calc')">Energy Calc</button>
-                <button id="tab-star" class="tab-btn" onclick="switchTab('star')">Star Calc</button> <button id="tab-checklist" class="tab-btn" onclick="switchTab('checklist')">Checklist</button>
+                <button id="tab-star" class="tab-btn" onclick="switchTab('star')">Star Calc</button> 
+                <button id="tab-checklist" class="tab-btn" onclick="switchTab('checklist')">Checklist</button>
             </div>
             
             <div class="content-wrapper">
@@ -352,41 +351,6 @@
                     <div class="result-box p-4 rounded-lg text-center">
                         <p id="activityResultLabel" class="text-gray-400">Estimated Max Stage:</p>
                         <p id="activityResult" class="text-2xl font-bold text-orange-400">0 / 0</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="panel-energy-calc" class="hidden">
-                <div class="max-w-xl space-y-6">
-                    <div class="toggle-container">
-                        <button class="toggle-btn active" onclick="setClickerSpeed('slow', this)">Slow Clicker</button>
-                        <button class="toggle-btn" onclick="setClickerSpeed('fast', this)">Fast Clicker</button>
-                    </div>
-
-                    <div>
-                        <label for="baseEnergyPerClickCalc">Base Energy per Click (No Boosts)</label>
-                        <div class="grid-denom">
-                            <input type="number" id="baseEnergyPerClickCalc" class="input-field w-full" placeholder="e.g., 150">
-                            <div class="relative">
-                                <input type="text" id="baseEnergyPerClickDenominationInput" class="input-field w-full" placeholder="e.g., B" autocomplete="off">
-                                <input type="hidden" id="baseEnergyPerClickDenominationValue" value="1">
-                                <div id="baseEnergyPerClickDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="subsection-title">Active Energy Multipliers</h3>
-                        <p class="text-sm text-gray-400 -mt-3 mb-3">Select which boosts are currently active.</p>
-                        <div id="active-boosts-container" class="space-y-3">
-                            </div>
-                    </div>
-
-                    <input type="checkbox" id="clickerSpeedCalc" class="hidden">
-                    <div class="result-box p-4 rounded-lg text-center">
-                        <p class="text-gray-400">Effective Energy Per Second (E/s):</p>
-                        <p id="energyPerSecondResult" class="text-2xl font-bold text-orange-400">0</p>
-                        <p id="totalMultiplierDisplay" class="text-sm text-gray-400 mt-1"></p>
                     </div>
                 </div>
             </div>

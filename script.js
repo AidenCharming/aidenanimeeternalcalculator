@@ -1,5 +1,5 @@
 const el = {};
-const tabs = ['rankup', 'eta', 'time-to-energy', 'ttk', 'raid', 'energy-calc', 'star', 'checklist'];
+const tabs = ['rankup', 'eta', 'time-to-energy', 'ttk', 'raid', 'star', 'checklist'];
 
 function switchTab(activeTab) {
     tabs.forEach(tab => {
@@ -39,12 +39,10 @@ function setClickerSpeed(speed, button) {
     if (el.clickerSpeed) el.clickerSpeed.checked = isFast;
     if (el.clickerSpeedETA) el.clickerSpeedETA.checked = isFast;
     if (el.clickerSpeedTTE) el.clickerSpeedTTE.checked = isFast;
-    if (el.clickerSpeedCalc) el.clickerSpeedCalc.checked = isFast;
     
     calculateRankUp();
     calculateEnergyETA();
     calculateTimeToEnergy();
-    calculateEnergyCalc();
 }
 
 function copyResult(elementId) {
@@ -387,6 +385,7 @@ function saveTimeToEnergyData() {
 
 function loadTimeToEnergyData() {
      try {
+        // Load Current Energy Data
         const currentEnergyNum = localStorage.getItem('ae_tte_currentEnergy') || '';
         if (el.currentEnergyTTE) el.currentEnergyTTE.value = currentEnergyNum;
         
@@ -398,6 +397,7 @@ function loadTimeToEnergyData() {
             el.currentEnergyTTEDenominationValue.value = currentDenom ? currentDenom.value : '1';
         }
 
+        // Load Energy Per Click Data
         const energyPerClickNum = localStorage.getItem('ae_tte_energyPerClick') || '';
         if (el.energyPerClickTTE) el.energyPerClickTTE.value = energyPerClickNum;
 
@@ -409,6 +409,7 @@ function loadTimeToEnergyData() {
             el.energyPerClickTTEDenominationValue.value = energyPerClickDenom ? energyPerClickDenom.value : '1';
         }
 
+        // Load Return Time
         const returnTime = localStorage.getItem('ae_tte_returnTime');
         if (returnTime && el.timeToReturnSelect) {
             el.timeToReturnSelect.value = returnTime;
@@ -418,6 +419,7 @@ function loadTimeToEnergyData() {
             el.timeToReturnSelectMinutes.value = returnTimeMinutes;
         }
 
+        // Load Clicker Speed and Update Visual State
         const clickerSpeed = localStorage.getItem('ae_clickerSpeed');
         const isFast = (clickerSpeed === 'true');
         
@@ -433,6 +435,8 @@ function loadTimeToEnergyData() {
             }
         }
 
+
+        // Load Boost Durations
         if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
             boostItems.forEach(item => {
                 const hoursEl = el[`boost-${item.id}-hours`];
@@ -462,7 +466,7 @@ function saveStarData() {
         if (el.starAmount) localStorage.setItem('ae_star_amount', el.starAmount.value);
         if (el.starBaseLuck) localStorage.setItem('ae_star_baseLuck', el.starBaseLuck.value);
         if (el.starTimeHours) localStorage.setItem('ae_star_timeHours', el.starTimeHours.value);
-    } catch(e) {
+    } catch (e) {
         console.error("Failed to save Star data to localStorage", e);
     }
 }
@@ -487,139 +491,9 @@ function loadStarData() {
         displayStarCost();
         calculateStarCalc();
 
-    } catch(e) {
+    } catch (e) {
         console.error("Failed to load Star data from localStorage", e);
     }
-}
-
-function saveEnergyCalcData() {
-    try {
-        if (el.baseEnergyPerClickCalc) localStorage.setItem('ae_calc_baseEPC', el.baseEnergyPerClickCalc.value);
-        if (el.baseEnergyPerClickDenominationInput) localStorage.setItem('ae_calc_baseEPC_denomInput', el.baseEnergyPerClickDenominationInput.value);
-        if (el.baseEnergyPerClickDenominationValue) localStorage.setItem('ae_calc_baseEPC_denomValue', el.baseEnergyPerClickDenominationValue.value);
-        
-        if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
-            boostItems.forEach(item => {
-                const checkbox = document.getElementById(`boost-calc-${item.id}`);
-                if (checkbox) {
-                    localStorage.setItem(`ae_calc_boost_active_${item.id}`, checkbox.checked);
-                }
-            });
-        }
-
-    } catch(e) {
-        console.error("Failed to save EnergyCalc data to localStorage", e);
-    }
-}
-
-function loadEnergyCalcData() {
-    try {
-        const baseEPC = localStorage.getItem('ae_calc_baseEPC') || '';
-        if (el.baseEnergyPerClickCalc) el.baseEnergyPerClickCalc.value = baseEPC;
-
-        const baseEPCDenomInput = localStorage.getItem('ae_calc_baseEPC_denomInput') || '';
-        if (el.baseEnergyPerClickDenominationInput) el.baseEnergyPerClickDenominationInput.value = baseEPCDenomInput;
-
-        const baseEPCDenom = denominations.find(d => d.name === baseEPCDenomInput);
-        if (el.baseEnergyPerClickDenominationValue) {
-            el.baseEnergyPerClickDenominationValue.value = baseEPCDenom ? baseEPCDenom.value : '1';
-        }
-        
-        const clickerSpeed = localStorage.getItem('ae_clickerSpeed');
-        if (clickerSpeed !== null && el.clickerSpeedCalc) {
-            el.clickerSpeedCalc.checked = (clickerSpeed === 'true');
-        }
-
-        if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
-            boostItems.forEach(item => {
-                const checkbox = document.getElementById(`boost-calc-${item.id}`);
-                const isChecked = localStorage.getItem(`ae_calc_boost_active_${item.id}`);
-                if (checkbox) {
-                    checkbox.checked = isChecked === 'true';
-                }
-            });
-        }
-        
-        calculateEnergyCalc();
-
-    } catch(e) {
-        console.error("Failed to load EnergyCalc data from localStorage", e);
-    }
-}
-
-function populateEnergyCalcBoosts() {
-    const container = el['active-boosts-container'];
-    if (!container || typeof boostItems === 'undefined') return;
-
-    container.innerHTML = '';
-
-    boostItems.forEach(item => {
-        const checkboxId = `boost-calc-${item.id}`;
-        
-        const wrapper = document.createElement('div');
-        wrapper.className = 'flex items-center';
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = checkboxId;
-        checkbox.className = 'h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500';
-        checkbox.addEventListener('change', calculateEnergyCalc);
-
-        const label = document.createElement('label');
-        label.htmlFor = checkboxId;
-        label.className = 'ml-3 text-sm font-medium text-gray-300 flex-1';
-        label.textContent = `${item.name} (x${item.multiplier})`;
-        
-        wrapper.appendChild(checkbox);
-        wrapper.appendChild(label);
-        container.appendChild(wrapper);
-
-        el[checkboxId] = checkbox;
-    });
-}
-
-function calculateEnergyCalc() {
-    if (!el.energyPerSecondResult || typeof boostItems === 'undefined') return;
-
-    const baseEPCValue = getNumberValue('baseEnergyPerClickCalc');
-    const baseEPCDenom = el.baseEnergyPerClickDenominationValue ? (parseFloat(el.baseEnergyPerClickDenominationValue.value) || 1) : 1;
-    const baseEPC = baseEPCValue * baseEPCDenom;
-
-    const isFastClicker = el.clickerSpeedCalc ? el.clickerSpeedCalc.checked : false;
-    const SLOW_CPS = 1.0919;
-    const FAST_CPS = 5.88505;
-    const clicksPerSecond = isFastClicker ? FAST_CPS : SLOW_CPS;
-
-    let totalMultiplier = 1.0;
-    const activeBoostsNames = [];
-
-    boostItems.forEach(item => {
-        const checkbox = document.getElementById(`boost-calc-${item.id}`);
-        if (checkbox && checkbox.checked) {
-            totalMultiplier *= item.multiplier;
-            activeBoostsNames.push(item.name);
-        }
-    });
-
-    const effectiveEPC = baseEPC * totalMultiplier;
-    const energyPerSecond = effectiveEPC * clicksPerSecond;
-    
-    const multiplierDisplayEl = el.totalMultiplierDisplay;
-
-    if (energyPerSecond <= 0) {
-        el.energyPerSecondResult.innerText = '0';
-        if (multiplierDisplayEl) multiplierDisplayEl.innerText = 'Total Multiplier: x1.0';
-        saveEnergyCalcData();
-        return;
-    }
-
-    el.energyPerSecondResult.innerText = formatNumber(energyPerSecond);
-    
-    if (multiplierDisplayEl) {
-        multiplierDisplayEl.innerText = `Total Multiplier: x${totalMultiplier.toFixed(2)}`;
-    }
-    
-    saveEnergyCalcData();
 }
 
 
@@ -721,6 +595,7 @@ function calculateTimeToEnergy() {
         saveTimeToEnergyData();
         return;
     }
+
     
     const allActiveBoosts = [];
     boostItems.forEach(item => {
@@ -798,6 +673,7 @@ function calculateTimeToEnergy() {
 
         return currentEnergy + currentTotalEnergyGained;
     };
+
 
     const finalTotalEnergy = calculateEnergyForDuration(targetTimeInSeconds);
 
@@ -902,7 +778,7 @@ function calculateTTK() {
         if (totalDays > 0) totalResultString += `${totalDays}d `;
         if (totalHours > 0 || totalDays > 0) totalResultString += `${totalHours}h `;
         if (totalMinutes > 0 || totalHours > 0 || days > 0) totalResultString += `${totalMinutes}m `;
-        totalResultString += `${seconds}s`;
+        totalResultString += `${totalSeconds}s`;
 
         if (questResultEl) questResultEl.innerText = `Time for ${quantity} kills: ${totalResultString.trim()}`;
 
@@ -1053,6 +929,7 @@ function populateEnemyDropdown() {
             el.tempEnemy = null;
         }
     }
+    
     displayEnemyHealth();
 }
 
@@ -1575,7 +1452,6 @@ document.addEventListener('DOMContentLoaded', () => {
     populateBoostDurations();
     populateStarLevelDropdown();
     populateStarSpeedDropdown();
-    populateEnergyCalcBoosts();
 
     loadAllData().then(() => {
         console.log("DEBUG: Activity data loading complete. Setting up raid UI.");
@@ -1625,10 +1501,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(el.energyPerClickTTEDenominationInput) el.energyPerClickTTEDenominationInput.value = el.energyPerClickDenominationInput.value;
         if(el.energyPerClickTTEDenominationValue) el.energyPerClickTTEDenominationValue.value = el.energyPerClickDenominationValue.value;
         calculateTimeToEnergy();
-        if(el.baseEnergyPerClickCalc) el.baseEnergyPerClickCalc.value = el.energyPerClick.value;
-        if(el.baseEnergyPerClickDenominationInput) el.baseEnergyPerClickDenominationInput.value = el.energyPerClickDenominationInput.value;
-        if(el.baseEnergyPerClickDenominationValue) el.baseEnergyPerClickDenominationValue.value = el.energyPerClickDenominationValue.value;
-        calculateEnergyCalc();
     }
 
     function onETAEPCdenomChange() {
@@ -1642,23 +1514,6 @@ document.addEventListener('DOMContentLoaded', () => {
         calculateTimeToEnergy();
     }
     
-    function onCalcEPCChange() {
-        calculateEnergyCalc();
-        if (el.energyPerClick) el.energyPerClick.value = el.baseEnergyPerClickCalc.value;
-        if (el.energyPerClickETA) el.energyPerClickETA.value = el.baseEnergyPerClickCalc.value;
-        if (el.energyPerClickTTE) el.energyPerClickTTE.value = el.baseEnergyPerClickCalc.value;
-        
-        if (el.energyPerClickDenominationInput) el.energyPerClickDenominationInput.value = el.baseEnergyPerClickDenominationInput.value;
-        if (el.energyPerClickDenominationValue) el.energyPerClickDenominationValue.value = el.baseEnergyPerClickDenominationValue.value;
-        if (el.energyPerClickETADenominationInput) el.energyPerClickETADenominationInput.value = el.baseEnergyPerClickDenominationInput.value;
-        if (el.energyPerClickETADenominationValue) el.energyPerClickETADenominationValue.value = el.baseEnergyPerClickDenominationValue.value;
-        if (el.energyPerClickTTEDenominationInput) el.energyPerClickTTEDenominationInput.value = el.baseEnergyPerClickDenominationInput.value;
-        if (el.energyPerClickTTEDenominationValue) el.energyPerClickTTEDenominationValue.value = el.baseEnergyPerClickDenominationValue.value;
-        
-        calculateRankUp();
-        calculateEnergyETA();
-        calculateTimeToEnergy();
-    }
     
     const syncDPS_TTKToRaid = () => {
         if(el.yourDPSActivity) el.yourDPSActivity.value = el.yourDPS.value;
@@ -1693,10 +1548,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupDenominationSearch('energyPerClickETADenominationInput', 'energyPerClickETADenominationValue', 'energyPerClickETADenominationList', onETAEPCdenomChange);
 
     setupDenominationSearch('currentEnergyTTEDenominationInput', 'currentEnergyTTEDenominationValue', 'currentEnergyTTEDenominationList', onTTECEDenomChange);
-    setupDenominationSearch('energyPerClickTTEDenominationInput', 'energyPerClickTTEDenominationValue', 'energyPerClickTTEDenominationList', onRankUpEPCDenomChange);
+    setupDenominationSearch('energyPerClickTTEDenominationInput', 'energyPerClickTTEDenominationValue', 'energyPerClickTTEDenominationList', onRankUpEPCDenomChange); 
     
-    setupDenominationSearch('baseEnergyPerClickDenominationInput', 'baseEnergyPerClickDenominationValue', 'baseEnergyPerClickDenominationList', onCalcEPCChange);
-
 
     if (el.currentEnergy) {
         el.currentEnergy.addEventListener('input', debounce(() => {
@@ -1729,10 +1582,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el.energyPerClick) {
     el.energyPerClick.addEventListener('input', debounce(() => {
         if (el.energyPerClickETA) el.energyPerClickETA.value = el.energyPerClick.value;
-        if (el.baseEnergyPerClickCalc) el.baseEnergyPerClickCalc.value = el.energyPerClick.value;
         calculateRankUp();
         calculateEnergyETA();
-        calculateEnergyCalc();
     }, 300));
     }
     if (el.energyPerClickETA) {
@@ -1745,51 +1596,30 @@ document.addEventListener('DOMContentLoaded', () => {
 if (el.energyPerClickTTE) {
     el.energyPerClickTTE.addEventListener('input', debounce(calculateTimeToEnergy, 300));
 }
-
-if (el.baseEnergyPerClickCalc) {
-    el.baseEnergyPerClickCalc.addEventListener('input', debounce(onCalcEPCChange, 300));
-}
     
     if (el.clickerSpeed) el.clickerSpeed.addEventListener('change', () => {
         const isChecked = el.clickerSpeed.checked;
         if (el.clickerSpeedETA) el.clickerSpeedETA.checked = isChecked;
         if (el.clickerSpeedTTE) el.clickerSpeedTTE.checked = isChecked;
-        if (el.clickerSpeedCalc) el.clickerSpeedCalc.checked = isChecked;
         calculateRankUp();
         calculateEnergyETA();
         calculateTimeToEnergy();
-        calculateEnergyCalc();
     });
     if (el.clickerSpeedETA) el.clickerSpeedETA.addEventListener('change', () => {
         const isChecked = el.clickerSpeedETA.checked;
         if (el.clickerSpeed) el.clickerSpeed.checked = isChecked;
         if (el.clickerSpeedTTE) el.clickerSpeedTTE.checked = isChecked;
-        if (el.clickerSpeedCalc) el.clickerSpeedCalc.checked = isChecked;
         calculateRankUp();
         calculateEnergyETA();
         calculateTimeToEnergy();
-        calculateEnergyCalc();
     });
     if (el.clickerSpeedTTE) el.clickerSpeedTTE.addEventListener('change', () => {
         const isChecked = el.clickerSpeedTTE.checked;
         if (el.clickerSpeed) el.clickerSpeed.checked = isChecked;
         if (el.clickerSpeedETA) el.clickerSpeedETA.checked = isChecked;
-        if (el.clickerSpeedCalc) el.clickerSpeedCalc.checked = isChecked;
         calculateRankUp();
         calculateEnergyETA();
         calculateTimeToEnergy();
-        calculateEnergyCalc();
-    });
-
-    if (el.clickerSpeedCalc) el.clickerSpeedCalc.addEventListener('change', () => {
-        const isChecked = el.clickerSpeedCalc.checked;
-        if (el.clickerSpeed) el.clickerSpeed.checked = isChecked;
-        if (el.clickerSpeedETA) el.clickerSpeedETA.checked = isChecked;
-        if (el.clickerSpeedTTE) el.clickerSpeedTTE.checked = isChecked;
-        calculateRankUp();
-        calculateEnergyETA();
-        calculateTimeToEnergy();
-        calculateEnergyCalc();
     });
 
 
@@ -1878,7 +1708,6 @@ if (el.baseEnergyPerClickCalc) {
     loadETAData();
     loadTimeToEnergyData(); 
     loadTTKData();
-    loadEnergyCalcData(); 
     loadStarData();
 
     if (el.worldSelect) {
@@ -1895,7 +1724,6 @@ if (el.baseEnergyPerClickCalc) {
         calculateTTK();
         calculateMaxStage();
         calculateStarCalc();
-        calculateEnergyCalc();
     }, 100);
 
 
@@ -1910,7 +1738,7 @@ if (el.baseEnergyPerClickCalc) {
 
         const checklistContainer = el['checklist-worlds-container'];
         if (!checklistContainer) {
-             console.error("DEBUG: Checklist container 'checklist-worlds-container' not found in HTML.");
+            console.error("DEBUG: Checklist container 'checklist-worlds-container' not found in HTML.");
             return;
         }
 
@@ -2059,7 +1887,7 @@ if (el.baseEnergyPerClickCalc) {
         function populateWorldChecklists(savedData) {
             checklistContainer.innerHTML = '';
 
-            const worldOrder = Object.keys(worldData);
+            const worldOrder = Object.keys(checklistDataByWorld);
             if (checklistDataByWorld["Miscellaneous"]) {
                 worldOrder.push("Miscellaneous");
             }
@@ -2242,10 +2070,10 @@ if (el.baseEnergyPerClickCalc) {
 
 
         if (el['checklist-search']) {
-            el['checklist-search'].addEventListener('input', (e) => {
+            el['checklist-search'].addEventListener('input', debounce((e) => {
                 const categoryFilter = el['category-filter'] ? el['category-filter'].value : '';
                 filterChecklistItems(e.target.value, categoryFilter);
-            });
+            }, 300));
         }
         
         if (el['category-filter']) {
