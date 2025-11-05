@@ -338,23 +338,6 @@ function saveRaidData() {
 
 function loadRaidData() {
     try {
-        const dps = localStorage.getItem('ae_raid_dps');
-        if (dps && el.yourDPSActivity) el.yourDPSActivity.value = dps;
-
-        const dpsDenomInput = localStorage.getItem('ae_raid_dpsDenomInput');
-        if (dpsDenomInput && el.dpsActivityDenominationInput) el.dpsActivityDenominationInput.value = dpsDenomInput;
-        
-        const dpsDenom = denominations.find(d => d.name === dpsDenomInput);
-        if (el.dpsDenominationValue) {
-            el.dpsDenominationValue.value = dpsDenom ? dpsDenom.value : '1';
-        }
-
-        const timeLimit = localStorage.getItem('ae_raid_timeLimit');
-        if (timeLimit && el.activityTimeLimit) el.activityTimeLimit.value = timeLimit;
-        
-        const quantity = localStorage.getItem('ae_raid_key_quantity');
-        if (quantity && el.keyRunQuantity) el.keyRunQuantity.value = quantity;
-
         const activity = localStorage.getItem('ae_raid_activity');
         if (activity && el.activitySelect) {
             if (el.activitySelect.querySelector(`option[value="${activity}"]`)) {
@@ -362,8 +345,27 @@ function loadRaidData() {
             } else {
                 console.warn(`Saved activity "${activity}" not found in dropdown.`);
             }
-            handleActivityChange();
         }
+
+        const dps = localStorage.getItem('ae_raid_dps');
+        if (dps && el.yourDPSActivity) el.yourDPSActivity.value = dps;
+
+        const dpsDenomInput = localStorage.getItem('ae_raid_dpsDenomInput');
+        if (dpsDenomInput && el.dpsActivityDenominationInput) el.dpsActivityDenominationInput.value = dpsDenomInput;
+        
+        const dpsDenom = denominations.find(d => d.name === dpsDenomInput);
+        if (el.dpsActivityDenominationValue) {
+            el.dpsActivityDenominationValue.value = dpsDenom ? dpsDenom.value : '1';
+        }
+
+        const timeLimit = localStorage.getItem('ae_raid_timeLimit');
+        if (timeLimit && el.activityTimeLimit) el.activityTimeLimit.value = timeLimit;
+        
+        const quantity = localStorage.getItem('ae_raid_key_quantity');
+        if (quantity && el.keyRunQuantity) el.keyRunQuantity.value = quantity;
+        
+        // Trigger necessary updates since values have been loaded
+        handleActivityChange();
         calculateMaxStage();
         calculateKeyRunTime();
     } catch(e) {
@@ -1186,6 +1188,7 @@ function handleActivityChange() {
     if (!activity) {
         el.activityResult.innerText = '0 / 0';
         el.activityTimeLimit.value = ''; 
+        saveRaidData();
         return;
     }
 
@@ -1198,6 +1201,7 @@ function handleActivityChange() {
     }
     calculateMaxStage();
     calculateKeyRunTime();
+    saveRaidData();
 }
 
 function calculateMaxStage() {
@@ -1209,7 +1213,6 @@ function calculateMaxStage() {
     const selection = el.activitySelect.value;
     if (!selection) {
         el.activityResult.innerText = '0 / 0';
-        saveRaidData();
         return 0;
     }
 
@@ -1222,7 +1225,6 @@ function calculateMaxStage() {
 
     if (!activity || yourDPS <= 0 || timeLimit <= 0) {
         resultEl.innerText = `0 / ${maxStages}`;
-        saveRaidData();
         return 0;
     }
 
@@ -1262,7 +1264,6 @@ function calculateMaxStage() {
     }
 
     resultEl.innerText = `${completedStage} / ${maxStages}`;
-    saveRaidData();
     return completedStage;
 }
 
@@ -1277,15 +1278,13 @@ function calculateKeyRunTime() {
     const keyQuantity = Math.floor(getNumberValue('keyRunQuantity')) || 0;
     const resultEl = el.keyRunTimeResult;
     const returnTimeEl = el.keyRunReturnTime;
-    const activityTimeLimit = getNumberValue('activityTimeLimit'); 
     
     const yourDPS = (getNumberValue('yourDPSActivity') || 0) * (parseFloat(el.dpsActivityDenominationValue.value) || 1);
-    const completedStage = calculateMaxStage();
+    const completedStage = calculateMaxStage(); // Calls calculateMaxStage to get completedStage
 
-    if (!activity || keyQuantity <= 0 || activityTimeLimit <= 0 || yourDPS <= 0 || completedStage <= 0) {
+    if (!activity || keyQuantity <= 0 || yourDPS <= 0 || completedStage <= 0) {
         resultEl.innerText = '0s';
         if (returnTimeEl) returnTimeEl.innerText = '';
-        saveRaidData();
         return;
     }
     
@@ -1318,7 +1317,6 @@ function calculateKeyRunTime() {
     if (totalTimeInSeconds > MAX_SECONDS_CAP || !isFinite(totalTimeInSeconds)) {
         resultEl.innerText = "Over 1000 Years";
         if (returnTimeEl) returnTimeEl.innerText = 'ETA: Eternity';
-        saveRaidData();
         return;
     }
 
@@ -1348,7 +1346,6 @@ function calculateKeyRunTime() {
         returnTimeEl.innerText = `Finish Time: ${returnString}`;
     }
 
-    saveRaidData();
 }
 
 
@@ -1655,6 +1652,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(el.dpsActivityDenominationValue) el.dpsActivityDenominationValue.value = el.dpsDenominationValue.value;
         calculateMaxStage();
         calculateKeyRunTime();
+        saveRaidData();
     };
     function onTTKDenomChange() {
         calculateTTK();
@@ -1670,6 +1668,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function onRaidDenomChange() {
         calculateMaxStage();
         calculateKeyRunTime();
+        saveRaidData();
         syncDPS_RaidToTTK();
     }
 
@@ -1800,23 +1799,35 @@ if (el.energyPerClickTTE) {
     }
     if (el.enemyQuantity) el.enemyQuantity.addEventListener('input', debounce(calculateTTK, 300));
     if (el.fourSpotFarming) el.fourSpotFarming.addEventListener('change', calculateTTK);
-
-    if (el.yourDPSActivity) {
-        el.yourDPSActivity.addEventListener('input', debounce(() => {
-            calculateMaxStage();
-            calculateKeyRunTime();
-            if (el.yourDPS) el.yourDPS.value = el.yourDPSActivity.value;
-            calculateTTK();
-        }, 300));
-    }
-    if (el.activityTimeLimit) el.activityTimeLimit.addEventListener('input', debounce(() => {
+    
+    // START RAID LISTENERS
+    const raidDebounce = debounce(() => {
         calculateMaxStage();
         calculateKeyRunTime();
-    }, 300));
-    
-    if (el.keyRunQuantity) {
-        el.keyRunQuantity.addEventListener('input', debounce(calculateKeyRunTime, 300));
+        saveRaidData();
+    }, 300);
+
+    if (el.activitySelect) {
+        el.activitySelect.addEventListener('change', () => {
+            handleActivityChange();
+            saveRaidData(); // Save Activity change immediately
+        });
     }
+
+    if (el.yourDPSActivity) {
+        el.yourDPSActivity.addEventListener('input', () => {
+            raidDebounce();
+            // Sync to TTK
+            if (el.yourDPS) el.yourDPS.value = el.yourDPSActivity.value;
+            calculateTTK();
+        });
+    }
+
+    if (el.activityTimeLimit) el.activityTimeLimit.addEventListener('input', raidDebounce);
+    
+    if (el.keyRunQuantity) el.keyRunQuantity.addEventListener('input', raidDebounce);
+    // END RAID LISTENERS
+
 
     if (el.starLevelSelect) el.starLevelSelect.addEventListener('change', displayStarCost);
     if (el.starSpeedSelect) el.starSpeedSelect.addEventListener('change', calculateStarCalc);
@@ -1848,14 +1859,6 @@ if (el.energyPerClickTTE) {
             saveTTKData(); 
         });
     }
-    
-    if (el.activitySelect) {
-        el.activitySelect.addEventListener('change', () => {
-            handleActivityChange();
-            saveRaidData();
-        });
-    }
-
 
     loadRankUpData();
     loadETAData();
