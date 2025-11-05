@@ -1,5 +1,5 @@
 const el = {};
-const tabs = ['rankup', 'eta', 'time-to-energy', 'lootcalc', 'ttk', 'raid', 'star', 'checklist']; // ADDED 'lootcalc'
+const tabs = ['rankup', 'eta', 'time-to-energy', 'lootcalc', 'ttk', 'raid', 'star', 'checklist'];
 
 function switchTab(activeTab) {
     tabs.forEach(tab => {
@@ -575,8 +575,25 @@ function loadLootData() {
     }
 }
 
+function saveStarData() {
+    try {
+        if (el.starLevelSelect) localStorage.setItem('ae_star_level', el.starLevelSelect.value);
+        if (el.starSpeedSelect) localStorage.setItem('ae_star_speed', el.starSpeedSelect.value);
+        if (el.starAmount) localStorage.setItem('ae_star_amount', el.starAmount.value);
+        if (el.starBaseLuck) localStorage.setItem('ae_star_baseLuck', el.starBaseLuck.value);
+        if (el.starTimeHours) localStorage.setItem('ae_star_timeHours', el.starTimeHours.value);
+    } catch (e) {
+        console.error("Failed to save Star data to localStorage", e);
+    }
+}
 
-function calculateStarData() {
+function loadStarData() {
+    // Defensive check: only proceed if the required global objects are defined
+    if (typeof starCostData === 'undefined' || typeof starSpeedData === 'undefined' || typeof starRarityDataByLevel === 'undefined') {
+        console.warn("Star data dependencies are not yet defined. Skipping initial loadStarData.");
+        return;
+    }
+    
     try {
         const level = localStorage.getItem('ae_star_level');
         if (level && el.starLevelSelect) el.starLevelSelect.value = level;
@@ -1189,9 +1206,9 @@ function populateBoostDurations() {
 }
 
 function populateStarLevelDropdown() {
-    const select = el.starLevelSelect;
-    if (!select || typeof starCostData === 'undefined') return;
+    if (!el.starLevelSelect || typeof starCostData === 'undefined') return;
     
+    const select = el.starLevelSelect;
     select.innerHTML = '<option value="">-- Select Level --</option>';
     Object.keys(starCostData).forEach(level => {
         const option = document.createElement('option');
@@ -1202,9 +1219,9 @@ function populateStarLevelDropdown() {
 }
 
 function populateStarSpeedDropdown() {
-    const select = el.starSpeedSelect;
-    if (!select || typeof starSpeedData === 'undefined') return;
+    if (!el.starSpeedSelect || typeof starSpeedData === 'undefined') return;
 
+    const select = el.starSpeedSelect;
     select.innerHTML = '<option value="">-- Select Speed --</option>';
     Object.keys(starSpeedData).forEach(level => {
         const option = document.createElement('option');
@@ -1229,6 +1246,7 @@ function displayStarCost() {
 }
 
 function calculateStarCalc() {
+    // Defensive check: ensure all required data structures are defined
     if (typeof starCostData === 'undefined' || typeof starSpeedData === 'undefined' || 
         typeof starRarityDataByLevel === 'undefined') {
         return;
@@ -1811,6 +1829,7 @@ document.addEventListener('DOMContentLoaded', () => {
     populateTimeToReturnDropdown();
     populateTimeToReturnMinutesDropdown();
     populateBoostDurations();
+    // CALLS TO POPULATE STAR DROPDOWNS NOW GUARDED INTERNALLY
     populateStarLevelDropdown();
     populateStarSpeedDropdown();
 
@@ -2072,7 +2091,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadTimeToEnergyData(); 
     loadLootData();
     loadTTKData();
-    loadStarData();
+    loadStarData(); // THIS CALL IS NOW SAFE
 
     if (el.worldSelect) {
         populateEnemyDropdown(); 
@@ -2096,4 +2115,403 @@ document.addEventListener('DOMContentLoaded', () => {
     calculateKeyRunTime();
     calculateStarCalc();
 
+    // DEFENSIVE CHECKLIST INITIALIZATION BLOCK
+    if (typeof checklistDataByWorld !== 'undefined' && typeof worldData !== 'undefined') {
+        console.log("DEBUG: World and Checklist data found! Initializing new checklist UI...");
+
+        const checklistPanel = el['panel-checklist']; 
+        if (!checklistPanel) {
+            console.error("DEBUG: Checklist panel 'panel-checklist' not found in HTML. Checklist functionality will be disabled.");
+            // Added return here to prevent further errors if panel is missing
+            return;
+        }
+
+        const checklistContainer = el['checklist-worlds-container'];
+        if (!checklistContainer) {
+            console.error("DEBUG: Checklist container 'checklist-worlds-container' not found in HTML.");
+            return;
+        }
+
+        const CHECKLIST_SAVE_KEY = 'ae_checklist_progress';
+
+        function styleChecklistItem(checkbox, isChecked) {
+            const span = checkbox.nextElementSibling;
+            if (span) {
+                if (isChecked) {
+                    span.style.textDecoration = 'line-through';
+                    span.style.color = '#888';
+                } else {
+                    span.style.textDecoration = 'none';
+                    span.style.color = '#ccc';
+                }
+            }
+        }
+        
+        function createChecklistItem(item, savedData) {
+            const label = document.createElement('label');
+            label.className = 'checklist-item';
+            label.htmlFor = item.id;
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = item.id;
+            checkbox.name = item.id;
+            checkbox.checked = !!savedData[item.id];
+
+            const span = document.createElement('span');
+            span.textContent = item.name;
+
+            label.appendChild(checkbox);
+            label.appendChild(span);
+
+            styleChecklistItem(checkbox, checkbox.checked);
+            return label;
+        }
+
+        function updateAllWorldTitles(savedData) {
+            // Added defensive check here just in case this is called early
+            if (typeof checklistDataByWorld === 'undefined') return;
+
+            if (!savedData) {
+                try {
+                    savedData = JSON.parse(localStorage.getItem(CHECKLIST_SAVE_KEY)) || {};
+                } catch (e) {
+                    savedData = {};
+                }
+            }
+
+            const worldNames = Object.keys(checklistDataByWorld);
+            let overallTotal = 0;
+            let overallCompleted = 0;
+            let categoryStats = { 
+                gachas: {total: 0, completed: 0}, 
+                progressions: {total: 0, completed: 0}, 
+                sssRank: {total: 0, completed: 0}, 
+                auras: {total: 0, completed: 0}, 
+                accessories: {total: 0, completed: 0},
+                quests: {total: 0, completed: 0} 
+            };
+
+            for (const worldName of worldNames) {
+                const world = checklistDataByWorld[worldName];
+                const worldNameId = worldName.replace(/\s+/g, '-').toLowerCase();
+                const worldTitleEl = document.getElementById(`world-title-${worldNameId}`);
+
+                let totalItems = 0;
+                let completedItems = 0;
+        
+                const categories = ['gachas', 'progressions', 'sssRank', 'auras', 'accessories', 'quests'];
+                categories.forEach(catKey => {
+                    if (world[catKey]) {
+                        totalItems += world[catKey].length;
+                        if (categoryStats[catKey]) {
+                            categoryStats[catKey].total += world[catKey].length;
+                        }
+                        
+                        world[catKey].forEach(item => {
+                            if (savedData[item.id]) {
+                                completedItems++;
+                                if (categoryStats[catKey]) {
+                                    categoryStats[catKey].completed++;
+                                }
+                            }
+                        });
+                        
+                        const subTitleEl = document.getElementById(`${catKey}-title-${worldNameId}`);
+                        if(subTitleEl) {
+                            const subTotal = world[catKey].length;
+                            const subCompleted = world[catKey].filter(item => savedData[item.id]).length;
+                            let catName = catKey.charAt(0).toUpperCase() + catKey.slice(1);
+                            if (catKey === 'sssRank') catName = 'SSS Rank';
+                            
+                            subTitleEl.innerHTML = `${catName} <span class="category-badge badge-${catKey}">${subCompleted}/${subTotal}</span>`;
+                        }
+                    }
+                });
+
+                if (worldTitleEl) {
+                    const percentage = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+                    worldTitleEl.innerText = `${worldName} (${completedItems} / ${totalItems})`;
+                    worldTitleEl.style.setProperty('--progress', `${percentage}%`);
+                }
+                overallTotal += totalItems;
+                overallCompleted += completedItems;
+            }
+            
+            const overallProgressText = el['overall-progress-text'];
+            const overallProgressFill = el['overall-progress-fill'];
+            if (overallProgressText && overallProgressFill) {
+                const percentage = overallTotal > 0 ? Math.round((overallCompleted / overallTotal) * 100) : 0;
+                overallProgressText.innerText = `${overallCompleted} / ${overallTotal} (${percentage}%)`;
+                overallProgressFill.style.width = `${percentage}%`;
+            }
+            
+            Object.keys(categoryStats).forEach(cat => {
+                let elId;
+                if (cat === 'sssRank') elId = 'sssrank-count';
+                else elId = `${cat}-count`;
+                
+                const countEl = document.getElementById(elId);
+                if (countEl) {
+                    countEl.innerText = `${categoryStats[cat].completed}/${categoryStats[cat].total}`;
+                } else {
+                    console.warn(`Count element with ID '${elId}' not found.`);
+                }
+            });
+        }
+
+        function saveChecklistData() {
+            // Added defensive check here
+            if (typeof checklistDataByWorld === 'undefined') return;
+
+            try {
+                const savedData = {};
+                if (!checklistPanel) return;
+                const checkboxes = checklistPanel.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(cb => {
+                    if(cb.checked) {
+                        savedData[cb.id] = true;
+                    }
+                });
+                localStorage.setItem(CHECKLIST_SAVE_KEY, JSON.stringify(savedData));
+                updateAllWorldTitles(savedData);
+            } catch (e) {
+                console.error("Failed to save checklist data:", e);
+            }
+        }
+
+        function populateWorldChecklists(savedData) {
+            // Added defensive check here
+            if (typeof checklistDataByWorld === 'undefined') return;
+
+            checklistContainer.innerHTML = '';
+
+            const worldOrder = Object.keys(checklistDataByWorld);
+            if (checklistDataByWorld["Miscellaneous"]) {
+                worldOrder.push("Miscellaneous");
+            }
+
+            for (const worldName of worldOrder) {
+                if (!checklistDataByWorld[worldName]) continue;
+
+                const world = checklistDataByWorld[worldName];
+                const worldNameId = worldName.replace(/\s+/g, '-').toLowerCase();
+
+                const section = document.createElement('section');
+                
+                const worldHeader = document.createElement('div');
+                worldHeader.className = 'world-section-header';
+                
+                const title = document.createElement('h2');
+                title.className = 'world-section-title';
+                title.id = `world-title-${worldNameId}`;
+                title.innerText = `${worldName} (0 / 0)`; 
+                worldHeader.appendChild(title);
+
+                const worldToggleContainer = document.createElement('div');
+                worldToggleContainer.className = 'toggle-container world-toggle';
+
+                const checkAllWorldBtn = document.createElement('button');
+                checkAllWorldBtn.className = 'toggle-btn world-check-all';
+                checkAllWorldBtn.innerText = 'Check All';
+                checkAllWorldBtn.dataset.worldId = worldNameId; 
+
+                const uncheckAllWorldBtn = document.createElement('button');
+                uncheckAllWorldBtn.className = 'toggle-btn world-uncheck-all';
+                uncheckAllWorldBtn.innerText = 'Uncheck All';
+                uncheckAllWorldBtn.dataset.worldId = worldNameId; 
+
+                worldToggleContainer.appendChild(checkAllWorldBtn);
+                worldToggleContainer.appendChild(uncheckAllWorldBtn);
+                worldHeader.appendChild(worldToggleContainer);
+                
+                section.appendChild(worldHeader);
+
+                const categories = [
+                    { key: 'gachas', name: 'Gachas', css: 'gachas' },
+                    { key: 'progressions', name: 'Progressions', css: 'progressions' },
+                    { key: 'sssRank', name: 'SSS Rank', css: 'sssRank' },
+                    { key: 'auras', name: 'Auras', css: 'auras' },
+                    { key: 'accessories', name: 'Accessories', css: 'accessories' },
+                    { key: 'quests', name: 'Quests', css: 'quests' }
+                ];
+
+                const subsections = [];
+
+                categories.forEach(cat => {
+                    if (world[cat.key] && world[cat.key].length > 0) {
+                        const subSection = document.createElement('div');
+                        subSection.className = 'checklist-category-subsection';
+                        
+                        const subTitle = document.createElement('h3');
+                        subTitle.className = `world-subsection-title ${cat.css}`;
+                        subTitle.id = `${cat.key}-title-${worldNameId}`;
+                        subTitle.innerText = `${cat.name} (0 / ${world[cat.key].length})`;
+                        subSection.appendChild(subTitle);
+                        
+                        const listDiv = document.createElement('div');
+                        listDiv.className = 'space-y-2';
+                        world[cat.key].forEach(item => {
+                            listDiv.appendChild(createChecklistItem(item, savedData));
+                        });
+                        subSection.appendChild(listDiv);
+                        subsections.push(subSection);
+                    }
+                });
+
+                if (subsections.length > 0) {
+                    const grid = document.createElement('div');
+                    let gridCols = 'md:grid-cols-2 lg:grid-cols-3';
+                    if (subsections.length === 1) gridCols = ''; 
+                    if (subsections.length === 2) gridCols = 'md:grid-cols-2'; 
+                    
+                    grid.className = `grid grid-cols-1 ${gridCols} gap-6 mt-4`;
+                    
+                    subsections.forEach(sub => grid.appendChild(sub));
+                    section.appendChild(grid);
+                }
+
+                checklistContainer.appendChild(section);
+            }
+        }
+
+        function loadChecklistData() {
+            // Added defensive check here
+            if (typeof checklistDataByWorld === 'undefined') return;
+
+            try {
+                const savedData = JSON.parse(localStorage.getItem(CHECKLIST_SAVE_KEY)) || {};
+                populateWorldChecklists(savedData);
+                updateAllWorldTitles(savedData);
+            } catch (e) {
+                console.error("Failed to load checklist data:", e);
+                populateWorldChecklists({});
+                updateAllWorldTitles({});
+            }
+        }
+
+        function filterChecklistItems(searchTerm = '', categoryFilter = '') {
+            const searchLower = searchTerm.toLowerCase();
+            const worldSections = checklistPanel.querySelectorAll('section');
+            
+            worldSections.forEach(section => {
+                const subsections = section.querySelectorAll('.checklist-category-subsection');
+                let sectionHasVisible = false;
+                
+                subsections.forEach(subsection => {
+                    const subTitle = subsection.querySelector('h3');
+                    if (!subTitle) return;
+                    
+                    const items = subsection.querySelectorAll('.checklist-item');
+                    let visibleItems = 0;
+                    
+                    const subId = subTitle.id;
+                    const categoryMatch = !categoryFilter || (categoryFilter === 'sssrank' ? subId.includes('sssRank-title') : subId.includes(`${categoryFilter}-title`));
+                    
+                    items.forEach(item => {
+                        const text = item.textContent.toLowerCase();
+                        const searchMatch = !searchTerm || text.includes(searchLower);
+                        
+                        if (categoryMatch && searchMatch) {
+                            item.style.display = 'flex';
+                            visibleItems++;
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                    
+                    if (visibleItems > 0) {
+                        subsection.style.display = ''; 
+                        sectionHasVisible = true;
+                    } else {
+                        subsection.style.display = 'none';
+                    }
+                });
+                
+                section.style.display = sectionHasVisible ? 'block' : 'none';
+            });
+        }
+        
+        // --- CHECKLIST EVENT LISTENERS ---
+
+        checklistPanel.addEventListener('change', (e) => {
+            if (e.target.type === 'checkbox') {
+                const item = e.target.closest('.checklist-item');
+                if (e.target.checked && item) {
+                    item.classList.add('completed');
+                    setTimeout(() => item.classList.remove('completed'), 500);
+                }
+                styleChecklistItem(e.target, e.target.checked);
+                saveChecklistData();
+            }
+        });
+
+        checklistContainer.addEventListener('click', (e) => {
+            const target = e.target;
+            let checkValue;
+
+            if (target.classList.contains('world-check-all')) {
+                checkValue = true;
+            } else if (target.classList.contains('world-uncheck-all')) {
+                checkValue = false;
+            } else {
+                return;
+            }
+
+            const section = target.closest('section');
+            if (!section) return;
+
+            const checkboxes = section.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                cb.checked = checkValue;
+                styleChecklistItem(cb, checkValue);
+            });
+
+            saveChecklistData();
+        });
+
+
+        if (el['checklist-search']) {
+            el['checklist-search'].addEventListener('input', debounce((e) => {
+                const categoryFilter = el['category-filter'] ? el['category-filter'].value : '';
+                filterChecklistItems(e.target.value, categoryFilter);
+            }, 300));
+        }
+        
+        if (el['category-filter']) {
+            el['category-filter'].addEventListener('change', (e) => {
+                const searchTerm = el['checklist-search'] ? el['checklist-search'].value : '';
+                filterChecklistItems(searchTerm, e.target.value);
+            });
+        }
+
+        if (el['check-all-btn']) {
+            el['check-all-btn'].addEventListener('click', () => {
+                if (!checklistPanel) return;
+                const checkboxes = checklistPanel.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(cb => {
+                    cb.checked = true;
+                    styleChecklistItem(cb, true);
+                });
+                saveChecklistData();
+            });
+        }
+
+        if (el['uncheck-all-btn']) {
+            el['uncheck-all-btn'].addEventListener('click', () => {
+                if (!checklistPanel) return;
+                const checkboxes = checklistPanel.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(cb => {
+                    cb.checked = false;
+                    styleChecklistItem(cb, false);
+                });
+                saveChecklistData();
+            });
+        }
+        
+        loadChecklistData(); // Call loadChecklistData if the defensive check passes here
+
+    } else {
+        console.warn("DEBUG: Checklist data (checklistDataByWorld) or World data (worldData) NOT found. Checklist will not load.");
+    }
 });
