@@ -79,6 +79,7 @@
                 <button id="tab-rankup" class="tab-btn active" data-tab="rankup">Rank Up</button>
                 <button id="tab-eta" class="tab-btn" data-tab="eta">Target Energy ETA</button>
                 <button id="tab-time-to-energy" class="tab-btn" data-tab="time-to-energy">Time to Energy</button>
+                <button id="tab-lootcalc" class="tab-btn" data-tab="lootcalc">Loot Calc</button>
                 <button id="tab-ttk" class="tab-btn" data-tab="ttk">Time to Kill</button>
                 <button id="tab-raid" class="tab-btn" data-tab="raid">Raids / Dungeons</button>
                 <button id="tab-star" class="tab-btn" data-tab="star">Star Calc</button> 
@@ -223,7 +224,7 @@
     </div>
                     
                     <div>
-                        <h3 class="subsection-title">Active Boost Durations</h3>
+                        <h3 class="subsection-title">Active Boost Durations (Energy)</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                             
                             <div>
@@ -273,6 +274,92 @@
                     </div>
 
                 </div> 
+            </div>
+
+            <div id="panel-lootcalc" class="hidden">
+                <div class="max-w-xl space-y-6">
+                    <div class="toggle-container">
+                        <button class="toggle-btn active" data-clickerspeed-loot="slow">Slow Clicker</button>
+                        <button class="toggle-btn" data-clickerspeed-loot="fast">Fast Clicker</button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="lootDropMin">Drop Count (Min)</label>
+                            <input type="number" id="lootDropMin" class="input-field w-full" placeholder="e.g., 1 (for singular drops)">
+                        </div>
+                        <div>
+                            <label for="lootDropMax">Drop Count (Max)</label>
+                            <input type="number" id="lootDropMax" class="input-field w-full" placeholder="e.g., 5 (for token ranges)">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="lootBaseDropRate">Base Drop Rate (%)</label>
+                        <input type="number" id="lootBaseDropRate" class="input-field w-full" placeholder="e.g., 10 (for 10% drop rate)">
+                    </div>
+                    
+                    <h3 class="subsection-title">Active Boost Durations (Loot Drops)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        
+                        <div>
+                            <label for="boost-spooky-drop-potion-hours">Spooky Drop Potion (x3 Multiplier)</label>
+                            <div class="grid grid-cols-2 gap-1">
+                                <select id="boost-spooky-drop-potion-hours" class="select-field"></select>
+                                <select id="boost-spooky-drop-potion-minutes" class="select-field"></select>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="boost-drop-potion-hours">Drop Potion (x2 Multiplier)</label>
+                            <div class="grid grid-cols-2 gap-1">
+                                <select id="boost-drop-potion-hours" class="select-field"></select>
+                                <select id="boost-drop-potion-minutes" class="select-field"></select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="boost-drop-macaron-hours">Drop Macaron (+20% Additive)</label>
+                            <div class="grid grid-cols-2 gap-1">
+                                <select id="boost-drop-macaron-hours" class="select-field"></select>
+                                <select id="boost-drop-macaron-minutes" class="select-field"></select>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="boost-hot-sauce-hours">Hot Sauce (+10% Additive)</label>
+                            <div class="grid grid-cols-2 gap-1">
+                                <select id="boost-hot-sauce-hours" class="select-field"></select>
+                                <select id="boost-hot-sauce-minutes" class="select-field"></select>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="subsection-title">Loot Target (Time/Kills)</div>
+                    <div>
+                        <label for="lootTimeTargetHours">Time Target</label>
+                        <div class="grid-time">
+                            <input type="number" id="lootTimeTargetHours" class="input-field w-full" placeholder="Hours">
+                            <input type="number" id="lootTimeTargetMinutes" class="input-field w-full" placeholder="Minutes">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="yourKillsPerSecond">Your Kills Per Second (KPS)</label>
+                        <input type="number" id="yourKillsPerSecond" class="input-field w-full" placeholder="e.g., 0.5 (for 2 seconds per kill)">
+                    </div>
+
+                    <div class="result-box p-4 rounded-lg text-center">
+                        <p class="text-gray-400">Estimated Total Drops after Time Target:</p>
+                        <p id="lootEstimatedDropsResult" class="text-2xl font-bold text-orange-400">0</p>
+                    </div>
+
+                    <div class="result-box p-4 rounded-lg text-center">
+                        <label for="lootDropTargetCount" class="text-gray-400 m-0">Time to reach target drop quantity:</label>
+                        <input type="number" id="lootDropTargetCount" class="input-field w-full mt-2 mb-4" placeholder="e.g., 50 for 50 tokens">
+                        <p id="lootTimeToTargetResult" class="text-2xl font-bold text-orange-400">0s</p>
+                    </div>
+
+                </div>
             </div>
 
             <div id="panel-ttk" class="hidden">

@@ -1,27 +1,57 @@
 const boostItems = [
+    // Energy Boosts (Existing)
     {
         id: 'spooky-energy-potion',
         name: 'Spooky Energy Potion',
-        multiplier: 2.5
+        multiplier: 2.5,
+        type: 'energy'
     },
     {
         id: 'energy-potion',
         name: 'Energy Potion',
-        multiplier: 2
+        multiplier: 2,
+        type: 'energy'
     },
     {
         id: 'small-potion',
         name: 'Small Potion',
-        multiplier: 1.5
+        multiplier: 1.5,
+        type: 'energy'
     },
     {
         id: 'energy-macaron',
         name: 'Energy Macaron',
-        multiplier: 1.25
+        multiplier: 1.25,
+        type: 'energy'
     },
     {
         id: 'chocolat-bar',
         name: 'Chocolat Bar',
-        multiplier: 1.10
+        multiplier: 1.10,
+        type: 'energy'
+    },
+    {
+        id: 'spooky-drop-potion',
+        name: 'Spooky Drop Potion',
+        multiplier: 2.5,
+        type: 'loot_mult'
+    },
+    {
+        id: 'drop-potion',
+        name: 'Drop Potion',
+        multiplier: 2,
+        type: 'loot_mult'
+    },
+    {
+        id: 'drop-macaron',
+        name: 'Drop Macaron',
+        additive: 0.2,
+        type: 'loot_add'
+    },
+    {
+        id: 'hot-sauce',
+        name: 'Hot Sauce',
+        additive: 0.1,
+        type: 'loot_add'
     }
 ];
