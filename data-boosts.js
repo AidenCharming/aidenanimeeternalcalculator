@@ -1,6 +1,3 @@
-// This file contains the multiplier data for potions and food.
-// Values are from the user's screenshots.
-
 const boostItems = [
     {
         id: 'spooky-energy-potion',

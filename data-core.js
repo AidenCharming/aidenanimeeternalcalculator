@@ -1,6 +1,3 @@
-// Data file containing static global constants for denominations and rank requirements.
-// Dynamic data (worlds, raids, dungeons) is fetched and handled in script.js.
-
 const denominations = [
     { name: 'None', value: 1 },
     { name: 'K', value: 1e3 },
@@ -107,9 +104,8 @@ const denominations = [
     { name: 'UNCENT', value: 1e306 }
 ];
 
-// Complete Rank Requirements List
 const rankRequirements = {
-    "0": 0, // Starting rank
+    "0": 0,
     "1": 9.00e3, "2": 4.50e4, "3": 2.43e5, "4": 1.41e6, "5": 8.75e6, "6": 5.78e7, "7": 4.05e8, "8": 3.00e9, "9": 2.34e10, "10": 1.17e11,
     "11": 6.31e11, "12": 1.07e12, "13": 2.52e12, "14": 1.50e13, "15": 1.55e14, "16": 7.76e14, "17": 7.06e15, "18": 9.03e16, "19": 1.04e18, "20": 9.49e18,
     "21": 5.88e19, "22": 3.89e20, "23": 2.72e21, "24": 2.01e22, "25": 1.57e23, "26": 7.86e23, "27": 4.24e24, "28": 2.46e25, "29": 1.53e26, "30": 1.01e27,
@@ -126,8 +122,6 @@ const rankRequirements = {
 	"129": 90.00e+117, "130": 1.00e+120
 };
 
-// --- NEWLY ADDED ---
-// World data is now static and part of this core file.
 const worldData = {
     "Halloween World": {
         "enemies": {

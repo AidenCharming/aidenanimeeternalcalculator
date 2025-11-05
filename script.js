@@ -20,7 +20,10 @@ function switchTab(activeTab) {
 const activityData = {};
 
 function setFarmingMode(mode, button) {
-    const buttons = button.parentElement.querySelectorAll('.toggle-btn');
+    const parent = button.closest('.toggle-container');
+    if (!parent) return;
+
+    const buttons = parent.querySelectorAll('.toggle-btn');
     buttons.forEach(btn => btn.classList.remove('active'));
     button.classList.add('active');
     
@@ -31,14 +34,26 @@ function setFarmingMode(mode, button) {
 }
 
 function setClickerSpeed(speed, button) {
-    const buttons = button.parentElement.querySelectorAll('.toggle-btn');
+    const parent = button.closest('.toggle-container');
+    if (!parent) return;
+
+    const buttons = parent.querySelectorAll('.toggle-btn');
     buttons.forEach(btn => btn.classList.remove('active'));
     button.classList.add('active');
     
     const isFast = (speed === 'fast');
-    if (el.clickerSpeed) el.clickerSpeed.checked = isFast;
-    if (el.clickerSpeedETA) el.clickerSpeedETA.checked = isFast;
-    if (el.clickerSpeedTTE) el.clickerSpeedTTE.checked = isFast;
+    
+    const checkboxId = button.dataset.clickerspeed || button.dataset.clickerspeedEta || button.dataset.clickerspeedTte;
+
+    if (checkboxId === 'slow' || checkboxId === 'fast') {
+        if (el.clickerSpeed) el.clickerSpeed.checked = isFast;
+        if (el.clickerSpeedETA) el.clickerSpeedETA.checked = isFast;
+        if (el.clickerSpeedTTE) el.clickerSpeedTTE.checked = isFast;
+    } else {
+        if (el.clickerSpeed) el.clickerSpeed.checked = isFast;
+        if (el.clickerSpeedETA) el.clickerSpeedETA.checked = isFast;
+        if (el.clickerSpeedTTE) el.clickerSpeedTTE.checked = isFast;
+    }
     
     calculateRankUp();
     calculateEnergyETA();
@@ -161,7 +176,7 @@ function loadRankUpData() {
             
             const parentDiv = el.clickerSpeed.parentElement;
             if (parentDiv) {
-                const buttonToActivate = isFast ? parentDiv.querySelector('.toggle-btn[onclick*="\'fast\'"]') : parentDiv.querySelector('.toggle-btn[onclick*="\'slow\'"]');
+                const buttonToActivate = isFast ? parentDiv.querySelector('.toggle-btn[data-clickerspeed="fast"]') : parentDiv.querySelector('.toggle-btn[data-clickerspeed="slow"]');
                 if (buttonToActivate) {
                     setClickerSpeed(isFast ? 'fast' : 'slow', buttonToActivate);
                 }
@@ -229,7 +244,7 @@ function loadETAData() {
             
             const parentDiv = el.clickerSpeedETA.parentElement;
             if (parentDiv) {
-                const buttonToActivate = isFast ? parentDiv.querySelector('.toggle-btn[onclick*="\'fast\'"]') : parentDiv.querySelector('.toggle-btn[onclick*="\'slow\'"]');
+                const buttonToActivate = isFast ? parentDiv.querySelector('.toggle-btn[data-clickerspeed-eta="fast"]') : parentDiv.querySelector('.toggle-btn[data-clickerspeed-eta="slow"]');
                 if (buttonToActivate) {
                     setClickerSpeed(isFast ? 'fast' : 'slow', buttonToActivate);
                 }
@@ -281,8 +296,8 @@ function loadTTKData() {
 
         const ttkPanel = el['panel-ttk'];
         if (ttkPanel) {
-            const singleBtn = ttkPanel.querySelector('.toggle-btn[onclick*="\'single\'"]');
-            const fourBtn = ttkPanel.querySelector('.toggle-btn[onclick*="\'four\'"]');
+            const singleBtn = ttkPanel.querySelector('.toggle-btn[data-farming-mode="single"]');
+            const fourBtn = ttkPanel.querySelector('.toggle-btn[data-farming-mode="four"]');
 
             if (singleBtn && fourBtn) {
                 if (el.fourSpotFarming.checked) {
@@ -315,6 +330,7 @@ function saveRaidData() {
         if (el.dpsActivityDenominationInput) localStorage.setItem('ae_raid_dpsDenomInput', el.dpsActivityDenominationInput.value);
         if (el.dpsActivityDenominationValue) localStorage.setItem('ae_raid_dpsDenomValue', el.dpsActivityDenominationValue.value);
         if (el.activityTimeLimit) localStorage.setItem('ae_raid_timeLimit', el.activityTimeLimit.value);
+        if (el.keyRunQuantity) localStorage.setItem('ae_raid_key_quantity', el.keyRunQuantity.value);
     } catch(e) {
         console.error("Failed to save Raid data to localStorage", e);
     }
@@ -335,6 +351,9 @@ function loadRaidData() {
 
         const timeLimit = localStorage.getItem('ae_raid_timeLimit');
         if (timeLimit && el.activityTimeLimit) el.activityTimeLimit.value = timeLimit;
+        
+        const quantity = localStorage.getItem('ae_raid_key_quantity');
+        if (quantity && el.keyRunQuantity) el.keyRunQuantity.value = quantity;
 
         const activity = localStorage.getItem('ae_raid_activity');
         if (activity && el.activitySelect) {
@@ -346,6 +365,7 @@ function loadRaidData() {
             handleActivityChange();
         }
         calculateMaxStage();
+        calculateKeyRunTime();
     } catch(e) {
         console.error("Failed to load Raid data from localStorage", e);
     }
@@ -385,7 +405,6 @@ function saveTimeToEnergyData() {
 
 function loadTimeToEnergyData() {
      try {
-        // Load Current Energy Data
         const currentEnergyNum = localStorage.getItem('ae_tte_currentEnergy') || '';
         if (el.currentEnergyTTE) el.currentEnergyTTE.value = currentEnergyNum;
         
@@ -397,7 +416,6 @@ function loadTimeToEnergyData() {
             el.currentEnergyTTEDenominationValue.value = currentDenom ? currentDenom.value : '1';
         }
 
-        // Load Energy Per Click Data
         const energyPerClickNum = localStorage.getItem('ae_tte_energyPerClick') || '';
         if (el.energyPerClickTTE) el.energyPerClickTTE.value = energyPerClickNum;
 
@@ -409,7 +427,6 @@ function loadTimeToEnergyData() {
             el.energyPerClickTTEDenominationValue.value = energyPerClickDenom ? energyPerClickDenom.value : '1';
         }
 
-        // Load Return Time
         const returnTime = localStorage.getItem('ae_tte_returnTime');
         if (returnTime && el.timeToReturnSelect) {
             el.timeToReturnSelect.value = returnTime;
@@ -419,7 +436,6 @@ function loadTimeToEnergyData() {
             el.timeToReturnSelectMinutes.value = returnTimeMinutes;
         }
 
-        // Load Clicker Speed and Update Visual State
         const clickerSpeed = localStorage.getItem('ae_clickerSpeed');
         const isFast = (clickerSpeed === 'true');
         
@@ -428,7 +444,7 @@ function loadTimeToEnergyData() {
             
             const parentDiv = el.clickerSpeedTTE.parentElement;
             if (parentDiv) {
-                const buttonToActivate = isFast ? parentDiv.querySelector('.toggle-btn[onclick*="\'fast\'"]') : parentDiv.querySelector('.toggle-btn[onclick*="\'slow\'"]');
+                const buttonToActivate = isFast ? parentDiv.querySelector('.toggle-btn[data-clickerspeed-tte="fast"]') : parentDiv.querySelector('.toggle-btn[data-clickerspeed-tte="slow"]');
                 if (buttonToActivate) {
                     setClickerSpeed(isFast ? 'fast' : 'slow', buttonToActivate);
                 }
@@ -436,7 +452,6 @@ function loadTimeToEnergyData() {
         }
 
 
-        // Load Boost Durations
         if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
             boostItems.forEach(item => {
                 const hoursEl = el[`boost-${item.id}-hours`];
@@ -1182,19 +1197,20 @@ function handleActivityChange() {
         resultLabel.innerText = 'Estimated Max Room:';
     }
     calculateMaxStage();
+    calculateKeyRunTime();
 }
 
 function calculateMaxStage() {
     if (!el.activitySelect || !el.yourDPSActivity || !el.dpsActivityDenominationValue || 
         !el.activityTimeLimit || !el.activityResult) {
-        return; 
+        return 0; 
     }
     
     const selection = el.activitySelect.value;
     if (!selection) {
         el.activityResult.innerText = '0 / 0';
         saveRaidData();
-        return;
+        return 0;
     }
 
     const activity = activityData[selection];
@@ -1207,7 +1223,7 @@ function calculateMaxStage() {
     if (!activity || yourDPS <= 0 || timeLimit <= 0) {
         resultEl.innerText = `0 / ${maxStages}`;
         saveRaidData();
-        return;
+        return 0;
     }
 
     const maxDamageInTime = yourDPS * timeLimit;
@@ -1230,6 +1246,8 @@ function calculateMaxStage() {
             let enemyMultiplier = 1;
             if (activity.type === 'raid' && !singleEnemyRaids.includes(selection)) {
                 enemyMultiplier = 5;
+            } else if (activity.type === 'dungeon' && !singleEnemyRaids.includes(selection)) {
+                 enemyMultiplier = 1;
             }
 
             const totalStageHealth = stageHealth * enemyMultiplier;
@@ -1244,6 +1262,92 @@ function calculateMaxStage() {
     }
 
     resultEl.innerText = `${completedStage} / ${maxStages}`;
+    saveRaidData();
+    return completedStage;
+}
+
+/**
+ * Calculates the total time needed to complete a specified number of runs (keys).
+ */
+function calculateKeyRunTime() {
+    if (!el.keyRunTimeResult || !el.activitySelect) return;
+    
+    const activityName = el.activitySelect.value;
+    const activity = activityData[activityName];
+    const keyQuantity = Math.floor(getNumberValue('keyRunQuantity')) || 0;
+    const resultEl = el.keyRunTimeResult;
+    const returnTimeEl = el.keyRunReturnTime;
+    const activityTimeLimit = getNumberValue('activityTimeLimit'); 
+    
+    const yourDPS = (getNumberValue('yourDPSActivity') || 0) * (parseFloat(el.dpsActivityDenominationValue.value) || 1);
+    const completedStage = calculateMaxStage();
+
+    if (!activity || keyQuantity <= 0 || activityTimeLimit <= 0 || yourDPS <= 0 || completedStage <= 0) {
+        resultEl.innerText = '0s';
+        if (returnTimeEl) returnTimeEl.innerText = '';
+        saveRaidData();
+        return;
+    }
+    
+    let timeInSecondsPerRun = 0;
+    const singleEnemyRaids = ["Mundo Raid", "Gleam Raid", "Tournament Raid"];
+    const RESPawn_TIME = 0.1;
+
+    for (let i = 1; i <= completedStage; i++) {
+        const stageKey = `Room ${i}`;
+        let stageHealth = parseFloat(activity.enemies[stageKey]);
+        
+        let enemyMultiplier = 1;
+        if (activity.type === 'raid' && !singleEnemyRaids.includes(activityName)) {
+            enemyMultiplier = 5;
+        }
+        
+        const totalStageHealth = stageHealth * enemyMultiplier;
+        
+        const killTime = totalStageHealth / yourDPS;
+        const timePerStage = Math.max(killTime + 0.5, 1.0) + RESPawn_TIME;
+        
+        timeInSecondsPerRun += timePerStage; 
+    }
+    
+    
+    const totalTimeInSeconds = timeInSecondsPerRun * keyQuantity;
+    
+    const MAX_SECONDS_CAP = 3.154e10; 
+
+    if (totalTimeInSeconds > MAX_SECONDS_CAP || !isFinite(totalTimeInSeconds)) {
+        resultEl.innerText = "Over 1000 Years";
+        if (returnTimeEl) returnTimeEl.innerText = 'ETA: Eternity';
+        saveRaidData();
+        return;
+    }
+
+    const days = Math.floor(totalTimeInSeconds / 86400);
+    const hours = Math.floor((totalTimeInSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalTimeInSeconds % 3600) / 60);
+    const seconds = Math.round(totalTimeInSeconds % 60);
+
+    let resultString = '';
+    if (days > 0) resultString += `${days}d `;
+    if (hours > 0 || days > 0) resultString += `${hours}h `;
+    if (minutes > 0 || hours > 0 || days > 0) resultString += `${minutes}m `;
+    resultString += `${seconds}s`;
+    
+    resultEl.innerText = resultString.trim() || '0s';
+
+    if (returnTimeEl) {
+        const now = new Date();
+        const returnTime = new Date(now.getTime() + totalTimeInSeconds * 1000);
+        const returnString = returnTime.toLocaleString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            hour: 'numeric', 
+            minute: '2-digit', 
+            hour12: true 
+        });
+        returnTimeEl.innerText = `Finish Time: ${returnString}`;
+    }
+
     saveRaidData();
 }
 
@@ -1443,6 +1547,36 @@ document.addEventListener('DOMContentLoaded', () => {
         applyBackgroundPreference(false);
     }
 
+    
+    const tabControls = el['tab-controls'];
+    if (tabControls) {
+        tabControls.addEventListener('click', (e) => {
+            const button = e.target.closest('.tab-btn');
+            if (button && button.dataset.tab) {
+                switchTab(button.dataset.tab);
+            }
+        });
+    }
+
+    const clickerSpeedControls = document.querySelectorAll('.toggle-container');
+    clickerSpeedControls.forEach(container => {
+        container.addEventListener('click', (e) => {
+            const button = e.target.closest('.toggle-btn');
+            if (button) {
+                if (button.dataset.clickerspeed) {
+                    setClickerSpeed(button.dataset.clickerspeed, button);
+                } else if (button.dataset.clickerspeedEta) {
+                    setClickerSpeed(button.dataset.clickerspeedEta, button);
+                } else if (button.dataset.clickerspeedTte) {
+                    setClickerSpeed(button.dataset.clickerspeedTte, button);
+                } else if (button.dataset.farmingMode) {
+                    setFarmingMode(button.dataset.farmingMode, button);
+                }
+            }
+        });
+    });
+
+
     console.log("DEBUG: DOM fully loaded. Initializing script.");
     switchTab('rankup');
     
@@ -1520,6 +1654,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(el.dpsActivityDenominationInput) el.dpsActivityDenominationInput.value = el.dpsDenominationInput.value;
         if(el.dpsActivityDenominationValue) el.dpsActivityDenominationValue.value = el.dpsDenominationValue.value;
         calculateMaxStage();
+        calculateKeyRunTime();
     };
     function onTTKDenomChange() {
         calculateTTK();
@@ -1534,6 +1669,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     function onRaidDenomChange() {
         calculateMaxStage();
+        calculateKeyRunTime();
         syncDPS_RaidToTTK();
     }
 
@@ -1658,6 +1794,7 @@ if (el.energyPerClickTTE) {
             calculateTTK();
             if (el.yourDPSActivity) el.yourDPSActivity.value = el.yourDPS.value;
             calculateMaxStage();
+            calculateKeyRunTime();
             saveTTKData(); 
         }, 300));
     }
@@ -1667,11 +1804,19 @@ if (el.energyPerClickTTE) {
     if (el.yourDPSActivity) {
         el.yourDPSActivity.addEventListener('input', debounce(() => {
             calculateMaxStage();
+            calculateKeyRunTime();
             if (el.yourDPS) el.yourDPS.value = el.yourDPSActivity.value;
             calculateTTK();
         }, 300));
     }
-    if (el.activityTimeLimit) el.activityTimeLimit.addEventListener('input', debounce(calculateMaxStage, 300));
+    if (el.activityTimeLimit) el.activityTimeLimit.addEventListener('input', debounce(() => {
+        calculateMaxStage();
+        calculateKeyRunTime();
+    }, 300));
+    
+    if (el.keyRunQuantity) {
+        el.keyRunQuantity.addEventListener('input', debounce(calculateKeyRunTime, 300));
+    }
 
     if (el.starLevelSelect) el.starLevelSelect.addEventListener('change', displayStarCost);
     if (el.starSpeedSelect) el.starSpeedSelect.addEventListener('change', calculateStarCalc);
@@ -1703,6 +1848,14 @@ if (el.energyPerClickTTE) {
             saveTTKData(); 
         });
     }
+    
+    if (el.activitySelect) {
+        el.activitySelect.addEventListener('change', () => {
+            handleActivityChange();
+            saveRaidData();
+        });
+    }
+
 
     loadRankUpData();
     loadETAData();
@@ -1723,6 +1876,7 @@ if (el.energyPerClickTTE) {
         calculateTimeToEnergy();
         calculateTTK();
         calculateMaxStage();
+        calculateKeyRunTime();
         calculateStarCalc();
     }, 100);
 

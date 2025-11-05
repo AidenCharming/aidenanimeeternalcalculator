@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-AR">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anime Eternal Calculator</title>
 	<link rel="icon" href="icon.webp" type="image/webp">
@@ -39,7 +39,7 @@
       var pref = localStorage.getItem('ae_low_power');
       if (pref === null) {
         pref = isLowPower() ? '1' : '0';
-        localStorage.setItem('ae_low_power', pref);
+        localStorage.setItem('ae_low-power', pref);
       }
       if (pref === '1') document.documentElement.classList.add('ae-low-power');
       else document.documentElement.classList.add('ae-high-power');
@@ -75,14 +75,14 @@
         </header>
 
         <main class="calculator-card">
-            <div class="flex border-b-2 border-gray-700 mb-6">
-                <button id="tab-rankup" class="tab-btn active" onclick="switchTab('rankup')">Rank Up</button>
-                <button id="tab-eta" class="tab-btn" onclick="switchTab('eta')">Target Energy ETA</button>
-                <button id="tab-time-to-energy" class="tab-btn" onclick="switchTab('time-to-energy')">Time to Energy</button>
-                <button id="tab-ttk" class="tab-btn" onclick="switchTab('ttk')">Time to Kill</button>
-                <button id="tab-raid" class="tab-btn" onclick="switchTab('raid')">Raids / Dungeons</button>
-                <button id="tab-star" class="tab-btn" onclick="switchTab('star')">Star Calc</button> 
-                <button id="tab-checklist" class="tab-btn" onclick="switchTab('checklist')">Checklist</button>
+            <div class="flex border-b-2 border-gray-700 mb-6" id="tab-controls">
+                <button id="tab-rankup" class="tab-btn active" data-tab="rankup">Rank Up</button>
+                <button id="tab-eta" class="tab-btn" data-tab="eta">Target Energy ETA</button>
+                <button id="tab-time-to-energy" class="tab-btn" data-tab="time-to-energy">Time to Energy</button>
+                <button id="tab-ttk" class="tab-btn" data-tab="ttk">Time to Kill</button>
+                <button id="tab-raid" class="tab-btn" data-tab="raid">Raids / Dungeons</button>
+                <button id="tab-star" class="tab-btn" data-tab="star">Star Calc</button> 
+                <button id="tab-checklist" class="tab-btn" data-tab="checklist">Checklist</button>
             </div>
             
             <div class="content-wrapper">
@@ -90,8 +90,8 @@
             <div id="panel-rankup">
                 <div class="max-w-xl space-y-6"> 
                     <div class="toggle-container">
-                        <button class="toggle-btn active" onclick="setClickerSpeed('slow', this)">Slow Clicker</button>
-                        <button class="toggle-btn" onclick="setClickerSpeed('fast', this)">Fast Clicker</button>
+                        <button class="toggle-btn active" data-clickerspeed="slow">Slow Clicker</button>
+                        <button class="toggle-btn" data-clickerspeed="fast">Fast Clicker</button>
                     </div>
                     <div>
                         <label for="rankInput">Select Target Rank</label>
@@ -139,8 +139,8 @@
             <div id="panel-eta" class="hidden">
                 <div class="max-w-xl space-y-6">
                     <div class="toggle-container">
-                        <button class="toggle-btn active" onclick="setClickerSpeed('slow', this)">Slow Clicker</button>
-                        <button class="toggle-btn" onclick="setClickerSpeed('fast', this)">Fast Clicker</button>
+                        <button class="toggle-btn active" data-clickerspeed-eta="slow">Slow Clicker</button>
+                        <button class="toggle-btn" data-clickerspeed-eta="fast">Fast Clicker</button>
                     </div>
                     <div>
                         <label for="currentEnergyETA">Your Current Energy</label>
@@ -187,8 +187,8 @@
             <div id="panel-time-to-energy" class="hidden">
                 <div class="max-w-xl space-y-6">
                     <div class="toggle-container">
-                        <button class="toggle-btn active" onclick="setClickerSpeed('slow', this)">Slow Clicker</button>
-                        <button class="toggle-btn" onclick="setClickerSpeed('fast', this)">Fast Clicker</button>
+                        <button class="toggle-btn active" data-clickerspeed-tte="slow">Slow Clicker</button>
+                        <button class="toggle-btn" data-clickerspeed-tte="fast">Fast Clicker</button>
                     </div>
                     <div>
                         <label for="currentEnergyTTE">Your Current Energy</label>
@@ -279,13 +279,13 @@
                 <div class="max-w-xl space-y-6">
                     <div>
                         <label for="worldSelect" class="block mb-2 text-sm font-medium">Select World</label>
-                        <select id="worldSelect" class="select-field w-full rounded-lg" onchange="populateEnemyDropdown()">
+                        <select id="worldSelect" class="select-field w-full rounded-lg">
                             <option value="">-- Select a World --</option>
                         </select>
                     </div>
                     <div>
                         <label for="enemySelect" class="block mb-2 text-sm font-medium">Select Enemy</label>
-                        <select id="enemySelect" class="select-field w-full rounded-lg" onchange="displayEnemyHealth()">
+                        <select id="enemySelect" class="select-field w-full rounded-lg">
                             <option value="">-- Select an Enemy --</option>
                         </select>
                     </div>
@@ -311,8 +311,8 @@
                     </div>
                     
                     <div class="toggle-container">
-                        <button class="toggle-btn active" onclick="setFarmingMode('single', this)">Single Mob (1)</button>
-                        <button class="toggle-btn" onclick="setFarmingMode('four', this)">4-Spot Farm (4)</button>
+                        <button class="toggle-btn active" data-farming-mode="single">Single Mob (1)</button>
+                        <button class="toggle-btn" data-farming-mode="four">4-Spot Farm (4)</button>
                     </div>
 
                     <input type="checkbox" id="fourSpotFarming" class="hidden">
@@ -329,7 +329,7 @@
                 <div class="max-w-xl space-y-6">
                     <div>
                         <label for="activitySelect" class="block mb-2 text-sm font-medium">Select Raid / Dungeon</label>
-                        <select id="activitySelect" class="select-field w-full rounded-lg" onchange="handleActivityChange()">
+                        <select id="activitySelect" class="select-field w-full rounded-lg">
                             <option value="">-- Select an Activity --</option>
                         </select>
                     </div>
@@ -347,6 +347,17 @@
                     <div>
                         <label for="activityTimeLimit">Time Limit per Stage (seconds)</label>
                         <input type="number" id="activityTimeLimit" class="input-field w-full">
+                    </div>
+                    
+                    <div class="subsection-title">Key Runs Time Estimate</div>
+                    <div>
+                        <label for="keyRunQuantity">Keys / Runs (Amount)</label>
+                        <input type="number" id="keyRunQuantity" class="input-field w-full" placeholder="e.g., 5">
+                    </div>
+                    <div class="result-box p-4 rounded-lg text-center" onclick="copyResult('keyRunTimeResult')" title="Click to copy result">
+                        <p class="text-gray-400">Time for all runs:</p>
+                        <p id="keyRunTimeResult" class="text-2xl font-bold text-orange-400">0s</p>
+                        <p id="keyRunReturnTime" class="text-sm text-gray-400 mt-1"></p>
                     </div>
                     <div class="result-box p-4 rounded-lg text-center">
                         <p id="activityResultLabel" class="text-gray-400">Estimated Max Stage:</p>

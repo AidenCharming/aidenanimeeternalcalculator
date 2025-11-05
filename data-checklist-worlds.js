@@ -1,8 +1,3 @@
-// data-checklist-worlds.js
-// This file replaces data-checklist.js
-// It organizes all checklist items by their respective in-game world.
-// UPDATED: Added 'auras' and 'accessories' categories with data from images.
-
 const checklistDataByWorld = {
   "Halloween World": {
     gachas: [

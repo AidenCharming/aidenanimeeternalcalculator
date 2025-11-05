@@ -1,9 +1,3 @@
-// data-stars.js
-// Contains data for the Star Calculator feature
-
-// Base cost (in energy) to pull ONE star.
-// NOTE: Costs for levels 2-24 are NOT provided and are placeholders.
-// Please update these values when you have them.
 const starCostData = {
     "1": 2.50E+01,
     "2": 2.50E+02,
@@ -33,8 +27,6 @@ const starCostData = {
     "26": 6.92E+29
 };
 
-// Time in seconds to open one "batch" of stars, based on Dungeon Upgrade.
-// Derived from user info: 1.45s to 0.9s, -0.05s each step.
 const starSpeedData = {
     "1": 1.45,
     "2": 1.40,
@@ -50,11 +42,6 @@ const starSpeedData = {
     "12": 0.90
 };
 
-// --- NEW STRUCTURE ---
-// Rarity percentages are NOT static. They change per star level.
-// I have added the data for Star 1 and Star 25 from your screenshots.
-// All other levels (2-24) are PLACEHOLDERS and just copy Star 1.
-// You must update these with the correct in-game values.
 const starRarityDataByLevel = {
     "1": [
         { name: 'Common', percent: 0.3121 },
