@@ -289,9 +289,14 @@ function saveTTKData() {
     try {
         if (el.worldSelect) localStorage.setItem('ae_ttk_world', el.worldSelect.value);
         if (el.enemySelect) localStorage.setItem('ae_ttk_enemy', el.enemySelect.value);
-        if (el.yourDPS) localStorage.setItem('ae_ttk_dps', el.yourDPS.value);
+        if (el.yourDPSMin) localStorage.setItem('ae_ttk_dpsMin', el.yourDPSMin.value); 
+        if (el.yourDPSMax) localStorage.setItem('ae_ttk_dpsMax', el.yourDPSMax.value); 
+        
         if (el.dpsDenominationInput) localStorage.setItem('ae_ttk_dpsDenomInput', el.dpsDenominationInput.value);
         if (el.dpsDenominationValue) localStorage.setItem('ae_ttk_dpsDenomValue', el.dpsDenominationValue.value);
+        if (el.dpsMaxDenominationInput) localStorage.setItem('ae_ttk_dpsMaxDenomInput', el.dpsMaxDenominationInput.value); 
+        if (el.dpsMaxDenominationValue) localStorage.setItem('ae_ttk_dpsMaxDenomValue', el.dpsMaxDenominationValue.value); 
+        
         if (el.enemyQuantity) localStorage.setItem('ae_ttk_quantity', el.enemyQuantity.value);
         if (el.fourSpotFarming) localStorage.setItem('ae_ttk_fourSpot', el.fourSpotFarming.checked);
     } catch (e) {
@@ -301,19 +306,29 @@ function saveTTKData() {
 
 function loadTTKData() {
     try {
-        const dps = localStorage.getItem('ae_ttk_dps');
+        const dpsMin = localStorage.getItem('ae_ttk_dpsMin'); 
+        const dpsMax = localStorage.getItem('ae_ttk_dpsMax');
         const dpsDenomInput = localStorage.getItem('ae_ttk_dpsDenomInput');
+        const dpsMaxDenomInput = localStorage.getItem('ae_ttk_dpsMaxDenomInput'); 
         const quantity = localStorage.getItem('ae_ttk_quantity');
         const fourSpot = localStorage.getItem('ae_ttk_fourSpot');
         const world = localStorage.getItem('ae_ttk_world');
         const enemy = localStorage.getItem('ae_ttk_enemy');
 
-        if (el.yourDPS) el.yourDPS.value = dps || '';
+        if (el.yourDPSMin) el.yourDPSMin.value = dpsMin || '';
+        if (el.yourDPSMax) el.yourDPSMax.value = dpsMax || '';
+
         if (el.dpsDenominationInput) el.dpsDenominationInput.value = dpsDenomInput || '';
-        
+        if (el.dpsMaxDenominationInput) el.dpsMaxDenominationInput.value = dpsMaxDenomInput || ''; 
+
         const dpsDenom = denominations.find(d => d.name === dpsDenomInput);
         if (el.dpsDenominationValue) {
             el.dpsDenominationValue.value = dpsDenom ? dpsDenom.value : '1';
+        }
+        
+        const dpsMaxDenom = denominations.find(d => d.name === dpsMaxDenomInput);
+        if (el.dpsMaxDenominationValue) { 
+            el.dpsMaxDenominationValue.value = dpsMaxDenom ? dpsMaxDenom.value : '1';
         }
 
         if (quantity && el.enemyQuantity) el.enemyQuantity.value = quantity;
@@ -984,9 +999,21 @@ function calculateTTK() {
     if (!el.ttkResult) return;
 
     const enemyHealth = getNumberValue('enemyHealth');
-    const dpsInput = getNumberValue('yourDPS');
-    const dpsMultiplier = el.dpsDenominationValue ? (parseFloat(el.dpsDenominationValue.value) || 1) : 1;
-    const yourDPS = dpsInput * dpsMultiplier;
+    // --- MODIFIED DPS INPUTS ---
+    const dpsMinInput = getNumberValue('yourDPSMin');
+    const dpsMaxInput = getNumberValue('yourDPSMax');
+    
+    // Use the Min DPS Denomination for Min DPS
+    const dpsMinMultiplier = el.dpsDenominationValue ? (parseFloat(el.dpsDenominationValue.value) || 1) : 1;
+    // Use the Max DPS Denomination for Max DPS
+    const dpsMaxMultiplier = el.dpsMaxDenominationValue ? (parseFloat(el.dpsMaxDenominationValue.value) || 1) : 1; 
+    
+    const dpsMin = dpsMinInput * dpsMinMultiplier;
+    const dpsMax = dpsMaxInput * dpsMaxMultiplier;
+    
+    // Calculate Average DPS
+    const yourDPS = (dpsMin + dpsMax) / 2;
+    // ---------------------------
     
     const quantity = Math.floor(getNumberValue('enemyQuantity')) || 0;
     const isFourSpot = el.fourSpotFarming ? el.fourSpotFarming.checked : false;
@@ -1759,6 +1786,7 @@ function syncEnergyData(sourceInputId, sourceDenomInputId, sourceDenomValueId) {
         'criticalEnergyTTE': ['criticalEnergy', 'criticalEnergyETA']
     };
 
+
     // List of denomination input/value IDs to synchronize (excluding the source)
     const denomInputMap = {
         'currentEnergyDenominationInput': ['currentEnergyETADenominationInput', 'currentEnergyTTEDenominationInput'],
@@ -1785,6 +1813,7 @@ function syncEnergyData(sourceInputId, sourceDenomInputId, sourceDenomValueId) {
     targetCriticalInputs.forEach(targetId => {
          if (el[targetId]) el[targetId].value = sourceValue;
     });
+
 
     // Sync denomination inputs/values
     const targetDenomInputs = denomInputMap[sourceDenomInputId] || [];
@@ -1932,7 +1961,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     
     const syncDPS_TTKToRaid = () => {
-        if(el.yourDPSActivity) el.yourDPSActivity.value = el.yourDPS.value;
+        if(el.yourDPSActivity && el.yourDPSMin) el.yourDPSActivity.value = el.yourDPSMin.value; 
         if(el.dpsActivityDenominationInput) el.dpsActivityDenominationInput.value = el.dpsDenominationInput.value;
         if(el.dpsActivityDenominationValue) el.dpsActivityDenominationValue.value = el.dpsDenominationValue.value;
         calculateMaxStage();
@@ -1945,9 +1974,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     const syncDPS_RaidToTTK = () => {
-        if(el.yourDPS) el.yourDPS.value = el.yourDPSActivity.value;
+        if(el.yourDPSMin && el.yourDPSActivity) el.yourDPSMin.value = el.yourDPSActivity.value;
+        if(el.yourDPSMax && el.yourDPSActivity) el.yourDPSMax.value = el.yourDPSActivity.value; 
+        
         if(el.dpsDenominationInput) el.dpsDenominationInput.value = el.dpsActivityDenominationInput.value;
         if(el.dpsDenominationValue) el.dpsDenominationValue.value = el.dpsActivityDenominationValue.value;
+        if(el.dpsMaxDenominationInput) el.dpsMaxDenominationInput.value = el.dpsActivityDenominationInput.value;
+        if(el.dpsMaxDenominationValue) el.dpsMaxDenominationValue.value = el.dpsActivityDenominationValue.value;
+
         calculateTTK();
     };
     function onRaidDenomChange() {
@@ -1958,6 +1992,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setupDenominationSearch('dpsDenominationInput', 'dpsDenominationValue', 'dpsDenominationList', onTTKDenomChange);
+    setupDenominationSearch('dpsMaxDenominationInput', 'dpsMaxDenominationValue', 'dpsMaxDenominationList', calculateTTK);
     setupDenominationSearch('dpsActivityDenominationInput', 'dpsActivityDenominationValue', 'dpsActivityDenominationList', onRaidDenomChange);
     
     // Explicitly wire up the denomination input fields to the sync handlers
@@ -2091,15 +2126,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    if (el.yourDPS) {
-        el.yourDPS.addEventListener('input', debounce(() => {
+    if (el.yourDPSMin) {
+        el.yourDPSMin.addEventListener('input', debounce(() => {
             calculateTTK();
-            if (el.yourDPSActivity) el.yourDPSActivity.value = el.yourDPS.value;
+            if (el.yourDPSActivity) el.yourDPSActivity.value = el.yourDPSMin.value;
             calculateMaxStage();
             calculateKeyRunTime();
             saveTTKData(); 
         }, 300));
     }
+
+    if (el.yourDPSMax) {
+        el.yourDPSMax.addEventListener('input', debounce(() => {
+            calculateTTK();
+            saveTTKData(); 
+        }, 300));
+    }
+
     if (el.enemyQuantity) el.enemyQuantity.addEventListener('input', debounce(calculateTTK, 300));
     if (el.fourSpotFarming) el.fourSpotFarming.addEventListener('change', calculateTTK);
     
@@ -2121,7 +2164,8 @@ document.addEventListener('DOMContentLoaded', () => {
         el.yourDPSActivity.addEventListener('input', () => {
             raidDebounce();
             // Sync to TTK
-            if (el.yourDPS) el.yourDPS.value = el.yourDPSActivity.value;
+            if (el.yourDPSMin) el.yourDPSMin.value = el.yourDPSActivity.value;
+            if (el.yourDPSMax) el.yourDPSMax.value = el.yourDPSActivity.value;
             calculateTTK();
         });
     }

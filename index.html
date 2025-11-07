@@ -65,7 +65,7 @@
                 <div class="topbar-credits">Coded By: AidenCharming and Ray. | Data From: AE Spreadsheet, KodakUSA and Ra.</div>
                 
                 <div class="topbar-right">
-                    <span class="version-text">Version 3.2</span>
+                    <span class="version-text">Version 3.5</span>
                     <button id="theme-toggle" class="topbar-theme-btn">
                         Switch Theme
                     </button>
@@ -406,13 +406,24 @@
                         <input type="hidden" id="enemyHealth">
                     </div>
                     <div>
-                        <label for="yourDPS">Your Damage Per Second (DPS)</label>
+                        <label for="yourDPSMin">Your Damage Per Second (Min)</label>
                         <div class="grid-denom">
-                            <input type="number" id="yourDPS" class="input-field w-full" placeholder="e.g., 500">
+                            <input type="number" id="yourDPSMin" class="input-field w-full" placeholder="e.g., 500">
                             <div class="relative">
                                 <input type="text" id="dpsDenominationInput" class="input-field w-full" placeholder="e.g., B" autocomplete="off">
                                 <input type="hidden" id="dpsDenominationValue" value="1">
                                 <div id="dpsDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="yourDPSMax">Your Damage Per Second (Max)</label>
+                        <div class="grid-denom">
+                            <input type="number" id="yourDPSMax" class="input-field w-full" placeholder="e.g., 750">
+                            <div class="relative">
+                                <input type="text" id="dpsMaxDenominationInput" class="input-field w-full" placeholder="e.g., B" autocomplete="off">
+                                <input type="hidden" id="dpsMaxDenominationValue" value="1">
+                                <div id="dpsMaxDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
                             </div>
                         </div>
                     </div>
