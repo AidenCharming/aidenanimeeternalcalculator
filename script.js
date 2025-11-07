@@ -148,6 +148,8 @@ function saveRankUpData() {
         if (el.energyPerClickDenominationInput) localStorage.setItem('ae_energyPerClickDenomInput', el.energyPerClickDenominationInput.value);
         if (el.energyPerClickDenominationValue) localStorage.setItem('ae_energyPerClickDenomValue', el.energyPerClickDenominationValue.value);
         if (el.clickerSpeed) localStorage.setItem('ae_clickerSpeed', el.clickerSpeed.checked);
+        if (el.energyCriticalChance) localStorage.setItem('ae_rankup_critChance', el.energyCriticalChance.value);
+        if (el.criticalEnergy) localStorage.setItem('ae_rankup_critEnergy', el.criticalEnergy.value);
     } catch (e) {
         console.error("Failed to save rankup data to localStorage", e);
     }
@@ -188,6 +190,9 @@ function loadRankUpData() {
 
         const clickerSpeed = localStorage.getItem('ae_clickerSpeed');
         const isFast = (clickerSpeed === 'true');
+
+        if (el.energyCriticalChance) el.energyCriticalChance.value = localStorage.getItem('ae_rankup_critChance') || '';
+        if (el.criticalEnergy) el.criticalEnergy.value = localStorage.getItem('ae_rankup_critEnergy') || '';
         
         if (el.clickerSpeed) {
             el.clickerSpeed.checked = isFast;
@@ -214,6 +219,8 @@ function saveETAData() {
         if (el.targetEnergyETA) localStorage.setItem('ae_targetEnergyETA', el.targetEnergyETA.value);
         if (el.targetEnergyETADenominationInput) localStorage.setItem('ae_targetEnergyETADenomInput', el.targetEnergyETADenominationInput.value);
         if (el.targetEnergyETADenominationValue) localStorage.setItem('ae_targetEnergyETADenomValue', el.targetEnergyETADenominationValue.value);
+        if (el.energyCriticalChanceETA) localStorage.setItem('ae_eta_critChance', el.energyCriticalChanceETA.value);
+        if (el.criticalEnergyETA) localStorage.setItem('ae_eta_critEnergy', el.criticalEnergyETA.value);
     } catch(e) {
         console.error("Failed to save ETA data to localStorage", e);
     }
@@ -253,6 +260,9 @@ function loadETAData() {
         if (el.targetEnergyETADenominationValue) {
             el.targetEnergyETADenominationValue.value = targetDenom ? targetDenom.value : '1';
         }
+
+        if (el.energyCriticalChanceETA) el.energyCriticalChanceETA.value = localStorage.getItem('ae_eta_critChance') || '';
+        if (el.criticalEnergyETA) el.criticalEnergyETA.value = localStorage.getItem('ae_eta_critEnergy') || '';
         
         const clickerSpeed = localStorage.getItem('ae_clickerSpeed');
         const isFast = (clickerSpeed === 'true');
@@ -401,6 +411,9 @@ function saveTimeToEnergyData() {
         if (el.energyPerClickTTEDenominationInput) localStorage.setItem('ae_tte_energyPerClickDenomInput', el.energyPerClickTTEDenominationInput.value);
         if (el.energyPerClickTTEDenominationValue) localStorage.setItem('ae_tte_energyPerClickDenomValue', el.energyPerClickTTEDenominationValue.value);
 
+        if (el.energyCriticalChanceTTE) localStorage.setItem('ae_tte_critChance', el.energyCriticalChanceTTE.value);
+        if (el.criticalEnergyTTE) localStorage.setItem('ae_tte_critEnergy', el.criticalEnergyTTE.value);
+
         if (el.timeToReturnSelect) localStorage.setItem('ae_tte_returnTime', el.timeToReturnSelect.value); 
         if (el.timeToReturnSelectMinutes) localStorage.setItem('ae_tte_returnTimeMinutes', el.timeToReturnSelectMinutes.value);
 
@@ -446,6 +459,9 @@ function loadTimeToEnergyData() {
         if (el.energyPerClickTTEDenominationValue) {
             el.energyPerClickTTEDenominationValue.value = energyPerClickDenom ? energyPerClickDenom.value : '1';
         }
+
+        if (el.energyCriticalChanceTTE) el.energyCriticalChanceTTE.value = localStorage.getItem('ae_tte_critChance') || '';
+        if (el.criticalEnergyTTE) el.criticalEnergyTTE.value = localStorage.getItem('ae_tte_critEnergy') || '';
 
         const returnTime = localStorage.getItem('ae_tte_returnTime');
         if (returnTime && el.timeToReturnSelect) {
@@ -619,6 +635,24 @@ function loadStarData() {
 }
 
 
+// --- NEW HELPER FUNCTION FOR CRITICAL CHANCE CALCULATIONS ---
+function getEffectiveEnergyPerClick(baseEnergyPerClick, critChanceId, critEnergyId) {
+    if (baseEnergyPerClick <= 0) return 0;
+    
+    // Get Critical Chance (e.g., 7.5 -> 0.075)
+    const critChance = getNumberValue(critChanceId) / 100;
+    // Get Critical Energy Multiplier (e.g., 130 -> 1.3)
+    const critMultiplier = getNumberValue(critEnergyId) / 100;
+
+    if (critChance <= 0) return baseEnergyPerClick;
+
+    // Effective EPC = Base EPC * (1 + (Crit Chance * Crit Multiplier))
+    const effectiveMultiplier = 1 + (critChance * critMultiplier);
+    
+    return baseEnergyPerClick * effectiveMultiplier;
+}
+// -----------------------------------------------------------
+
 function calculateEnergyETA() {
     if (!el.etaResult) return;
 
@@ -634,7 +668,13 @@ function calculateEnergyETA() {
 
     const energyPerClickValue = getNumberValue('energyPerClickETA');
     const energyPerClickDenom = el.energyPerClickETADenominationValue ? (parseFloat(el.energyPerClickETADenominationValue.value) || 1) : 1;
-    const energyPerClick = energyPerClickValue * energyPerClickDenom;
+    const baseEnergyPerClick = energyPerClickValue * energyPerClickDenom;
+
+    const effectiveEnergyPerClick = getEffectiveEnergyPerClick(
+        baseEnergyPerClick, 
+        'energyCriticalChanceETA', 
+        'criticalEnergyETA'
+    );
 
     const SLOW_CPS = 1.0919;
     const FAST_CPS = 5.88505;
@@ -647,14 +687,14 @@ function calculateEnergyETA() {
         if (returnTimeEl) returnTimeEl.innerText = "You're already there!";
         return;
     }
-    if (energyPerClick <= 0 || clicksPerSecond <= 0) {
+    if (effectiveEnergyPerClick <= 0 || clicksPerSecond <= 0) {
         el.etaResult.innerText = 'N/A';
         if (returnTimeEl) returnTimeEl.innerText = '';
         saveETAData();
         return;
     }
 
-    const timeInSeconds = (energyNeeded / energyPerClick) / clicksPerSecond;
+    const timeInSeconds = (energyNeeded / effectiveEnergyPerClick) / clicksPerSecond;
 
     let resultString = formatTime(timeInSeconds);
 
@@ -686,7 +726,13 @@ function calculateTimeToEnergy() {
 
     const energyPerClickValue = getNumberValue('energyPerClickTTE');
     const energyPerClickDenom = el.energyPerClickTTEDenominationValue ? (parseFloat(el.energyPerClickTTEDenominationValue.value) || 1) : 1;
-    const energyPerClick = energyPerClickValue * energyPerClickDenom;
+    const baseEnergyPerClick = energyPerClickValue * energyPerClickDenom;
+
+    const effectiveEnergyPerClick = getEffectiveEnergyPerClick(
+        baseEnergyPerClick, 
+        'energyCriticalChanceTTE', 
+        'criticalEnergyTTE'
+    );
 
     const timeInHours = getNumberValue('timeToReturnSelect');
     const timeInMinutes = getNumberValue('timeToReturnSelectMinutes');
@@ -695,7 +741,7 @@ function calculateTimeToEnergy() {
     const SLOW_CPS = 1.0919;
     const FAST_CPS = 5.88505;
     const clicksPerSecond = isFastClicker ? FAST_CPS : SLOW_CPS;
-    const baseEnergyPerSecond = energyPerClick * clicksPerSecond;
+    const baseEnergyPerSecond = effectiveEnergyPerClick * clicksPerSecond;
 
     const returnTimeEl = el.timeToEnergyReturnTime;
     const resultEl = el.timeToEnergyResult;
@@ -1030,7 +1076,13 @@ function calculateRankUp() {
 
     const energyPerClickValue = getNumberValue('energyPerClick');
     const energyPerClickDenom = el.energyPerClickDenominationValue ? (parseFloat(el.energyPerClickDenominationValue.value) || 1) : 1;
-    const energyPerClick = energyPerClickValue * energyPerClickDenom;
+    const baseEnergyPerClick = energyPerClickValue * energyPerClickDenom;
+
+    const effectiveEnergyPerClick = getEffectiveEnergyPerClick(
+        baseEnergyPerClick, 
+        'energyCriticalChance', 
+        'criticalEnergy'
+    );
 
     const selectedRank = el.rankSelect ? el.rankSelect.value : '';
     const energyForRank = typeof rankRequirements !== 'undefined' ? rankRequirements[selectedRank] || 0 : 0;
@@ -1055,14 +1107,14 @@ function calculateRankUp() {
         saveRankUpData();
         return;
     }
-    if (energyPerClick <= 0) {
+    if (effectiveEnergyPerClick <= 0) {
         el.rankUpResult.innerText = 'N/A';
         if (returnTimeEl) returnTimeEl.innerText = '';
         saveRankUpData();
         return;
     }
 
-    const timeInSeconds = (energyNeeded / energyPerClick) / clicksPerSecond;
+    const timeInSeconds = (energyNeeded / effectiveEnergyPerClick) / clicksPerSecond;
 
     let resultString = formatTime(timeInSeconds);
 
@@ -1698,6 +1750,15 @@ function syncEnergyData(sourceInputId, sourceDenomInputId, sourceDenomValueId) {
         'energyPerClickTTE': ['energyPerClick', 'energyPerClickETA']
     };
     
+    const criticalInputMap = {
+        'energyCriticalChance': ['energyCriticalChanceETA', 'energyCriticalChanceTTE'],
+        'criticalEnergy': ['criticalEnergyETA', 'criticalEnergyTTE'],
+        'energyCriticalChanceETA': ['energyCriticalChance', 'energyCriticalChanceTTE'],
+        'criticalEnergyETA': ['criticalEnergy', 'criticalEnergyTTE'],
+        'energyCriticalChanceTTE': ['energyCriticalChance', 'energyCriticalChanceETA'],
+        'criticalEnergyTTE': ['criticalEnergy', 'criticalEnergyETA']
+    };
+
     // List of denomination input/value IDs to synchronize (excluding the source)
     const denomInputMap = {
         'currentEnergyDenominationInput': ['currentEnergyETADenominationInput', 'currentEnergyTTEDenominationInput'],
@@ -1718,6 +1779,11 @@ function syncEnergyData(sourceInputId, sourceDenomInputId, sourceDenomValueId) {
     const targetInputs = energyInputMap[sourceInputId] || [];
     targetInputs.forEach(targetId => {
         if (el[targetId]) el[targetId].value = sourceValue;
+    });
+
+    const targetCriticalInputs = criticalInputMap[sourceInputId] || [];
+    targetCriticalInputs.forEach(targetId => {
+         if (el[targetId]) el[targetId].value = sourceValue;
     });
 
     // Sync denomination inputs/values
@@ -1937,6 +2003,20 @@ document.addEventListener('DOMContentLoaded', () => {
             syncEnergyData('energyPerClickTTE', 'energyPerClickTTEDenominationInput', 'energyPerClickTTEDenominationValue');
         }, 300));
     }
+
+    const criticalDebounceAndSync = debounce((sourceId) => {
+        // Use syncEnergyData for the critical field as well, as it calls recalculate
+        syncEnergyData(sourceId, sourceId, sourceId);
+    }, 300);
+
+    if (el.energyCriticalChance) el.energyCriticalChance.addEventListener('input', () => criticalDebounceAndSync('energyCriticalChance'));
+    if (el.criticalEnergy) el.criticalEnergy.addEventListener('input', () => criticalDebounceAndSync('criticalEnergy'));
+    
+    if (el.energyCriticalChanceETA) el.energyCriticalChanceETA.addEventListener('input', () => criticalDebounceAndSync('energyCriticalChanceETA'));
+    if (el.criticalEnergyETA) el.criticalEnergyETA.addEventListener('input', () => criticalDebounceAndSync('criticalEnergyETA'));
+    
+    if (el.energyCriticalChanceTTE) el.energyCriticalChanceTTE.addEventListener('input', () => criticalDebounceAndSync('energyCriticalChanceTTE'));
+    if (el.criticalEnergyTTE) el.criticalEnergyTTE.addEventListener('input', () => criticalDebounceAndSync('criticalEnergyTTE'));
     
     // Global clicker speed sync
     const globalClickerSync = (isChecked) => {
