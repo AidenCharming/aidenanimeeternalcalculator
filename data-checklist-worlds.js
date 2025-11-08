@@ -618,8 +618,7 @@ const checklistDataByWorld = {
       accessories: [],
     quests: [
       { id: 'cq62', name: 'Key Quests'},
-      { id: 'cq63', name: 'Obelisk Quest'},
-      { id: 'cq64', name: 'The Order Quest'}
+      { id: 'cq63', name: 'Obelisk Quest'}
     ]
   },
 };
