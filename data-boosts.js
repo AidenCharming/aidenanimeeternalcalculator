@@ -1,5 +1,4 @@
 const boostItems = [
-    // Energy Boosts (Existing)
     {
         id: 'spooky-energy-potion',
         name: 'Spooky Energy Potion',
@@ -53,5 +52,17 @@ const boostItems = [
         name: 'Hot Sauce',
         additive: 0.1,
         type: 'loot_add'
+    },
+    {
+        id: 'virtual-aura',
+        name: 'Virtual Aura',
+        additive: 0.35,
+        type: 'loot_passive'
+    },
+    {
+        id: 'fire-king-aura',
+        name: 'Fire King Aura',
+        additive: 0.25,
+        type: 'loot_passive'
     }
 ];

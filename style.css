@@ -27,12 +27,10 @@
   color: #fff;
 }
 
-/* ADDED NEW HEADER STYLE */
 .world-section-header {
   display: flex;
-  /* justify-content: space-between; */
-  align-items: flex-end; /* Aligns buttons to the bottom of the title */
-  margin-bottom: 1rem; /* This margin was on the title */
+  align-items: flex-end;
+  margin-bottom: 1rem;
 }
 
 .world-section-title {
@@ -43,8 +41,7 @@
   border-bottom: 2px solid #333;
   position: relative;
   overflow: hidden;
-  margin-bottom: 0; /* REMOVED margin, parent handles it */
-  /* max-width: 600px; */
+  margin-bottom: 0;
 }
 
 .world-subsection-title {
@@ -76,9 +73,8 @@
   color: #06b6d4;
 }
 
-/* ADDED QUESTS STYLE */
 .world-subsection-title.quests {
-  color: #eab308; /* yellow-500 */
+  color: #eab308;
 }
 
 .checklist-item {
@@ -152,7 +148,6 @@
 .badge-sssRank { background: #ef444420; color: #ef4444; }
 .badge-auras { background: #8b5cf620; color: #8b5cf6; }
 .badge-accessories { background: #06b6d420; color: #06b6d4; }
-/* ADDED QUESTS BADGE STYLE */
 .badge-quests { background: #eab30820; color: #eab308; }
 
 
@@ -207,7 +202,7 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: #0a0a0a;
   color: #fff;
   min-height: 100vh;
@@ -271,20 +266,18 @@ body.blue-theme header {
   margin: 0 auto;
 }
 
-/* **** NEW STYLES **** */
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 16px; /* Space between version and button */
+  gap: 16px;
 }
 
 .version-text {
-  font-size: 0.875rem; /* 14px */
-  color: #888; /* Muted color */
+  font-size: 0.875rem;
+  color: #888;
   font-weight: 500;
   white-space: nowrap;
 }
-/* **** END NEW STYLES **** */
 
 .topbar-title {
   color: #fff;
@@ -317,6 +310,10 @@ body.blue-theme header {
   background: #444;
   color: #fff;
   border-color: #666;
+}
+
+.topbar-theme-btn:active {
+  background: #333;
 }
 
 .calculator-card {
@@ -380,7 +377,6 @@ main.calculator-card {
   display: none !important;
 }
 
-/* NEW STYLE FOR SUBSECTIONS LIKE "BOOSTS" */
 .subsection-title {
   color: #c9c9d6;
   font-size: 1.1rem;
@@ -391,7 +387,6 @@ main.calculator-card {
   border-bottom: 1px solid #444;
 }
 
-/* **** REDUCED PADDING **** */
 .input-field, .select-field {
   background: #1a1a1a;
   border: 1px solid #404040;
@@ -399,7 +394,7 @@ main.calculator-card {
   border-radius: 8px;
   font-size: 14px;
   transition: all 0.2s ease;
-  padding: 10px 12px; /* WAS 14px 16px */
+  padding: 10px 12px;
 }
 
 .input-field:focus, .select-field:focus {
@@ -431,9 +426,6 @@ main.calculator-card {
   color: #fff;
   padding: 8px;
 }
-
-
-
 
 
 label {
@@ -596,14 +588,13 @@ button:active {
   color: #fff;
 }
 
-/* MODIFIED STYLE FOR PER-WORLD TOGGLES */
 .world-toggle {
-  margin: 0 0 0.5rem 1rem; /* Aligns with title padding-bottom and adds space */
+  margin: 0 0 0.5rem 1rem;
   width: fit-content;
-  flex-shrink: 0; /* Prevents buttons from shrinking */
+  flex-shrink: 0;
 }
 .world-toggle .toggle-btn {
-  font-size: 11px; /* Make them a bit smaller */
+  font-size: 11px;
   padding: 4px 10px;
 }
 
@@ -626,20 +617,47 @@ button:active {
   margin-bottom: 28px;
 }
 
-/* **** RENAMED and EDITED **** */
 .grid-denom {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 12px; /* REDUCED from 16px */
+  gap: 12px;
   align-items: end;
 }
 
-/* **** ADDED NEW CLASS **** */
 .grid-time {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
   align-items: end;
+}
+
+/* NEW ALERT ITEM STYLE */
+.alert-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  background: #1a1a1a;
+  border: 1px solid #404040;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.alert-item:hover {
+  background: #2a2a2a;
+}
+
+.alert-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #f59e0b;
+  cursor: pointer;
+}
+
+.alert-item span {
+  font-size: 0.9rem;
+  color: #ccc;
 }
 
 @media (max-width: 768px) {
@@ -653,7 +671,6 @@ button:active {
     align-items: flex-start;
   }
   
-  /* **** NEW MOBILE STYLE **** */
   .topbar-right {
     display: flex;
     justify-content: space-between;
@@ -705,13 +722,11 @@ button:active {
     font-size: 2rem !important;
   }
   
-  /* **** RENAMED and EDITED **** */
   .grid-denom {
     grid-template-columns: 1fr;
-    gap: 12px; /* REDUCED from 16px */
+    gap: 12px;
   }
 
-  /* **** ADDED NEW CLASS FOR MOBILE **** */
   .grid-time {
     grid-template-columns: 1fr 1fr;
     gap: 8px;
@@ -726,17 +741,15 @@ button:active {
     width: 100% !important;
   }
 
-  /* ADDED/MODIFIED MOBILE STYLES */
   .world-section-header {
-    flex-direction: column; /* Stack title and buttons */
-    align-items: flex-start; /* Align title to the left */
+    flex-direction: column;
+    align-items: flex-start;
   }
   
   .world-section-title {
     font-size: 1.25rem;
-    margin-bottom: 0.75rem; /* Add margin back for stacking */
+    margin-bottom: 0.75rem;
     width: 100%; 
-    /* max-width: none; */ 
   }
 
   .subsection-title {
@@ -758,11 +771,10 @@ button:active {
     justify-content: center;
   }
 
-  /* Make per-world toggles centered on mobile */
   .world-toggle {
     width: 100%;
     justify-content: center;
-    margin: 0 0 0.5rem 0; /* Reset margin for mobile */
+    margin: 0 0 0.5rem 0;
   }
   
   .toggle-btn {

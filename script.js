@@ -1,5 +1,24 @@
 const el = {};
-const tabs = ['rankup', 'eta', 'time-to-energy', 'lootcalc', 'ttk', 'raid', 'star', 'checklist'];
+const tabs = ['rankup', 'eta', 'time-to-energy', 'lootcalc', 'ttk', 'raid', 'alerts', 'star', 'checklist'];
+
+const dungeonIntervals = {
+    'Easy Dungeon': { startMinute: 0, id: 'easy' },
+    'Medium Dungeon': { startMinute: 10, id: 'medium' },
+    'Hard Dungeon': { startMinute: 20, id: 'hard' },
+    'Insane Dungeon': { startMinute: 30, id: 'insane' },
+    'Crazy Dungeon': { startMinute: 40, id: 'crazy' },
+    'Nightmare Dungeon': { startMinute: 50, id: 'nightmare' },
+    'Leaf Raid': { startMinute: 15, id: 'leaf' }
+};
+
+let nextAlertTimeout;
+let countdownInterval;
+
+let isAlertPending = false;
+let tabFlashInterval = null;
+const ORIGINAL_TITLE = document.title;
+const FLASH_TITLE = '[!!! DUNGEON READY !!!]';
+const FLASH_INTERVAL_MS = 1000;
 
 function switchTab(activeTab) {
     tabs.forEach(tab => {
@@ -9,12 +28,22 @@ function switchTab(activeTab) {
             if (tab === activeTab) {
                 panel.classList.remove('hidden');
                 button.classList.add('active');
+                if (tab === 'alerts') {
+                    startCountdownDisplay();
+                }
             } else {
                 panel.classList.add('hidden');
                 button.classList.remove('active');
+                if (tab === 'alerts') {
+                    stopCountdownDisplay();
+                }
             }
         }
     });
+    
+    if (activeTab === 'alerts' || document.visibilityState === 'visible') {
+        stopTabFlashing();
+    }
 }
 
 const activityData = {};
@@ -45,7 +74,6 @@ function setClickerSpeed(speed, button) {
     
     const checkboxId = button.dataset.clickerspeed || button.dataset.clickerspeedEta || button.dataset.clickerspeedTte || button.dataset.clickerspeedLoot;
 
-    // Handle Loot Calc's dedicated checkbox if it exists, otherwise fall back to others
     if (el.clickerSpeedLoot) el.clickerSpeedLoot.checked = isFast;
     if (el.clickerSpeed) el.clickerSpeed.checked = isFast;
     if (el.clickerSpeedETA) el.clickerSpeedETA.checked = isFast;
@@ -87,8 +115,6 @@ function toggleTheme() {
 }
 
 
-
-
 function getNumberValue(id) {
     if (el[id]) {
         return parseFloat(el[id].value) || 0;
@@ -99,7 +125,6 @@ function getNumberValue(id) {
 function formatNumber(num) {
     if (num === 0) return '0';
     if (num < 1000) return num.toLocaleString(undefined, { maximumFractionDigits: 2 });
-    // Defensive check: ensure denominations is defined
     const reversedDenominations = typeof denominations !== 'undefined' ? [...denominations].reverse() : [];
     for (const denom of reversedDenominations) {
         if (denom.value > 1 && num >= denom.value) {
@@ -151,7 +176,6 @@ function saveRankUpData() {
         if (el.energyCriticalChance) localStorage.setItem('ae_rankup_critChance', el.energyCriticalChance.value);
         if (el.criticalEnergy) localStorage.setItem('ae_rankup_critEnergy', el.criticalEnergy.value);
     } catch (e) {
-        console.error("Failed to save rankup data to localStorage", e);
     }
 }
 
@@ -210,7 +234,6 @@ function loadRankUpData() {
         calculateRankUp();
 
     } catch (e) {
-        console.error("Failed to load rankup data to localStorage", e);
     }
 }
 
@@ -222,7 +245,6 @@ function saveETAData() {
         if (el.energyCriticalChanceETA) localStorage.setItem('ae_eta_critChance', el.energyCriticalChanceETA.value);
         if (el.criticalEnergyETA) localStorage.setItem('ae_eta_critEnergy', el.criticalEnergyETA.value);
     } catch(e) {
-        console.error("Failed to save ETA data to localStorage", e);
     }
 }
 
@@ -281,7 +303,6 @@ function loadETAData() {
 
         calculateEnergyETA();
     } catch(e) {
-        console.error("Failed to load ETA data from localStorage", e);
     }
 }
 
@@ -300,7 +321,6 @@ function saveTTKData() {
         if (el.enemyQuantity) localStorage.setItem('ae_ttk_quantity', el.enemyQuantity.value);
         if (el.fourSpotFarming) localStorage.setItem('ae_ttk_fourSpot', el.fourSpotFarming.checked);
     } catch (e) {
-        console.error("Failed to save TTK data to localStorage", e);
     }
 }
 
@@ -362,7 +382,6 @@ function loadTTKData() {
              el.tempEnemy = enemy;
         }
     } catch (e) {
-        console.error("Failed to load TTK data from localStorage", e);
     }
 }
 
@@ -375,7 +394,6 @@ function saveRaidData() {
         if (el.activityTimeLimit) localStorage.setItem('ae_raid_timeLimit', el.activityTimeLimit.value);
         if (el.keyRunQuantity) localStorage.setItem('ae_raid_key_quantity', el.keyRunQuantity.value);
     } catch (e) {
-        console.error("Failed to save Raid data to localStorage", e);
     }
 }
 
@@ -386,7 +404,6 @@ function loadRaidData() {
             if (el.activitySelect.querySelector(`option[value="${activity}"]`)) {
                 el.activitySelect.value = activity;
             } else {
-                console.warn(`Saved activity "${activity}" not found in dropdown.`);
             }
         }
 
@@ -394,7 +411,7 @@ function loadRaidData() {
         if (dps && el.yourDPSActivity) el.yourDPSActivity.value = dps;
 
         const dpsDenomInput = localStorage.getItem('ae_raid_dpsDenomInput');
-        if (dpsDenomInput && el.dpsActivityDenominationInput) el.dpsActivityDenominationInput.value = dpsDenomInput;
+        if (el.dpsActivityDenominationInput) el.dpsActivityDenominationInput.value = dpsDenomInput;
         
         const dpsDenom = denominations.find(d => d.name === dpsDenomInput);
         if (el.dpsActivityDenominationValue) {
@@ -407,12 +424,9 @@ function loadRaidData() {
         const quantity = localStorage.getItem('ae_raid_key_quantity');
         if (quantity && el.keyRunQuantity) el.keyRunQuantity.value = quantity;
         
-        // Trigger necessary updates since values have been loaded
-        handleActivityChange();
         calculateMaxStage();
         calculateKeyRunTime();
     } catch (e) {
-        console.error("Failed to load Raid data from localStorage", e);
     }
 }
 
@@ -447,7 +461,6 @@ function saveTimeToEnergyData() {
             });
         }
     } catch (e) {
-        console.error("Failed to save TimeToEnergy data to localStorage", e);
     }
 }
 
@@ -476,7 +489,7 @@ function loadTimeToEnergyData() {
         }
 
         if (el.energyCriticalChanceTTE) el.energyCriticalChanceTTE.value = localStorage.getItem('ae_tte_critChance') || '';
-        if (el.criticalEnergyTTE) el.criticalEnergyTTE.value = localStorage.getItem('ae_tte_critEnergy') || '';
+        if (el.criticalEnergyTTE) localStorage.setItem('ae_tte_critEnergy', el.criticalEnergyTTE.value);
 
         const returnTime = localStorage.getItem('ae_tte_returnTime');
         if (returnTime && el.timeToReturnSelect) {
@@ -521,7 +534,6 @@ function loadTimeToEnergyData() {
 
         calculateTimeToEnergy();
     } catch (e) {
-        console.error("Failed to load TimeToEnergy data from localStorage", e);
     }
 }
 
@@ -540,26 +552,32 @@ function saveLootData() {
             boostItems.filter(item => item.type && item.type.startsWith('loot')).forEach(item => {
                 const hoursEl = el[`boost-${item.id}-hours`];
                 const minutesEl = el[`boost-${item.id}-minutes`];
-                if (hoursEl) {
-                    localStorage.setItem(`ae_loot_boost_${item.id}_hours`, hoursEl.value);
-                }
-                if (minutesEl) {
-                    localStorage.setItem(`ae_loot_boost_${item.id}_minutes`, minutesEl.value);
+                
+                if (item.type === 'loot_passive') {
+                    const checkboxEl = el[`boost-${item.id}-checkbox`];
+                    if (checkboxEl) {
+                        localStorage.setItem(`ae_loot_passive_${item.id}_checked`, checkboxEl.checked);
+                    }
+                } else {
+                    if (hoursEl) {
+                        localStorage.setItem(`ae_loot_boost_${item.id}_hours`, hoursEl.value);
+                    }
+                    if (minutesEl) {
+                        localStorage.setItem(`ae_loot_boost_${item.id}_minutes`, minutesEl.value);
+                    }
                 }
             });
         }
 
     } catch (e) {
-        console.error("Failed to save Loot data to localStorage", e);
     }
 }
 
 function loadLootData() {
     try {
-        // Load Input Fields (Defaulting to expected user values)
         if (el.lootDropMin) el.lootDropMin.value = localStorage.getItem('ae_loot_dropMin') || 1;
         if (el.lootDropMax) el.lootDropMax.value = localStorage.getItem('ae_loot_dropMax') || 1;
-        if (el.lootBaseDropRate) el.lootBaseDropRate.value = localStorage.getItem('ae_loot_baseRate') || 10; // Changed default from 0.1 to 10
+        if (el.lootBaseDropRate) el.lootBaseDropRate.value = localStorage.getItem('ae_loot_baseRate') || 10;
         if (el.lootTimeTargetHours) el.lootTimeTargetHours.value = localStorage.getItem('ae_loot_targetHours') || 1;
         if (el.lootTimeTargetMinutes) el.lootTimeTargetMinutes.value = localStorage.getItem('ae_loot_targetMinutes') || 0;
         if (el.yourKillsPerSecond) el.yourKillsPerSecond.value = localStorage.getItem('ae_loot_kps') || 1.0;
@@ -571,20 +589,27 @@ function loadLootData() {
             el.clickerSpeedLoot.checked = isFast;
         }
 
-        // Load Boost Durations
         if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
             boostItems.filter(item => item.type && item.type.startsWith('loot')).forEach(item => {
-                const hoursEl = el[`boost-${item.id}-hours`];
-                const minutesEl = el[`boost-${item.id}-minutes`];
-                const savedHours = localStorage.getItem(`ae_loot_boost_${item.id}_hours`);
-                const savedMinutes = localStorage.getItem(`ae_loot_boost_${item.id}_minutes`);
                 
-                if (hoursEl && savedHours !== null) hoursEl.value = savedHours;
-                if (minutesEl && savedMinutes !== null) minutesEl.value = savedMinutes;
+                if (item.type === 'loot_passive') {
+                    const checkboxEl = el[`boost-${item.id}-checkbox`];
+                    const savedChecked = localStorage.getItem(`ae_loot_passive_${item.id}_checked`);
+                    if (checkboxEl && savedChecked !== null) {
+                        checkboxEl.checked = (savedChecked === 'true');
+                    }
+                } else {
+                    const hoursEl = el[`boost-${item.id}-hours`];
+                    const minutesEl = el[`boost-${item.id}-minutes`];
+                    const savedHours = localStorage.getItem(`ae_loot_boost_${item.id}_hours`);
+                    const savedMinutes = localStorage.getItem(`ae_loot_boost_${item.id}_minutes`);
+                    
+                    if (hoursEl && savedHours !== null) hoursEl.value = savedHours;
+                    if (minutesEl && savedMinutes !== null) minutesEl.value = savedMinutes;
+                }
             });
         }
         
-        // Update Clicker Speed Toggle
         const lootPanel = el['panel-lootcalc'];
         if (lootPanel) {
             const slowBtn = lootPanel.querySelector('.toggle-btn[data-clickerspeed-loot="slow"]');
@@ -602,7 +627,6 @@ function loadLootData() {
 
         calculateLootDrops();
     } catch (e) {
-        console.error("Failed to load Loot data from localStorage", e);
     }
 }
 
@@ -614,14 +638,11 @@ function saveStarData() {
         if (el.starBaseLuck) localStorage.setItem('ae_star_baseLuck', el.starBaseLuck.value);
         if (el.starTimeHours) localStorage.setItem('ae_star_timeHours', el.starTimeHours.value);
     } catch (e) {
-        console.error("Failed to save Star data to localStorage", e);
     }
 }
 
 function loadStarData() {
-    // Defensive check: only proceed if the required global objects are defined
     if (typeof starCostData === 'undefined' || typeof starSpeedData === 'undefined' || typeof starRarityDataByLevel === 'undefined') {
-        console.warn("Star data dependencies are not yet defined. Skipping initial loadStarData.");
         return;
     }
     
@@ -645,28 +666,22 @@ function loadStarData() {
         calculateStarCalc();
 
     } catch (e) {
-        console.error("Failed to load Star data to localStorage", e);
     }
 }
 
 
-// --- NEW HELPER FUNCTION FOR CRITICAL CHANCE CALCULATIONS ---
 function getEffectiveEnergyPerClick(baseEnergyPerClick, critChanceId, critEnergyId) {
     if (baseEnergyPerClick <= 0) return 0;
     
-    // Get Critical Chance (e.g., 7.5 -> 0.075)
     const critChance = getNumberValue(critChanceId) / 100;
-    // Get Critical Energy Multiplier (e.g., 130 -> 1.3)
     const critMultiplier = getNumberValue(critEnergyId) / 100;
 
     if (critChance <= 0) return baseEnergyPerClick;
 
-    // Effective EPC = Base EPC * (1 + (Crit Chance * Crit Multiplier))
     const effectiveMultiplier = 1 + (critChance * critMultiplier);
     
     return baseEnergyPerClick * effectiveMultiplier;
 }
-// -----------------------------------------------------------
 
 function calculateEnergyETA() {
     if (!el.etaResult) return;
@@ -876,79 +891,81 @@ function calculateTimeToEnergy() {
 function calculateLootDrops() {
     if (typeof boostItems === 'undefined' || !el.lootEstimatedDropsResult) return;
 
-    // Inputs
     const minDrop = getNumberValue('lootDropMin') || 1;
     const maxDrop = getNumberValue('lootDropMax') || 1;
-    const baseRate = getNumberValue('lootBaseDropRate') / 100; // Convert % input (e.g., 10) to decimal (0.1)
+    const baseRate = getNumberValue('lootBaseDropRate') / 100;
     const targetHours = getNumberValue('lootTimeTargetHours');
     const targetMinutes = getNumberValue('lootTimeTargetMinutes');
     const targetDrops = getNumberValue('lootDropTargetCount') || 1;
-    const killsPerSecond = getNumberValue('yourKillsPerSecond') || 1; // KPS is user-provided and includes respawn time
+    const killsPerSecond = getNumberValue('yourKillsPerSecond') || 1;
 
     const targetTimeInSeconds = (targetHours * 3600) + (targetMinutes * 60);
 
     const baseKillsPerSecond = killsPerSecond > 0 ? killsPerSecond : 1; 
     
-    // 1. Get Loot Boosts
     const lootBoosts = boostItems.filter(item => item.type && item.type.startsWith('loot'));
 
     const allActiveBoosts = [];
-    lootBoosts.forEach(item => {
-        const hours = getNumberValue(`boost-${item.id}-hours`);
-        const minutes = getNumberValue(`boost-${item.id}-minutes`);
-        const duration = (hours * 3600) + (minutes * 60);
+    let passiveAdditiveBonus = 0;
 
-        if (duration > 0) {
-            allActiveBoosts.push({
-                id: item.id,
-                type: item.type,
-                value: item.type === 'loot_mult' ? item.multiplier : item.additive,
-                duration: duration
-            });
+    lootBoosts.forEach(item => {
+        
+        if (item.type === 'loot_passive') {
+            const checkboxEl = el[`boost-${item.id}-checkbox`];
+            if (checkboxEl && checkboxEl.checked) {
+                passiveAdditiveBonus += item.additive;
+            }
+        } else {
+            const hours = getNumberValue(`boost-${item.id}-hours`);
+            const minutes = getNumberValue(`boost-${item.id}-minutes`);
+            const duration = (hours * 3600) + (minutes * 60);
+
+            if (duration > 0) {
+                allActiveBoosts.push({
+                    id: item.id,
+                    type: item.type,
+                    value: item.type === 'loot_mult' ? item.multiplier : item.additive,
+                    duration: duration
+                });
+            }
         }
     });
 
     const multiplicativeBoosts = allActiveBoosts.filter(b => b.type === 'loot_mult')
-                                                .sort((a, b) => b.value - a.value); // Sort descending multiplier
+                                                .sort((a, b) => b.value - a.value);
     
     const additiveBoosts = allActiveBoosts.filter(b => b.type === 'loot_add')
-                                          .sort((a, b) => b.value - a.value); // Sort descending additive value
+                                          .sort((a, b) => b.value - a.value);
 
     let totalDropsEstimate = 0;
     let timeRemaining = targetTimeInSeconds;
 
-    // Boost Calculation Loop
     while (timeRemaining > 0 && (multiplicativeBoosts.length > 0 || additiveBoosts.length > 0)) {
         
         let segmentDuration = timeRemaining;
         let currentMultiplier = 1.0;
-        let currentAdditiveRate = 0;
+        let currentAdditiveRate = passiveAdditiveBonus;
 
-        // Determine current multiplicative boost and its duration
         const activeMultBoost = multiplicativeBoosts.length > 0 ? multiplicativeBoosts[0] : null;
         if (activeMultBoost) {
             currentMultiplier = activeMultBoost.value;
             segmentDuration = Math.min(segmentDuration, activeMultBoost.duration);
         }
 
-        // Determine current additive boost and its duration
         const activeAddBoost = additiveBoosts.length > 0 ? additiveBoosts[0] : null;
         if (activeAddBoost) {
-            currentAdditiveRate = activeAddBoost.value;
+            currentAdditiveRate += activeAddBoost.value;
             segmentDuration = Math.min(segmentDuration, activeAddBoost.duration);
         }
         
-        // Final effective rate and drop range for this segment
-        const effectiveDropRate = Math.min(baseRate + currentAdditiveRate, 1.0); // Cap rate at 100% (1.0)
+        const effectiveDropRate = Math.min(baseRate + currentAdditiveRate, 1.0);
         const avgDropCount = (minDrop * currentMultiplier + maxDrop * currentMultiplier) / 2;
         
-        // Calculate expected drops in this segment
         const segmentKills = baseKillsPerSecond * segmentDuration;
         const dropsInSegment = segmentKills * effectiveDropRate * avgDropCount;
 
         totalDropsEstimate += dropsInSegment;
         
-        // Advance time and update boost queues
         timeRemaining -= segmentDuration;
         
         if (activeMultBoost) {
@@ -961,15 +978,13 @@ function calculateLootDrops() {
         }
     }
 
-    // After all boosts expire (if any time remains)
     if (timeRemaining > 0) {
-        const effectiveDropRate = baseRate;
+        const effectiveDropRate = Math.min(baseRate + passiveAdditiveBonus, 1.0);
         const avgDropCount = (minDrop + maxDrop) / 2;
         const segmentKills = baseKillsPerSecond * timeRemaining;
         totalDropsEstimate += segmentKills * effectiveDropRate * avgDropCount;
     }
     
-    // Results Calculation (Time to Target Drop Count)
     const overallAvgDropRatePerSecond = totalDropsEstimate / targetTimeInSeconds;
     let timeToTargetDrops = 0;
     
@@ -977,12 +992,10 @@ function calculateLootDrops() {
         timeToTargetDrops = targetDrops / overallAvgDropRatePerSecond;
     }
 
-    // Display Estimated Total Drops
     if (el.lootEstimatedDropsResult) {
         el.lootEstimatedDropsResult.innerText = formatNumber(Math.floor(totalDropsEstimate));
     }
 
-    // Display Time to Target Drop Count
     if (el.lootTimeToTargetResult) {
         if (timeToTargetDrops <= 0 || overallAvgDropRatePerSecond === 0 || timeToTargetDrops === Infinity) {
             el.lootTimeToTargetResult.innerText = 'N/A';
@@ -999,21 +1012,16 @@ function calculateTTK() {
     if (!el.ttkResult) return;
 
     const enemyHealth = getNumberValue('enemyHealth');
-    // --- MODIFIED DPS INPUTS ---
     const dpsMinInput = getNumberValue('yourDPSMin');
     const dpsMaxInput = getNumberValue('yourDPSMax');
     
-    // Use the Min DPS Denomination for Min DPS
     const dpsMinMultiplier = el.dpsDenominationValue ? (parseFloat(el.dpsDenominationValue.value) || 1) : 1;
-    // Use the Max DPS Denomination for Max DPS
     const dpsMaxMultiplier = el.dpsMaxDenominationValue ? (parseFloat(el.dpsMaxDenominationValue.value) || 1) : 1; 
     
     const dpsMin = dpsMinInput * dpsMinMultiplier;
     const dpsMax = dpsMaxInput * dpsMaxMultiplier;
     
-    // Calculate Average DPS
     const yourDPS = (dpsMin + dpsMax) / 2;
-    // ---------------------------
     
     const quantity = Math.floor(getNumberValue('enemyQuantity')) || 0;
     const isFourSpot = el.fourSpotFarming ? el.fourSpotFarming.checked : false;
@@ -1091,7 +1099,6 @@ function displayRankRequirement() {
 
 function calculateRankUp() {
     if (!el.rankUpResult) {
-        console.warn('rankUpResult element not found');
         return;
     }
     
@@ -1273,7 +1280,6 @@ function populateBoostDurations() {
     }
     const minuteHTML = minuteOptions.join('');
 
-    // Filter for Energy and Loot types
     const relevantBoosts = boostItems.filter(item => item.type === 'energy' || item.type.startsWith('loot'));
 
     relevantBoosts.forEach(item => {
@@ -1325,7 +1331,6 @@ function displayStarCost() {
 }
 
 function calculateStarCalc() {
-    // Defensive check: ensure all required data structures are defined
     if (typeof starCostData === 'undefined' || typeof starSpeedData === 'undefined' || 
         typeof starRarityDataByLevel === 'undefined') {
         return;
@@ -1417,11 +1422,7 @@ async function loadAllData() {
         
         Object.assign(activityData, bundle.activities || {});
         
-        console.log("DEBUG: Successfully loaded and parsed activity-bundle.json");
-
     } catch (error) {
-        console.error("Fatal error loading activity-bundle.json:", error);
-        alert("Failed to load critical raid/dungeon data. Please refresh the page.");
     }
 }
 
@@ -1502,7 +1503,6 @@ function calculateMaxStage() {
             let stageHealth = activity.enemies[stageKey];
 
             if (!stageHealth) {
-                console.warn(`Health data missing for ${selection} - ${stageKey}`);
                 break;
             }
 
@@ -1523,16 +1523,12 @@ function calculateMaxStage() {
             completedStage = i;
         }
     } else {
-        console.warn(`Activity "${selection}" does not have the expected 'enemies' structure.`);
     }
 
     resultEl.innerText = `${completedStage} / ${maxStages}`;
     return completedStage;
 }
 
-/**
- * Calculates the total time needed to complete a specified number of runs (keys).
- */
 function calculateKeyRunTime() {
     if (!el.keyRunTimeResult || !el.activitySelect) return;
     
@@ -1543,7 +1539,7 @@ function calculateKeyRunTime() {
     const returnTimeEl = el.keyRunReturnTime;
     
     const yourDPS = (getNumberValue('yourDPSActivity') || 0) * (parseFloat(el.dpsActivityDenominationValue.value) || 1);
-    const completedStage = calculateMaxStage(); // Calls calculateMaxStage to get completedStage
+    const completedStage = calculateMaxStage();
 
     if (!activity || keyQuantity <= 0 || yourDPS <= 0 || completedStage <= 0) {
         resultEl.innerText = '0s';
@@ -1606,9 +1602,7 @@ function setupRankSearch(inputId, valueId, listId) {
     const valueEl = el[valueId];
     const listEl = el[listId];
 
-    // Defensive check
     if (!inputEl || !valueEl || !listEl || typeof rankRequirements === 'undefined') {
-        console.error("Missing elements or rankRequirements for setupRankSearch:", inputId);
         return;
     }
 
@@ -1674,9 +1668,7 @@ function setupDenominationSearch(inputId, valueId, listId, callback) {
     const valueEl = el[valueId];
     const listEl = el[listId];
 
-    // Defensive check
     if (!inputEl || !valueEl || !listEl || typeof denominations === 'undefined') {
-        console.error("Missing elements or denominations for setupDenominationSearch:", inputId);
         return;
     }
 
@@ -1722,12 +1714,11 @@ function setupDenominationSearch(inputId, valueId, listId, callback) {
             } else {
                 const currentValue = parseFloat(valueEl.value) || 1;
                 const currentDenom = denominations.find(d => d.value == currentValue);
-                // Only update the input text if a valid denomination value is already stored
                 if (currentDenom) {
                     inputEl.value = currentDenom.name !== 'None' ? currentDenom.name : '';
                 } else {
-                    inputEl.value = ''; // Clear input if invalid text was entered and no stored value exists
-                    valueEl.value = 1; // Default to 1 (None)
+                    inputEl.value = '';
+                    valueEl.value = 1;
                 }
             }
 
@@ -1761,13 +1752,11 @@ document.addEventListener('click', (event) => {
     }
 });
 
-// NEW FUNCTION: Syncs Energy data fields across all three panels.
 function syncEnergyData(sourceInputId, sourceDenomInputId, sourceDenomValueId) {
     const sourceValue = el[sourceInputId]?.value || '';
     const sourceDenomInput = el[sourceDenomInputId]?.value || '';
     const sourceDenomValue = el[sourceDenomValueId]?.value || '1';
 
-    // List of input IDs to synchronize (excluding the source)
     const energyInputMap = {
         'currentEnergy': ['currentEnergyETA', 'currentEnergyTTE'],
         'energyPerClick': ['energyPerClickETA', 'energyPerClickTTE'],
@@ -1780,14 +1769,13 @@ function syncEnergyData(sourceInputId, sourceDenomInputId, sourceDenomValueId) {
     const criticalInputMap = {
         'energyCriticalChance': ['energyCriticalChanceETA', 'energyCriticalChanceTTE'],
         'criticalEnergy': ['criticalEnergyETA', 'criticalEnergyTTE'],
-        'energyCriticalChanceETA': ['energyCriticalChance', 'energyCriticalChanceTTE'],
+        'energyCriticalChanceETA': ['energyCriticalChance', 'criticalEnergyTTE'],
         'criticalEnergyETA': ['criticalEnergy', 'criticalEnergyTTE'],
         'energyCriticalChanceTTE': ['energyCriticalChance', 'energyCriticalChanceETA'],
         'criticalEnergyTTE': ['criticalEnergy', 'criticalEnergyETA']
     };
 
 
-    // List of denomination input/value IDs to synchronize (excluding the source)
     const denomInputMap = {
         'currentEnergyDenominationInput': ['currentEnergyETADenominationInput', 'currentEnergyTTEDenominationInput'],
         'currentEnergyDenominationValue': ['currentEnergyETADenominationValue', 'currentEnergyTTEDenominationValue'],
@@ -1803,7 +1791,6 @@ function syncEnergyData(sourceInputId, sourceDenomInputId, sourceDenomValueId) {
         'energyPerClickTTEDenominationValue': ['energyPerClickDenominationValue', 'energyPerClickETADenominationValue']
     };
 
-    // Sync input values
     const targetInputs = energyInputMap[sourceInputId] || [];
     targetInputs.forEach(targetId => {
         if (el[targetId]) el[targetId].value = sourceValue;
@@ -1815,7 +1802,6 @@ function syncEnergyData(sourceInputId, sourceDenomInputId, sourceDenomValueId) {
     });
 
 
-    // Sync denomination inputs/values
     const targetDenomInputs = denomInputMap[sourceDenomInputId] || [];
     targetDenomInputs.forEach(targetId => {
         if (el[targetId]) el[targetId].value = sourceDenomInput;
@@ -1826,10 +1812,223 @@ function syncEnergyData(sourceInputId, sourceDenomInputId, sourceDenomValueId) {
         if (el[targetId]) el[targetId].value = sourceDenomValue;
     });
 
-    // Recalculate everything that depends on the change
     calculateRankUp();
     calculateEnergyETA();
     calculateTimeToEnergy();
+}
+
+
+function startTabFlashing() {
+    if (tabFlashInterval === null) {
+        let isFlashing = false;
+        tabFlashInterval = setInterval(() => {
+            document.title = isFlashing ? ORIGINAL_TITLE : FLASH_TITLE;
+            isFlashing = !isFlashing;
+        }, FLASH_INTERVAL_MS);
+    }
+}
+
+function stopTabFlashing() {
+    if (tabFlashInterval !== null) {
+        clearInterval(tabFlashInterval);
+        tabFlashInterval = null;
+        document.title = ORIGINAL_TITLE;
+        isAlertPending = false;
+    }
+}
+
+function checkNotificationPermission() {
+    if (!el.alertPermissionStatus || !el.requestPermissionBtn) return;
+
+    if (!("Notification" in window)) {
+        el.alertPermissionStatus.innerText = "Permissions: Not Supported";
+        el.requestPermissionBtn.disabled = true;
+        el.requestPermissionBtn.classList.remove('active');
+        return;
+    }
+
+    const status = Notification.permission;
+    el.alertPermissionStatus.innerText = `Permissions: ${status.charAt(0).toUpperCase() + status.slice(1)}`;
+    el.requestPermissionBtn.disabled = status === 'granted';
+    if (status === 'granted') {
+        el.alertPermissionStatus.classList.remove('text-red-400');
+        el.alertPermissionStatus.classList.add('text-green-400');
+        el.requestPermissionBtn.classList.remove('active');
+        el.requestPermissionBtn.innerText = "Permissions Granted";
+    } else {
+        el.alertPermissionStatus.classList.add('text-red-400');
+        el.alertPermissionStatus.classList.remove('text-green-400');
+        el.requestPermissionBtn.classList.add('active');
+        el.requestPermissionBtn.innerText = "Request Notifications";
+    }
+}
+
+function requestNotificationPermission() {
+    if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+        Notification.requestPermission().then(permission => {
+            checkNotificationPermission();
+            if (permission === 'granted') {
+                scheduleNextAlert();
+            }
+        });
+    }
+}
+
+function calculateNextAlert() {
+    const now = new Date();
+    const currentMinute = now.getMinutes();
+    const currentSecond = now.getSeconds();
+    
+    let earliestNextTime = Infinity;
+    let nextDungeon = null;
+    let selectedAlerts = [];
+
+    Object.keys(dungeonIntervals).forEach(name => {
+        const item = dungeonIntervals[name];
+        const checkbox = el[`alert-${item.id}-dungeon`] || el[`alert-${item.id}-raid`];
+        
+        if (checkbox && checkbox.checked) {
+            selectedAlerts.push(name);
+            const startMinute = item.startMinute;
+            
+            let minutesUntilStart;
+            
+            if (startMinute >= currentMinute) {
+                minutesUntilStart = startMinute - currentMinute;
+            } else {
+                minutesUntilStart = (60 - currentMinute) + startMinute;
+            }
+
+            let timeInSeconds = (minutesUntilStart * 60) - currentSecond;
+            
+            if (timeInSeconds <= 0) {
+                timeInSeconds += 3600; 
+            }
+
+            if (timeInSeconds < earliestNextTime) {
+                earliestNextTime = timeInSeconds;
+                nextDungeon = name;
+            }
+        }
+    });
+
+    if (nextDungeon) {
+        return {
+            name: nextDungeon,
+            timeInSeconds: earliestNextTime
+        };
+    }
+
+    return null;
+}
+
+function fireAlert(dungeonName) {
+    // 1. Send HTML5 Notification (Cross-tab/Cross-window alert)
+    if (Notification.permission === 'granted') {
+        const notification = new Notification("Dungeon Alert: Dungeon Ready!", {
+            body: `${dungeonName} is now ready! You have a 2-minute window to join.`,
+            icon: 'icon.webp'
+        });
+        
+        if (el.alertSound) {
+            el.alertSound.currentTime = 0;
+            el.alertSound.play().catch(e => console.log("Audio playback blocked or failed:", e));
+        }
+    }
+    
+    // 2. Start Tab Flashing (Same window, unfocused tab)
+    isAlertPending = true;
+    if (document.visibilityState !== 'visible') {
+        startTabFlashing();
+    }
+
+    // 3. Reschedule immediately after firing
+    scheduleNextAlert();
+}
+
+function scheduleNextAlert() {
+    if (nextAlertTimeout) {
+        clearTimeout(nextAlertTimeout);
+    }
+    
+    // Stop flashing if we are recalculating and there is no alert
+    if (!calculateNextAlert()) {
+        stopTabFlashing();
+    }
+    
+    const nextAlert = calculateNextAlert();
+    
+    if (nextAlert && Notification.permission === 'granted') {
+        // Use a 2-second buffer to ensure the countdown is visible for a moment before the alert fires
+        const timeUntilAlertMs = Math.max(2000, nextAlert.timeInSeconds * 1000); 
+        
+        nextAlertTimeout = setTimeout(() => {
+            fireAlert(nextAlert.name);
+        }, timeUntilAlertMs);
+    }
+    
+    startCountdownDisplay();
+}
+
+function updateCountdownDisplay() {
+    const nextAlert = calculateNextAlert();
+    
+    if (el.nextDungeonTimer && el.nextDungeonName) {
+        if (nextAlert) {
+            el.nextDungeonTimer.innerText = formatTime(nextAlert.timeInSeconds);
+            el.nextDungeonName.innerText = `Next: ${nextAlert.name} (${dungeonIntervals[nextAlert.name].startMinute}m mark)`;
+        } else {
+            el.nextDungeonTimer.innerText = "N/A";
+            el.nextDungeonName.innerText = "Select dungeons to track.";
+        }
+    }
+}
+
+function startCountdownDisplay() {
+    if (countdownInterval) return;
+    updateCountdownDisplay();
+    countdownInterval = setInterval(() => {
+        updateCountdownDisplay();
+    }, 1000);
+}
+
+function stopCountdownDisplay() {
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+    }
+}
+
+function saveAlertsData() {
+    try {
+        const savedAlerts = {};
+        Object.keys(dungeonIntervals).forEach(name => {
+            const id = dungeonIntervals[name].id;
+            const checkbox = el[`alert-${id}-dungeon`] || el[`alert-${id}-raid`];
+            if (checkbox) {
+                savedAlerts[name] = checkbox.checked;
+            }
+        });
+        localStorage.setItem('ae_alerts_selected', JSON.stringify(savedAlerts));
+    } catch (e) {
+    }
+}
+
+function loadAlertsData() {
+    try {
+        const savedAlerts = JSON.parse(localStorage.getItem('ae_alerts_selected')) || {};
+        
+        Object.keys(dungeonIntervals).forEach(name => {
+            const id = dungeonIntervals[name].id;
+            const checkbox = el[`alert-${id}-dungeon`] || el[`alert-${id}-raid`];
+            if (checkbox) {
+                checkbox.checked = savedAlerts[name] || false;
+            }
+        });
+        checkNotificationPermission();
+        scheduleNextAlert();
+    } catch (e) {
+    }
 }
 
 
@@ -1839,7 +2038,6 @@ document.addEventListener('DOMContentLoaded', () => {
         el[element.id] = element;
     });
 
-    // Hidden checkbox for Loot Clicker Speed
     if (!el.clickerSpeedLoot) {
         el.clickerSpeedLoot = document.createElement('input');
         el.clickerSpeedLoot.type = 'checkbox';
@@ -1848,6 +2046,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const lootPanel = el['panel-lootcalc'];
         if (lootPanel) lootPanel.appendChild(el.clickerSpeedLoot);
     }
+    
+    // ----------------------------------------------------
+    // Production-ready event listener for Tab Flashing
+    // ----------------------------------------------------
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            stopTabFlashing();
+        } else if (isAlertPending) {
+            startTabFlashing();
+        }
+    });
+    // ----------------------------------------------------
+
 
     const BACKGROUND_KEY = 'ae_image_background';
 
@@ -1866,7 +2077,6 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 localStorage.setItem(BACKGROUND_KEY, isImage ? '1' : '0');
             } catch (e) {
-                console.error("Failed to save background preference", e);
             }
         });
     }
@@ -1881,8 +2091,6 @@ document.addEventListener('DOMContentLoaded', () => {
             applyBackgroundPreference(false);
         }
     } catch (e) {
-        console.error("Failed to load background preference", e);
-        applyBackgroundPreference(false);
     }
 
     
@@ -1897,39 +2105,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const clickerSpeedControls = document.querySelectorAll('.toggle-container');
-    clickerSpeedControls.forEach(container => {
-        container.addEventListener('click', (e) => {
-            const button = e.target.closest('.toggle-btn');
-            if (button) {
-                if (button.dataset.clickerspeed) {
-                    setClickerSpeed(button.dataset.clickerspeed, button);
-                } else if (button.dataset.clickerspeedEta) {
-                    setClickerSpeed(button.dataset.clickerspeedEta, button);
-                } else if (button.dataset.clickerspeedTte) {
-                    setClickerSpeed(button.dataset.clickerspeedTte, button);
-                } else if (button.dataset.clickerspeedLoot) {
-                    setClickerSpeed(button.dataset.clickerspeedLoot, button);
-                } else if (button.dataset.farmingMode) {
-                    setFarmingMode(button.dataset.farmingMode, button);
+    if (clickerSpeedControls) {
+        clickerSpeedControls.forEach(container => {
+            container.addEventListener('click', (e) => {
+                const button = e.target.closest('.toggle-btn');
+                if (button) {
+                    if (button.dataset.clickerspeed) {
+                        setClickerSpeed(button.dataset.clickerspeed, button);
+                    } else if (button.dataset.clickerspeedEta) {
+                        setClickerSpeed(button.dataset.clickerspeedEta, button);
+                    } else if (button.dataset.clickerspeedTte) {
+                        setClickerSpeed(button.dataset.clickerspeedTte, button);
+                    } else if (button.dataset.clickerspeedLoot) {
+                        setClickerSpeed(button.dataset.clickerspeedLoot, button);
+                    } else if (button.dataset.farmingMode) {
+                        setFarmingMode(button.dataset.farmingMode, button);
+                    }
                 }
-            }
+            });
         });
-    });
+    }
 
 
-    console.log("DEBUG: DOM fully loaded. Initializing script.");
     switchTab('rankup');
     
     populateWorldDropdown(); 
     populateTimeToReturnDropdown();
     populateTimeToReturnMinutesDropdown();
     populateBoostDurations();
-    // CALLS TO POPULATE STAR DROPDOWNS NOW GUARDED INTERNALLY
     populateStarLevelDropdown();
     populateStarSpeedDropdown();
 
     loadAllData().then(() => {
-        console.log("DEBUG: Activity data loading complete. Setting up raid UI.");
         
         populateActivityDropdown();
 
@@ -1938,7 +2145,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setupRankSearch('rankInput', 'rankSelect', 'rankList');
 
-    // REFACTORED ENERGY DENOMINATION CHANGE HANDLERS
     function onRankUpCEDenomChange() {
         syncEnergyData('currentEnergy', 'currentEnergyDenominationInput', 'currentEnergyDenominationValue');
     }
@@ -1995,7 +2201,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupDenominationSearch('dpsMaxDenominationInput', 'dpsMaxDenominationValue', 'dpsMaxDenominationList', calculateTTK);
     setupDenominationSearch('dpsActivityDenominationInput', 'dpsActivityDenominationValue', 'dpsActivityDenominationList', onRaidDenomChange);
     
-    // Explicitly wire up the denomination input fields to the sync handlers
     setupDenominationSearch('currentEnergyDenominationInput', 'currentEnergyDenominationValue', 'currentEnergyDenominationList', onRankUpCEDenomChange);
     setupDenominationSearch('energyPerClickDenominationInput', 'energyPerClickDenominationValue', 'energyPerClickDenominationList', onRankUpEPCDenomChange);
     
@@ -2040,7 +2245,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const criticalDebounceAndSync = debounce((sourceId) => {
-        // Use syncEnergyData for the critical field as well, as it calls recalculate
         syncEnergyData(sourceId, sourceId, sourceId);
     }, 300);
 
@@ -2053,7 +2257,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el.energyCriticalChanceTTE) el.energyCriticalChanceTTE.addEventListener('input', () => criticalDebounceAndSync('energyCriticalChanceTTE'));
     if (el.criticalEnergyTTE) el.criticalEnergyTTE.addEventListener('input', () => criticalDebounceAndSync('criticalEnergyTTE'));
     
-    // Global clicker speed sync
     const globalClickerSync = (isChecked) => {
         if (el.clickerSpeed) el.clickerSpeed.checked = isChecked;
         if (el.clickerSpeedETA) el.clickerSpeedETA.checked = isChecked;
@@ -2069,7 +2272,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el.clickerSpeedETA) el.clickerSpeedETA.addEventListener('change', () => globalClickerSync(el.clickerSpeedETA.checked));
     if (el.clickerSpeedTTE) el.clickerSpeedTTE.addEventListener('change', () => globalClickerSync(el.clickerSpeedTTE.checked));
     
-    // Loot specific clicker speed handling
     if (el.clickerSpeedLoot) {
         el.clickerSpeedLoot.addEventListener('change', () => {
              const isChecked = el.clickerSpeedLoot.checked;
@@ -2093,7 +2295,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (el.targetEnergyETA) el.targetEnergyETA.addEventListener('input', debounce(calculateEnergyETA, 300));
 
-    // Energy Boosts listeners
     if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
         boostItems.filter(item => item.type === 'energy').forEach(item => {
             const hoursEl = el[`boost-${item.id}-hours`];
@@ -2105,7 +2306,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el.timeToReturnSelect) el.timeToReturnSelect.addEventListener('change', calculateTimeToEnergy);
     if (el.timeToReturnSelectMinutes) el.timeToReturnSelectMinutes.addEventListener('change', calculateTimeToEnergy);
     
-    // Loot Calc listeners
     const lootDebounce = debounce(calculateLootDrops, 300);
 
     if (el.lootDropMin) el.lootDropMin.addEventListener('input', lootDebounce);
@@ -2118,10 +2318,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
         boostItems.filter(item => item.type && item.type.startsWith('loot')).forEach(item => {
-            const hoursEl = el[`boost-${item.id}-hours`];
-            const minutesEl = el[`boost-${item.id}-minutes`];
-            if (hoursEl) hoursEl.addEventListener('change', lootDebounce);
-            if (minutesEl) minutesEl.addEventListener('change', lootDebounce);
+            if (item.type === 'loot_passive') {
+                const checkboxEl = el[`boost-${item.id}-checkbox`];
+                if (checkboxEl) checkboxEl.addEventListener('change', lootDebounce);
+            } else {
+                const hoursEl = el[`boost-${item.id}-hours`];
+                const minutesEl = el[`boost-${item.id}-minutes`];
+                if (hoursEl) hoursEl.addEventListener('change', lootDebounce);
+                if (minutesEl) minutesEl.addEventListener('change', lootDebounce);
+            }
         });
     }
 
@@ -2146,7 +2351,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el.enemyQuantity) el.enemyQuantity.addEventListener('input', debounce(calculateTTK, 300));
     if (el.fourSpotFarming) el.fourSpotFarming.addEventListener('change', calculateTTK);
     
-    // START RAID LISTENERS
     const raidDebounce = debounce(() => {
         calculateMaxStage();
         calculateKeyRunTime();
@@ -2156,14 +2360,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el.activitySelect) {
         el.activitySelect.addEventListener('change', () => {
             handleActivityChange();
-            saveRaidData(); // Save Activity change immediately
+            saveRaidData();
         });
     }
 
     if (el.yourDPSActivity) {
         el.yourDPSActivity.addEventListener('input', () => {
             raidDebounce();
-            // Sync to TTK
             if (el.yourDPSMin) el.yourDPSMin.value = el.yourDPSActivity.value;
             if (el.yourDPSMax) el.yourDPSMax.value = el.yourDPSActivity.value;
             calculateTTK();
@@ -2173,8 +2376,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el.activityTimeLimit) el.activityTimeLimit.addEventListener('input', raidDebounce);
     
     if (el.keyRunQuantity) el.keyRunQuantity.addEventListener('input', raidDebounce);
-    // END RAID LISTENERS
-
 
     if (el.starLevelSelect) el.starLevelSelect.addEventListener('change', displayStarCost);
     if (el.starSpeedSelect) el.starSpeedSelect.addEventListener('change', calculateStarCalc);
@@ -2206,15 +2407,31 @@ document.addEventListener('DOMContentLoaded', () => {
             saveTTKData(); 
         });
     }
+    
+    // --- ALERT SPECIFIC LOGIC ---
+    if (el.requestPermissionBtn) {
+        el.requestPermissionBtn.addEventListener('click', requestNotificationPermission);
+    }
+    
+    // Checkbox change listener for alerts
+    Object.keys(dungeonIntervals).forEach(name => {
+        const id = dungeonIntervals[name].id;
+        const checkbox = el[`alert-${id}-dungeon`] || el[`alert-${id}-raid`];
+        if (checkbox) {
+            checkbox.addEventListener('change', () => {
+                saveAlertsData();
+                scheduleNextAlert();
+            });
+        }
+    });
 
-    // --- INITIAL DATA LOAD ---
-    // Load data from persistence
     loadRankUpData();
     loadETAData();
     loadTimeToEnergyData(); 
     loadLootData();
     loadTTKData();
     loadStarData();
+    loadAlertsData(); 
 
     if (el.worldSelect) {
         populateEnemyDropdown(); 
@@ -2222,8 +2439,6 @@ document.addEventListener('DOMContentLoaded', () => {
         calculateTTK();
     }
 
-    // NEW: Ensure all energy fields sync up once loaded to avoid inconsistencies, especially with denomination defaults.
-    // The previous timeout of 100ms is too short for reliable load and sync. Using a final DOM update pattern.
     if (el.currentEnergy) {
         el.currentEnergy.dispatchEvent(new Event('input')); 
     } else if (el.currentEnergyETA) {
@@ -2232,26 +2447,20 @@ document.addEventListener('DOMContentLoaded', () => {
         el.currentEnergyTTE.dispatchEvent(new Event('input'));
     }
     
-    // Final recalculations
     calculateLootDrops();
     calculateMaxStage();
     calculateKeyRunTime();
     calculateStarCalc();
 
-    // DEFENSIVE CHECKLIST INITIALIZATION BLOCK
     if (typeof checklistDataByWorld !== 'undefined' && typeof worldData !== 'undefined') {
-        console.log("DEBUG: World and Checklist data found! Initializing new checklist UI...");
 
         const checklistPanel = el['panel-checklist']; 
         if (!checklistPanel) {
-            console.error("DEBUG: Checklist panel 'panel-checklist' not found in HTML. Checklist functionality will be disabled.");
-            // Added return here to prevent further errors if panel is missing
             return;
         }
 
         const checklistContainer = el['checklist-worlds-container'];
         if (!checklistContainer) {
-            console.error("DEBUG: Checklist container 'checklist-worlds-container' not found in HTML.");
             return;
         }
 
@@ -2292,7 +2501,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function updateAllWorldTitles(savedData) {
-            // Added defensive check here just in case this is called early
             if (typeof checklistDataByWorld === 'undefined') return;
 
             if (!savedData) {
@@ -2378,13 +2586,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (countEl) {
                     countEl.innerText = `${categoryStats[cat].completed}/${categoryStats[cat].total}`;
                 } else {
-                    console.warn(`Count element with ID '${elId}' not found.`);
                 }
             });
         }
 
         function saveChecklistData() {
-            // Added defensive check here
             if (typeof checklistDataByWorld === 'undefined') return;
 
             try {
@@ -2399,12 +2605,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem(CHECKLIST_SAVE_KEY, JSON.stringify(savedData));
                 updateAllWorldTitles(savedData);
             } catch (e) {
-                console.error("Failed to save checklist data:", e);
             }
         }
 
         function populateWorldChecklists(savedData) {
-            // Added defensive check here
             if (typeof checklistDataByWorld === 'undefined') return;
 
             checklistContainer.innerHTML = '';
@@ -2499,7 +2703,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function loadChecklistData() {
-            // Added defensive check here
             if (typeof checklistDataByWorld === 'undefined') return;
 
             try {
@@ -2507,7 +2710,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 populateWorldChecklists(savedData);
                 updateAllWorldTitles(savedData);
             } catch (e) {
-                console.error("Failed to load checklist data:", e);
                 populateWorldChecklists({});
                 updateAllWorldTitles({});
             }
@@ -2555,8 +2757,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         
-        // --- CHECKLIST EVENT LISTENERS ---
-
         checklistPanel.addEventListener('change', (e) => {
             if (e.target.type === 'checkbox') {
                 const item = e.target.closest('.checklist-item');
@@ -2632,9 +2832,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         
-        loadChecklistData(); // Call loadChecklistData if the defensive check passes here
+        loadChecklistData();
 
     } else {
-        console.warn("DEBUG: Checklist data (checklistDataByWorld) or World data (worldData) NOT found. Checklist will not load.");
     }
 });
