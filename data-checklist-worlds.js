@@ -608,8 +608,8 @@ const checklistDataByWorld = {
           { id: 'c194', name: 'Witch Factor' },
       ],
       progressions: [
-        { id: 'c195', name: 'Assassin Energy (100)' },
-        { id: 'c196', name: 'Assassin Damage (100)' },
+        { id: 'c195', name: 'Re:Spirit Pact?' },
+        { id: 'c196', name: 'Re: Witch Token?' },
       ],
       sssRank: [
           { id: 'c197', name: 'Roswald' }
