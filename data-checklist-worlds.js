@@ -4,6 +4,7 @@ const checklistDataByWorld = {
       { id: 'h1', name: 'Halloween Gacha' }
     ],
     progressions: [
+      {id: 'h997', name: 'Halloween Bag Leveling' },
       { id: 'h3', name: 'Ghost Leveling' },
       { id: 'h999', name: 'Overdrive Saw' }
     ],
@@ -595,7 +596,30 @@ const checklistDataByWorld = {
       accessories: [],
     quests: [
       { id: 'cq59', name: 'Key Quests'},
-      { id: 'cq60', name: 'Obelisk Quest'}
+      { id: 'cq60', name: 'Obelisk Quest'},
+      { id: 'cq61', name: 'The Order Quest'}
+    ]
+  },
+    "Re:Manor": {
+      gachas: [
+          { id: 'c191', name: 'Spirit Pact' },
+          { id: 'c192', name: 'Witch Factor' },
+          { id: 'c193', name: 'Artificial Spirit Blessings' },
+          { id: 'c194', name: 'Witch Factor' },
+      ],
+      progressions: [
+        { id: 'c195', name: 'Assassin Energy (100)' },
+        { id: 'c196', name: 'Assassin Damage (100)' },
+      ],
+      sssRank: [
+          { id: 'c197', name: 'Roswald' }
+      ],
+      auras: [],
+      accessories: [],
+    quests: [
+      { id: 'cq62', name: 'Key Quests'},
+      { id: 'cq63', name: 'Obelisk Quest'},
+      { id: 'cq64', name: 'The Order Quest'}
     ]
   },
 };
