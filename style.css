@@ -118,11 +118,6 @@
   100% { transform: scale(1); }
 }
 
-.world-section-title {
-  position: relative;
-  overflow: hidden;
-}
-
 .world-section-title::after {
   content: '';
   position: absolute;
@@ -321,11 +316,11 @@ body.blue-theme header {
   padding: 0 !important;
   display: flex;
   flex: 1;
-  min-height: 100vh;
+  position: relative;
 }
 
 main.calculator-card {
-  min-height: calc(100vh - 60px);
+  /* Removed height constraint for the parent container */
 }
 
 .flex.border-b-2 {
@@ -338,6 +333,14 @@ main.calculator-card {
   width: 220px;
   min-width: 220px;
   flex-shrink: 0;
+  
+  /* STICKY SIDEBAR SETUP */
+  position: sticky;
+  top: 60px;
+  align-self: flex-start;
+  /* Use fixed viewport height for the sticky element */
+  height: calc(100vh - 60px); 
+  overflow-y: auto;
 }
 
 .tab-btn {
@@ -367,7 +370,6 @@ main.calculator-card {
 .content-wrapper {
   flex: 1;
   padding: 30px 40px;
-  overflow-y: auto;
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
@@ -425,6 +427,18 @@ main.calculator-card {
   background: #1a1a1a;
   color: #fff;
   padding: 8px;
+}
+
+/* NEW SMALL LABEL STYLES for Loot Calc dropdowns */
+.input-label-small {
+    /* Base label styles, adjusted for density */
+    color: #999; 
+    font-weight: 500;
+    font-size: 11px;
+    margin-bottom: 2px;
+    display: block;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 
 
@@ -688,17 +702,33 @@ button:active {
   }
   
   .calculator-card {
+    /* Change to column layout on small screens */
     flex-direction: column;
+    position: static; 
   }
   
   .flex.border-b-2 {
+    /* This is the SIDEBAR/Tab controls */
     width: 100%;
     min-width: 100%;
     border-right: none !important;
     border-bottom: 1px solid #222 !important;
+    
+    /* Make the tabs scroll horizontally */
     flex-direction: row !important;
     padding: 0;
     overflow-x: auto;
+    
+    /* Override sticky settings for mobile layout */
+    position: static;
+    top: 0;
+    align-self: auto;
+    height: auto;
+    max-height: none;
+    overflow-y: hidden;
+    
+    /* Ensure no scrollbar appears unless content overflows */
+    -webkit-overflow-scrolling: touch;
   }
   
   .tab-btn {
@@ -707,6 +737,7 @@ button:active {
     border-left: none !important;
     border-bottom: 2px solid transparent !important;
     white-space: nowrap;
+    flex-shrink: 0; /* Prevent buttons from shrinking too much */
   }
   
   .tab-btn.active {
@@ -714,8 +745,8 @@ button:active {
     border-bottom-color: #fff !important;
   }
   
-  main > div[id^="panel-"] {
-    padding: 20px;
+  .content-wrapper {
+    padding: 20px 20px;
   }
   
   .anime-title {

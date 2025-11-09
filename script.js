@@ -20,6 +20,362 @@ const ORIGINAL_TITLE = document.title;
 const FLASH_TITLE = '[!!! DUNGEON READY !!!]';
 const FLASH_INTERVAL_MS = 1000;
 
+const CHECKLIST_SAVE_KEY = 'ae_checklist_progress';
+
+const LOOT_FIXED_KILLS_PER_SECOND = 4.0;
+const LOOT_RESPAWN_DELAY = 3.0;
+
+function isWorldCompleted(worldSection) {
+    const checkboxes = worldSection.querySelectorAll('.checklist-item input[type="checkbox"]');
+    if (checkboxes.length === 0) return true; 
+    let completed = true;
+    checkboxes.forEach(cb => {
+        if (!cb.checked) {
+            completed = false;
+        }
+    });
+    return completed;
+}
+
+function isCategoryCompleted(subsection) {
+    const checkboxes = subsection.querySelectorAll('.checklist-item input[type="checkbox"]');
+    if (checkboxes.length === 0) return true;
+    let completed = true;
+    checkboxes.forEach(cb => {
+        if (!cb.checked) {
+            completed = false;
+        }
+    });
+    return completed;
+}
+
+function styleChecklistItem(checkbox, isChecked) {
+    const span = checkbox.nextElementSibling;
+    if (span) {
+        if (isChecked) {
+            span.style.textDecoration = 'line-through';
+            span.style.color = '#888';
+        } else {
+            span.style.textDecoration = 'none';
+            span.style.color = '#ccc';
+        }
+    }
+}
+
+function createChecklistItem(item, savedData) {
+    const label = document.createElement('label');
+    label.className = 'checklist-item';
+    label.htmlFor = item.id;
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = item.id;
+    checkbox.name = item.id;
+    checkbox.checked = !!savedData[item.id];
+
+    const span = document.createElement('span');
+    span.textContent = item.name;
+
+    label.appendChild(checkbox);
+    label.appendChild(span);
+
+    styleChecklistItem(checkbox, checkbox.checked);
+    return label;
+}
+
+function updateAllWorldTitles(savedData) {
+    if (typeof checklistDataByWorld === 'undefined') return;
+
+    if (!savedData) {
+        try {
+            savedData = JSON.parse(localStorage.getItem(CHECKLIST_SAVE_KEY)) || {};
+        } catch (e) {
+            savedData = {};
+        }
+    }
+
+    const worldNames = Object.keys(checklistDataByWorld);
+    let overallTotal = 0;
+    let overallCompleted = 0;
+    let categoryStats = { 
+        gachas: {total: 0, completed: 0}, 
+        progressions: {total: 0, completed: 0}, 
+        sssRank: {total: 0, completed: 0}, 
+        auras: {total: 0, completed: 0}, 
+        accessories: {total: 0, completed: 0},
+        quests: {total: 0, completed: 0} 
+    };
+
+    for (const worldName of worldNames) {
+        const world = checklistDataByWorld[worldName];
+        const worldNameId = worldName.replace(/\s+/g, '-').toLowerCase();
+        const worldTitleEl = document.getElementById(`world-title-${worldNameId}`);
+
+        let totalItems = 0;
+        let completedItems = 0;
+
+        const categories = ['gachas', 'progressions', 'sssRank', 'auras', 'accessories', 'quests'];
+        categories.forEach(catKey => {
+            if (world[catKey]) {
+                totalItems += world[catKey].length;
+                if (categoryStats[catKey]) {
+                    categoryStats[catKey].total += world[catKey].length;
+                }
+                
+                world[catKey].forEach(item => {
+                    if (savedData[item.id]) {
+                        completedItems++;
+                        if (categoryStats[catKey]) {
+                            categoryStats[catKey].completed++;
+                        }
+                    }
+                });
+                
+                const subTitleEl = document.getElementById(`${catKey}-title-${worldNameId}`);
+                if(subTitleEl) {
+                    const subTotal = world[catKey].length;
+                    const subCompleted = world[catKey].filter(item => savedData[item.id]).length;
+                    let catName = catKey.charAt(0).toUpperCase() + catKey.slice(1);
+                    if (catKey === 'sssRank') catName = 'SSS Rank';
+                    
+                    subTitleEl.innerHTML = `${catName} <span class="category-badge badge-${catKey}">${subCompleted}/${subTotal}</span>`;
+                }
+            }
+        });
+
+        if (worldTitleEl) {
+            const percentage = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+            worldTitleEl.innerText = `${worldName} (${completedItems} / ${totalItems})`;
+            worldTitleEl.style.setProperty('--progress', `${percentage}%`);
+        }
+        overallTotal += totalItems;
+        overallCompleted += completedItems;
+    }
+    
+    const overallProgressText = el['overall-progress-text'];
+    const overallProgressFill = el['overall-progress-fill'];
+    if (overallProgressText && overallProgressFill) {
+        const percentage = overallTotal > 0 ? Math.round((overallCompleted / overallTotal) * 100) : 0;
+        overallProgressText.innerText = `${overallCompleted} / ${overallTotal} (${percentage}%)`;
+        overallProgressFill.style.width = `${percentage}%`;
+    }
+    
+    Object.keys(categoryStats).forEach(cat => {
+        let elId;
+        if (cat === 'sssRank') elId = 'sssrank-count';
+        else elId = `${cat}-count`;
+        
+        const countEl = document.getElementById(elId);
+        if (countEl) {
+            countEl.innerText = `${categoryStats[cat].completed}/${categoryStats[cat].total}`;
+        } else {
+        }
+    });
+}
+
+function saveChecklistData() {
+    if (typeof checklistDataByWorld === 'undefined') return;
+
+    try {
+        const savedData = {};
+        const checklistPanel = el['panel-checklist'];
+        if (!checklistPanel) return;
+        const checkboxes = checklistPanel.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(cb => {
+            if(cb.checked) {
+                savedData[cb.id] = true;
+            }
+        });
+        localStorage.setItem(CHECKLIST_SAVE_KEY, JSON.stringify(savedData));
+        updateAllWorldTitles(savedData);
+        filterChecklistItems(el['checklist-search']?.value, el['category-filter']?.value);
+    } catch (e) {
+    }
+}
+
+function populateWorldChecklists(savedData) {
+    if (typeof checklistDataByWorld === 'undefined') return;
+
+    const checklistContainer = el['checklist-worlds-container'];
+    if (!checklistContainer) return;
+
+    checklistContainer.innerHTML = '';
+
+    const worldOrder = Object.keys(checklistDataByWorld);
+    if (checklistDataByWorld["Miscellaneous"]) {
+        worldOrder.push("Miscellaneous");
+    }
+
+    for (const worldName of worldOrder) {
+        if (!checklistDataByWorld[worldName]) continue;
+
+        const world = checklistDataByWorld[worldName];
+        const worldNameId = worldName.replace(/\s+/g, '-').toLowerCase();
+
+        const section = document.createElement('section');
+        
+        const worldHeader = document.createElement('div');
+        worldHeader.className = 'world-section-header';
+        
+        const title = document.createElement('h2');
+        title.className = 'world-section-title';
+        title.id = `world-title-${worldNameId}`;
+        title.innerText = `${worldName} (0 / 0)`; 
+        worldHeader.appendChild(title);
+
+        const worldToggleContainer = document.createElement('div');
+        worldToggleContainer.className = 'toggle-container world-toggle';
+
+        const checkAllWorldBtn = document.createElement('button');
+        checkAllWorldBtn.className = 'toggle-btn world-check-all';
+        checkAllWorldBtn.innerText = 'Check All';
+        checkAllWorldBtn.dataset.worldId = worldNameId; 
+
+        const uncheckAllWorldBtn = document.createElement('button');
+        uncheckAllWorldBtn.className = 'toggle-btn world-uncheck-all';
+        uncheckAllWorldBtn.innerText = 'Uncheck All';
+        uncheckAllWorldBtn.dataset.worldId = worldNameId; 
+
+        worldToggleContainer.appendChild(checkAllWorldBtn);
+        worldToggleContainer.appendChild(uncheckAllWorldBtn);
+        worldHeader.appendChild(worldToggleContainer);
+        
+        section.appendChild(worldHeader);
+
+        const categories = [
+            { key: 'gachas', name: 'Gachas', css: 'gachas' },
+            { key: 'progressions', name: 'Progressions', css: 'progressions' },
+            { key: 'sssRank', name: 'SSS Rank', css: 'sssRank' },
+            { key: 'auras', name: 'Auras', css: 'auras' },
+            { key: 'accessories', name: 'Accessories', css: 'accessories' },
+            { key: 'quests', name: 'Quests', css: 'quests' }
+        ];
+
+        const subsections = [];
+
+        categories.forEach(cat => {
+            if (world[cat.key] && world[cat.key].length > 0) {
+                const subSection = document.createElement('div');
+                subSection.className = 'checklist-category-subsection';
+                
+                const subTitle = document.createElement('h3');
+                subTitle.className = `world-subsection-title ${cat.css}`;
+                subTitle.id = `${cat.key}-title-${worldNameId}`;
+                subTitle.innerText = `${cat.name} (0 / ${world[cat.key].length})`;
+                subSection.appendChild(subTitle);
+                
+                const listDiv = document.createElement('div');
+                listDiv.className = 'space-y-2';
+                world[cat.key].forEach(item => {
+                    listDiv.appendChild(createChecklistItem(item, savedData));
+                });
+                subSection.appendChild(listDiv);
+                subsections.push(subSection);
+            }
+        });
+
+        if (subsections.length > 0) {
+            const grid = document.createElement('div');
+            let gridCols = 'md:grid-cols-2 lg:grid-cols-3';
+            if (subsections.length === 1) gridCols = ''; 
+            if (subsections.length === 2) gridCols = 'md:grid-cols-2'; 
+            
+            grid.className = `grid grid-cols-1 ${gridCols} gap-6 mt-4`;
+            
+            subsections.forEach(sub => grid.appendChild(sub));
+            section.appendChild(grid);
+        }
+
+        checklistContainer.appendChild(section);
+    }
+}
+
+function loadChecklistData() {
+    if (typeof checklistDataByWorld === 'undefined') return;
+
+    try {
+        const savedData = JSON.parse(localStorage.getItem(CHECKLIST_SAVE_KEY)) || {};
+        populateWorldChecklists(savedData);
+        updateAllWorldTitles(savedData);
+        
+        const hideCompleted = localStorage.getItem('ae_checklist_hide_completed') === 'true';
+        if (el['hide-completed-checkbox']) {
+            el['hide-completed-checkbox'].checked = hideCompleted;
+        }
+        filterChecklistItems(el['checklist-search']?.value, el['category-filter']?.value);
+        
+    } catch (e) {
+        populateWorldChecklists({});
+        updateAllWorldTitles({});
+    }
+}
+
+function filterChecklistItems(searchTerm = '', categoryFilter = '') {
+    const checklistPanel = el['panel-checklist'];
+    if (!checklistPanel) return;
+
+    const searchLower = searchTerm.toLowerCase();
+    const categoryFilterActive = !!categoryFilter;
+    const searchActive = !!searchTerm;
+    
+    const isHiddenMode = el['hide-completed-checkbox'] ? el['hide-completed-checkbox'].checked : false;
+    const worldSections = checklistPanel.querySelectorAll('section');
+    
+    worldSections.forEach(section => {
+        const subsections = section.querySelectorAll('.checklist-category-subsection');
+        let sectionHasVisibleContent = false;
+        
+        subsections.forEach(subsection => {
+            const subTitle = subsection.querySelector('h3');
+            if (!subTitle) return;
+            
+            const items = subsection.querySelectorAll('.checklist-item');
+            let visibleItems = 0;
+            
+            const subId = subTitle.id;
+            const categoryMatch = !categoryFilterActive || (categoryFilter === 'sssrank' ? subId.includes('sssRank-title') : subId.includes(`${categoryFilter}-title`));
+            
+            const isCompletedCategory = isCategoryCompleted(subsection);
+
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                const itemCheckbox = item.querySelector('input[type="checkbox"]');
+                const itemIsCompleted = itemCheckbox && itemCheckbox.checked;
+                
+                const searchMatch = !searchActive || text.includes(searchLower);
+                
+                const hideCompletedItemMatch = !isHiddenMode || !itemIsCompleted;
+
+                if (categoryMatch && searchMatch && hideCompletedItemMatch) {
+                    item.style.display = 'flex';
+                    visibleItems++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            const hideCompletedCategory = isCompletedCategory && isHiddenMode && !searchActive && !categoryFilterActive;
+            
+            if (visibleItems > 0 && !hideCompletedCategory) {
+                subsection.style.display = 'block'; 
+                sectionHasVisibleContent = true;
+            } else {
+                subsection.style.display = 'none';
+            }
+        });
+        
+        const worldIsCompleted = isWorldCompleted(section);
+        const hideCompletedWorld = worldIsCompleted && isHiddenMode && !searchActive && !categoryFilterActive;
+        
+        if (sectionHasVisibleContent && !hideCompletedWorld) {
+            section.style.display = 'block';
+        } else {
+            section.style.display = 'none';
+        }
+    });
+}
+
+
 function switchTab(activeTab) {
     tabs.forEach(tab => {
         const panel = el[`panel-${tab}`]; 
@@ -544,7 +900,6 @@ function saveLootData() {
         if (el.lootBaseDropRate) localStorage.setItem('ae_loot_baseRate', el.lootBaseDropRate.value);
         if (el.lootTimeTargetHours) localStorage.setItem('ae_loot_targetHours', el.lootTimeTargetHours.value);
         if (el.lootTimeTargetMinutes) localStorage.setItem('ae_loot_targetMinutes', el.lootTimeTargetMinutes.value);
-        if (el.yourKillsPerSecond) localStorage.setItem('ae_loot_kps', el.yourKillsPerSecond.value);
         if (el.lootDropTargetCount) localStorage.setItem('ae_loot_targetCount', el.lootDropTargetCount.value);
         if (el.clickerSpeedLoot) localStorage.setItem('ae_loot_clickerSpeed', el.clickerSpeedLoot.checked);
         
@@ -578,9 +933,10 @@ function loadLootData() {
         if (el.lootDropMin) el.lootDropMin.value = localStorage.getItem('ae_loot_dropMin') || 1;
         if (el.lootDropMax) el.lootDropMax.value = localStorage.getItem('ae_loot_dropMax') || 1;
         if (el.lootBaseDropRate) el.lootBaseDropRate.value = localStorage.getItem('ae_loot_baseRate') || 10;
+        
         if (el.lootTimeTargetHours) el.lootTimeTargetHours.value = localStorage.getItem('ae_loot_targetHours') || 1;
         if (el.lootTimeTargetMinutes) el.lootTimeTargetMinutes.value = localStorage.getItem('ae_loot_targetMinutes') || 0;
-        if (el.yourKillsPerSecond) el.yourKillsPerSecond.value = localStorage.getItem('ae_loot_kps') || 1.0;
+        
         if (el.lootDropTargetCount) el.lootDropTargetCount.value = localStorage.getItem('ae_loot_targetCount') || 1;
 
         const clickerSpeed = localStorage.getItem('ae_loot_clickerSpeed');
@@ -897,23 +1253,22 @@ function calculateLootDrops() {
     const targetHours = getNumberValue('lootTimeTargetHours');
     const targetMinutes = getNumberValue('lootTimeTargetMinutes');
     const targetDrops = getNumberValue('lootDropTargetCount') || 1;
-    const killsPerSecond = getNumberValue('yourKillsPerSecond') || 1;
 
     const targetTimeInSeconds = (targetHours * 3600) + (targetMinutes * 60);
 
-    const baseKillsPerSecond = killsPerSecond > 0 ? killsPerSecond : 1; 
-    
+    const baseKillsPerSecond = LOOT_FIXED_KILLS_PER_SECOND;
+
     const lootBoosts = boostItems.filter(item => item.type && item.type.startsWith('loot'));
 
     const allActiveBoosts = [];
-    let passiveAdditiveBonus = 0;
+    let totalPassiveAdditiveBonus = 0; 
 
     lootBoosts.forEach(item => {
         
         if (item.type === 'loot_passive') {
             const checkboxEl = el[`boost-${item.id}-checkbox`];
             if (checkboxEl && checkboxEl.checked) {
-                passiveAdditiveBonus += item.additive;
+                totalPassiveAdditiveBonus += item.additive;
             }
         } else {
             const hours = getNumberValue(`boost-${item.id}-hours`);
@@ -940,34 +1295,54 @@ function calculateLootDrops() {
     let totalDropsEstimate = 0;
     let timeRemaining = targetTimeInSeconds;
 
+    // Average Drops: (Min Drop + Max Drop) / 2
+    const avgDropsPerKill_Base = (minDrop + maxDrop) / 2;
+
+    // Core Loot Logic (O(B) complexity, B = number of boost types)
     while (timeRemaining > 0 && (multiplicativeBoosts.length > 0 || additiveBoosts.length > 0)) {
         
         let segmentDuration = timeRemaining;
-        let currentMultiplier = 1.0;
-        let currentAdditiveRate = passiveAdditiveBonus;
-
+        
+        // 1. Determine the active multiplicative multiplier
         const activeMultBoost = multiplicativeBoosts.length > 0 ? multiplicativeBoosts[0] : null;
-        if (activeMultBoost) {
-            currentMultiplier = activeMultBoost.value;
-            segmentDuration = Math.min(segmentDuration, activeMultBoost.duration);
-        }
+        let currentMultiplier = activeMultBoost ? activeMultBoost.value : 1.0;
 
+        // 2. Determine the active additive rate (including ALL passive and the top time-based additive)
+        let currentActiveAdditiveRate = totalPassiveAdditiveBonus;
         const activeAddBoost = additiveBoosts.length > 0 ? additiveBoosts[0] : null;
         if (activeAddBoost) {
-            currentAdditiveRate += activeAddBoost.value;
+            currentActiveAdditiveRate += activeAddBoost.value;
+        }
+
+        // 3. Determine the limiting duration of this segment
+        if (activeMultBoost) {
+            segmentDuration = Math.min(segmentDuration, activeMultBoost.duration);
+        }
+        if (activeAddBoost) {
             segmentDuration = Math.min(segmentDuration, activeAddBoost.duration);
         }
         
-        const effectiveDropRate = Math.min(baseRate + currentAdditiveRate, 1.0);
-        const avgDropCount = (minDrop * currentMultiplier + maxDrop * currentMultiplier) / 2;
+        // a. Effective Drop Rate: (Base Rate + ALL Additive Bonuses) - clamped at 1.0 (100%)
+        const effectiveDropRate = Math.min(baseRate + currentActiveAdditiveRate, 1.0);
         
-        const segmentKills = baseKillsPerSecond * segmentDuration;
-        const dropsInSegment = segmentKills * effectiveDropRate * avgDropCount;
+        // b. Average Drop Count *per second*: KPS * AvgDropsPerKill * Multiplier
+        // KPS is fixed at 4.0, which means 4 kills happen during the base 1-second interval.
+        // We calculate Time Per Kill as 1 / KPS = 0.25s.
+        // Effective Time Per Kill with Respawn: Math.max(0.25, 3.0) = 3.0s (since the respawn time dominates)
+        // Effective Kills Per Second (KPS_eff): 1 / 3.0s = 0.3333 KPS.
+        const effectiveTimePerKill = Math.max(1 / baseKillsPerSecond, LOOT_RESPAWN_DELAY);
+        const effectiveKillsPerSecond = 1 / effectiveTimePerKill;
+
+        const avgDropsPerSecond_Segment = effectiveKillsPerSecond * effectiveDropRate * avgDropsPerKill_Base * currentMultiplier; 
+        
+        // c. Total Drops for the segment
+        const dropsInSegment = avgDropsPerSecond_Segment * segmentDuration;
 
         totalDropsEstimate += dropsInSegment;
         
         timeRemaining -= segmentDuration;
-        
+
+        // 4. Update remaining durations for the next iteration
         if (activeMultBoost) {
             activeMultBoost.duration -= segmentDuration;
             if (activeMultBoost.duration <= 0) multiplicativeBoosts.shift();
@@ -978,18 +1353,29 @@ function calculateLootDrops() {
         }
     }
 
+    // --- Calculate drops for remaining time (Base Rate + Passive Additive only) ---
     if (timeRemaining > 0) {
-        const effectiveDropRate = Math.min(baseRate + passiveAdditiveBonus, 1.0);
-        const avgDropCount = (minDrop + maxDrop) / 2;
-        const segmentKills = baseKillsPerSecond * timeRemaining;
-        totalDropsEstimate += segmentKills * effectiveDropRate * avgDropCount;
+        const effectiveDropRate = Math.min(baseRate + totalPassiveAdditiveBonus, 1.0);
+        
+        // Drop Count: avgDropsPerKill_Base * 1.0 (no multiplicative boosts remain)
+        const avgDropsPerKill_Remaining = avgDropsPerKill_Base;
+        
+        const effectiveTimePerKill = Math.max(1 / baseKillsPerSecond, LOOT_RESPAWN_DELAY);
+        const effectiveKillsPerSecond = 1 / effectiveTimePerKill;
+        
+        const avgDropsPerSecond_Remaining = effectiveKillsPerSecond * effectiveDropRate * avgDropsPerKill_Remaining;
+        
+        totalDropsEstimate += avgDropsPerSecond_Remaining * timeRemaining;
     }
     
-    const overallAvgDropRatePerSecond = totalDropsEstimate / targetTimeInSeconds;
+    // --- Final Results Calculation (O(1)) ---
+    const averageDropsPerSecond = targetTimeInSeconds > 0 ? totalDropsEstimate / targetTimeInSeconds : 0;
     let timeToTargetDrops = 0;
     
-    if (overallAvgDropRatePerSecond > 0) {
-        timeToTargetDrops = targetDrops / overallAvgDropRatePerSecond;
+    if (averageDropsPerSecond > 0) {
+        timeToTargetDrops = targetDrops / averageDropsPerSecond;
+    } else if (targetDrops > 0 && targetTimeInSeconds > 0) {
+        timeToTargetDrops = Infinity;
     }
 
     if (el.lootEstimatedDropsResult) {
@@ -997,7 +1383,7 @@ function calculateLootDrops() {
     }
 
     if (el.lootTimeToTargetResult) {
-        if (timeToTargetDrops <= 0 || overallAvgDropRatePerSecond === 0 || timeToTargetDrops === Infinity) {
+        if (timeToTargetDrops <= 0 || !isFinite(timeToTargetDrops)) {
             el.lootTimeToTargetResult.innerText = 'N/A';
         } else {
             el.lootTimeToTargetResult.innerText = formatTime(timeToTargetDrops);
@@ -1236,58 +1622,58 @@ function displayEnemyHealth() {
     calculateTTK();
 }
 
-function populateTimeToReturnDropdown() {
-    const select = el.timeToReturnSelect;
-    if (!select) return;
+function populateHoursDropdown(selectElement) {
+    if (!selectElement) return;
     
-    for (let i = 1; i <= 48; i++) {
+    selectElement.innerHTML = '';
+    
+    for (let i = 0; i <= 48; i++) {
         const option = document.createElement('option');
         option.value = i;
-        option.innerText = `${i} Hour${i > 1 ? 's' : ''}`;
-        select.appendChild(option);
+        option.innerText = `${i} Hour${i === 1 ? '' : 's'}`;
+        selectElement.appendChild(option);
     }
 }
 
-function populateTimeToReturnMinutesDropdown() {
-    const select = el.timeToReturnSelectMinutes;
-    if (!select) return;
+function populateMinutesDropdown(selectElement) {
+    if (!selectElement) return;
 
-    const zeroOption = document.createElement('option');
-    zeroOption.value = 0;
-    zeroOption.innerText = '0 Minutes';
-    select.appendChild(zeroOption);
-
-    for (let i = 1; i <= 59; i++) {
+    selectElement.innerHTML = '';
+    
+    for (let i = 0; i <= 59; i++) {
         const option = document.createElement('option');
         option.value = i;
-        option.innerText = `${i} Minute${i > 1 ? 's' : ''}`;
-        select.appendChild(option);
+        option.innerText = `${i} Minute${i === 1 ? '' : 's'}`;
+        selectElement.appendChild(option);
     }
+}
+
+function populateTimeToReturnDropdown() {
+    populateHoursDropdown(el.timeToReturnSelect);
+}
+
+function populateTimeToReturnMinutesDropdown() {
+    populateMinutesDropdown(el.timeToReturnSelectMinutes);
 }
 
 function populateBoostDurations() {
     if (typeof boostItems === 'undefined') return;
-
-    const hourOptions = [];
-    for (let i = 0; i <= 48; i++) {
-        hourOptions.push(`<option value="${i}">${i}h</option>`);
-    }
-    const hourHTML = hourOptions.join('');
-
-    const minuteOptions = [];
-    for (let i = 0; i <= 59; i++) {
-        minuteOptions.push(`<option value="${i}">${i}m</option>`);
-    }
-    const minuteHTML = minuteOptions.join('');
 
     const relevantBoosts = boostItems.filter(item => item.type === 'energy' || item.type.startsWith('loot'));
 
     relevantBoosts.forEach(item => {
         const hoursEl = el[`boost-${item.id}-hours`];
         const minutesEl = el[`boost-${item.id}-minutes`];
-        if (hoursEl) hoursEl.innerHTML = hourHTML;
-        if (minutesEl) minutesEl.innerHTML = minuteHTML;
+        
+        if (item.type !== 'loot_passive') {
+            if (hoursEl) populateHoursDropdown(hoursEl);
+            if (minutesEl) populateMinutesDropdown(minutesEl);
+        }
     });
+    
+    // Loot Target Dropdowns
+    if (el.lootTimeTargetHours) populateHoursDropdown(el.lootTimeTargetHours);
+    if (el.lootTimeTargetMinutes) populateMinutesDropdown(el.lootTimeTargetMinutes);
 }
 
 function populateStarLevelDropdown() {
@@ -1923,7 +2309,6 @@ function calculateNextAlert() {
 }
 
 function fireAlert(dungeonName) {
-    // 1. Send HTML5 Notification (Cross-tab/Cross-window alert)
     if (Notification.permission === 'granted') {
         const notification = new Notification("Dungeon Alert: Dungeon Ready!", {
             body: `${dungeonName} is now ready! You have a 2-minute window to join.`,
@@ -1936,13 +2321,11 @@ function fireAlert(dungeonName) {
         }
     }
     
-    // 2. Start Tab Flashing (Same window, unfocused tab)
     isAlertPending = true;
     if (document.visibilityState !== 'visible') {
         startTabFlashing();
     }
 
-    // 3. Reschedule immediately after firing
     scheduleNextAlert();
 }
 
@@ -1951,7 +2334,6 @@ function scheduleNextAlert() {
         clearTimeout(nextAlertTimeout);
     }
     
-    // Stop flashing if we are recalculating and there is no alert
     if (!calculateNextAlert()) {
         stopTabFlashing();
     }
@@ -1959,7 +2341,6 @@ function scheduleNextAlert() {
     const nextAlert = calculateNextAlert();
     
     if (nextAlert && Notification.permission === 'granted') {
-        // Use a 2-second buffer to ensure the countdown is visible for a moment before the alert fires
         const timeUntilAlertMs = Math.max(2000, nextAlert.timeInSeconds * 1000); 
         
         nextAlertTimeout = setTimeout(() => {
@@ -2031,6 +2412,822 @@ function loadAlertsData() {
     }
 }
 
+function toggleCompletedVisibility() {
+    const isHidden = el['hide-completed-checkbox'] ? el['hide-completed-checkbox'].checked : false;
+    
+    if (el['hide-completed-checkbox']) {
+        try {
+            localStorage.setItem('ae_checklist_hide_completed', isHidden ? 'true' : 'false');
+        } catch (e) {}
+    }
+
+    const searchTerm = el['checklist-search'] ? el['checklist-search'].value : '';
+    const categoryFilter = el['category-filter'] ? el['category-filter'].value : '';
+    filterChecklistItems(searchTerm, categoryFilter);
+}
+
+
+function populateHoursDropdown(selectElement) {
+    if (!selectElement) return;
+    
+    selectElement.innerHTML = '';
+    
+    for (let i = 0; i <= 48; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.innerText = `${i} Hour${i === 1 ? '' : 's'}`;
+        selectElement.appendChild(option);
+    }
+}
+
+function populateMinutesDropdown(selectElement) {
+    if (!selectElement) return;
+
+    selectElement.innerHTML = '';
+    
+    for (let i = 0; i <= 59; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.innerText = `${i} Minute${i === 1 ? '' : 's'}`;
+        selectElement.appendChild(option);
+    }
+}
+
+function populateTimeToReturnDropdown() {
+    populateHoursDropdown(el.timeToReturnSelect);
+}
+
+function populateTimeToReturnMinutesDropdown() {
+    populateMinutesDropdown(el.timeToReturnSelectMinutes);
+}
+
+function populateBoostDurations() {
+    if (typeof boostItems === 'undefined') return;
+
+    const relevantBoosts = boostItems.filter(item => item.type === 'energy' || item.type.startsWith('loot'));
+
+    relevantBoosts.forEach(item => {
+        const hoursEl = el[`boost-${item.id}-hours`];
+        const minutesEl = el[`boost-${item.id}-minutes`];
+        
+        if (item.type !== 'loot_passive') {
+            if (hoursEl) populateHoursDropdown(hoursEl);
+            if (minutesEl) populateMinutesDropdown(minutesEl);
+        }
+    });
+    
+    if (el.lootTimeTargetHours) populateHoursDropdown(el.lootTimeTargetHours);
+    if (el.lootTimeTargetMinutes) populateMinutesDropdown(el.lootTimeTargetMinutes);
+}
+
+function populateStarLevelDropdown() {
+    if (!el.starLevelSelect || typeof starCostData === 'undefined') return;
+    
+    const select = el.starLevelSelect;
+    select.innerHTML = '<option value="">-- Select Level --</option>';
+    Object.keys(starCostData).forEach(level => {
+        const option = document.createElement('option');
+        option.value = level;
+        option.innerText = `Star ${level}`;
+        select.appendChild(option);
+    });
+}
+
+function populateStarSpeedDropdown() {
+    if (!el.starSpeedSelect || typeof starSpeedData === 'undefined') return;
+
+    const select = el.starSpeedSelect;
+    select.innerHTML = '<option value="">-- Select Speed --</option>';
+    Object.keys(starSpeedData).forEach(level => {
+        const option = document.createElement('option');
+        option.value = level;
+        option.innerText = `Star Speed ${level}`;
+        select.appendChild(option);
+    });
+}
+
+function displayStarCost() {
+    if (!el.starLevelSelect || !el.starCostDisplay || typeof starCostData === 'undefined') return;
+
+    const selectedLevel = el.starLevelSelect.value;
+    const cost = starCostData[selectedLevel];
+
+    if (cost) {
+        el.starCostDisplay.innerText = formatNumber(cost);
+    } else {
+        el.starCostDisplay.innerText = 'Select a level';
+    }
+    calculateStarCalc();
+}
+
+function calculateStarCalc() {
+    if (typeof starCostData === 'undefined' || typeof starSpeedData === 'undefined' || 
+        typeof starRarityDataByLevel === 'undefined') {
+        return;
+    }
+
+    const level = el.starLevelSelect ? el.starLevelSelect.value : '1';
+    const speedLevel = el.starSpeedSelect ? el.starSpeedSelect.value : '';
+    const starAmount = getNumberValue('starAmount');
+    const luck = getNumberValue('starBaseLuck') || 1;
+    const timeHours = getNumberValue('starTimeHours');
+    const timeInSeconds = timeHours * 3600;
+
+    const costPerStar = starCostData[level] || 0;
+    const timePerBatch = starSpeedData[speedLevel] || 0;
+    
+    let totalBatches = 0;
+    if (timePerBatch > 0) {
+        totalBatches = Math.floor(timeInSeconds / timePerBatch);
+    }
+    
+    const totalStarsOpened = totalBatches * starAmount;
+    const totalCost = totalStarsOpened * costPerStar;
+
+    if (el.starTotalPulls) el.starTotalPulls.innerText = formatNumber(totalStarsOpened);
+    if (el.starTotalCost) el.starTotalCost.innerText = formatNumber(totalCost);
+
+    const baseRarities = starRarityDataByLevel[level] || starRarityDataByLevel["1"];
+    const cap = 1/8;
+    
+    let boostedSum = 0;
+    let unchangedCount = 0;
+    const finalRarities = [];
+
+    baseRarities.forEach(rarity => {
+        const basePercent = rarity.percent;
+        
+        if (basePercent <= cap && basePercent > 0) {
+            const newRate = Math.min(basePercent * luck, cap);
+            boostedSum += newRate;
+            finalRarities.push({ name: rarity.name, percent: newRate, isUnchanged: false });
+        } else {
+            if (basePercent > 0) {
+                unchangedCount++;
+            }
+            finalRarities.push({ name: rarity.name, percent: 0, isUnchanged: true, basePercent: basePercent });
+        }
+    });
+
+    const leftover = 1 - boostedSum;
+    const sharePerUnchanged = (leftover > 0 && unchangedCount > 0) ? leftover / unchangedCount : 0;
+
+    finalRarities.forEach(rarity => {
+        if (rarity.isUnchanged) {
+            rarity.percent = (rarity.basePercent > 0) ? sharePerUnchanged : 0;
+        }
+    });
+
+    const tableBody = el.starRarityTableBody;
+    if (tableBody) {
+        tableBody.innerHTML = '';
+
+        finalRarities.forEach((rarity, index) => {
+            const estimatedHatches = totalStarsOpened * rarity.percent;
+            
+            const row = document.createElement('tr');
+            if (index < finalRarities.length - 1) {
+                row.className = 'border-b border-gray-700';
+            }
+
+            row.innerHTML = `
+                <td class="py-2 px-1 text-sm text-gray-300">${rarity.name}</td>
+                <td class="py-2 px-1 text-sm text-gray-400 text-right">${(rarity.percent * 100).toFixed(4)}%</td>
+                <td class="py-2 px-1 text-lg text-white font-semibold text-right">${formatNumber(Math.floor(estimatedHatches))}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    saveStarData();
+}
+
+async function loadAllData() {
+    try {
+        const response = await fetch('activity-bundle.json?v=V_CACHE_BUST');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const bundle = await response.json();
+        
+        Object.assign(activityData, bundle.activities || {});
+        
+    } catch (error) {
+    }
+}
+
+function populateActivityDropdown() {
+    const select = el.activitySelect;
+    if (!select) return;
+    
+    select.innerHTML = '<option value="">-- Select an Activity --</option>';
+
+    const sortedActivityNames = Object.keys(activityData).sort((a, b) => a.localeCompare(b));
+
+    sortedActivityNames.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.innerText = name;
+        select.appendChild(option);
+    });
+}
+
+function handleActivityChange() {
+    if (!el.activitySelect || !el.activityResult || !el.activityTimeLimit || !el.activityResultLabel) return;
+    
+    const selection = el.activitySelect.value;
+    const activity = activityData[selection];
+    const resultLabel = el.activityResultLabel;
+
+    if (!activity) {
+        el.activityResult.innerText = '0 / 0';
+        el.activityTimeLimit.value = ''; 
+        saveRaidData();
+        return;
+    }
+
+    el.activityTimeLimit.value = activity.timeLimit;
+
+    if (activity.type === 'raid') {
+        resultLabel.innerText = 'Estimated Max Wave:';
+    } else {
+        resultLabel.innerText = 'Estimated Max Room:';
+    }
+    calculateMaxStage();
+    calculateKeyRunTime();
+    saveRaidData();
+}
+
+function calculateMaxStage() {
+    if (!el.activitySelect || !el.yourDPSActivity || !el.dpsActivityDenominationValue || 
+        !el.activityTimeLimit || !el.activityResult) {
+        return 0; 
+    }
+    
+    const selection = el.activitySelect.value;
+    if (!selection) {
+        el.activityResult.innerText = '0 / 0';
+        return 0;
+    }
+
+    const activity = activityData[selection];
+    const yourDPS = (getNumberValue('yourDPSActivity') || 0) * (parseFloat(el.dpsActivityDenominationValue.value) || 1);
+    const timeLimit = getNumberValue('activityTimeLimit');
+    const resultEl = el.activityResult;
+
+    const maxStages = activity ? activity.maxStages : 0;
+
+    if (!activity || yourDPS <= 0 || timeLimit <= 0) {
+        resultEl.innerText = `0 / ${maxStages}`;
+        return 0;
+    }
+
+    const maxDamageInTime = yourDPS * timeLimit;
+    let completedStage = 0;
+
+    if (activity.enemies) {
+        const singleEnemyRaids = ["Mundo Raid", "Gleam Raid", "Tournament Raid"];
+
+        for (let i = 1; i <= maxStages; i++) {
+            const stageKey = `Room ${i}`;
+            let stageHealth = parseFloat(activity.enemies[stageKey]);
+
+            if (!stageHealth) {
+                break;
+            }
+
+            let enemyMultiplier = 1;
+            if (activity.type === 'raid' && !singleEnemyRaids.includes(selection)) {
+                enemyMultiplier = 5;
+            } else if (activity.type === 'dungeon' && !singleEnemyRaids.includes(selection)) {
+                 enemyMultiplier = 1;
+            }
+
+            const totalStageHealth = stageHealth * enemyMultiplier;
+
+            if (maxDamageInTime < totalStageHealth) {
+                break;
+            }
+            completedStage = i;
+        }
+    } else {
+    }
+
+    resultEl.innerText = `${completedStage} / ${maxStages}`;
+    return completedStage;
+}
+
+function calculateKeyRunTime() {
+    if (!el.keyRunTimeResult || !el.activitySelect) return;
+    
+    const activityName = el.activitySelect.value;
+    const activity = activityData[activityName];
+    const keyQuantity = Math.floor(getNumberValue('keyRunQuantity')) || 0;
+    const resultEl = el.keyRunTimeResult;
+    const returnTimeEl = el.keyRunReturnTime;
+    
+    const yourDPS = (getNumberValue('yourDPSActivity') || 0) * (parseFloat(el.dpsActivityDenominationValue.value) || 1);
+    const completedStage = calculateMaxStage();
+
+    if (!activity || keyQuantity <= 0 || yourDPS <= 0 || completedStage <= 0) {
+        resultEl.innerText = '0s';
+        if (returnTimeEl) returnTimeEl.innerText = '';
+        return;
+    }
+    
+    let timeInSecondsPerRun = 0;
+    const singleEnemyRaids = ["Mundo Raid", "Gleam Raid", "Tournament Raid"];
+    const RESPawn_TIME = 0.1;
+
+    for (let i = 1; i <= completedStage; i++) {
+        const stageKey = `Room ${i}`;
+        let stageHealth = parseFloat(activity.enemies[stageKey]);
+        
+        let enemyMultiplier = 1;
+        if (activity.type === 'raid' && !singleEnemyRaids.includes(activityName)) {
+            enemyMultiplier = 5;
+        }
+        
+        const totalStageHealth = stageHealth * enemyMultiplier;
+        
+        const killTime = totalStageHealth / yourDPS;
+        const timePerStage = Math.max(killTime + 0.5, 1.0) + RESPawn_TIME;
+        
+        timeInSecondsPerRun += timePerStage; 
+    }
+    
+    
+    const totalTimeInSeconds = timeInSecondsPerRun * keyQuantity;
+    
+    if (totalTimeInSeconds === Infinity) {
+        resultEl.innerText = "Over 1000 Years";
+        if (returnTimeEl) returnTimeEl.innerText = 'ETA: Eternity';
+        return;
+    }
+
+    let resultString = formatTime(totalTimeInSeconds);
+    
+    resultEl.innerText = resultString.trim() || '0s';
+
+    if (returnTimeEl) {
+        const now = new Date();
+        const returnTime = new Date(now.getTime() + totalTimeInSeconds * 1000);
+        const returnString = returnTime.toLocaleString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            hour: 'numeric', 
+            minute: '2-digit', 
+            hour12: true 
+        });
+        returnTimeEl.innerText = `Finish Time: ${returnString}`;
+    }
+
+}
+
+
+function setupRankSearch(inputId, valueId, listId) {
+    const inputEl = el[inputId];
+    const valueEl = el[valueId];
+    const listEl = el[listId];
+
+    if (!inputEl || !valueEl || !listEl || typeof rankRequirements === 'undefined') {
+        return;
+    }
+
+    const allRanks = Object.keys(rankRequirements).sort((a, b) => parseInt(a) - parseInt(b));
+
+    function filterAndShowRanks() {
+        const filterText = inputEl.value.trim();
+        const filtered = allRanks.filter(rank => rank.startsWith(filterText));
+        renderRanksList(filtered);
+    }
+
+    function renderRanksList(list) {
+        listEl.innerHTML = '';
+        if (list.length === 0) {
+            listEl.classList.add('hidden');
+            return;
+        }
+        list.forEach(rank => {
+            const item = document.createElement('div');
+            item.className = 'p-2 hover:bg-[#3a3a5a] cursor-pointer text-sm';
+            item.textContent = rank;
+            item.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                inputEl.value = rank;
+                valueEl.value = rank;
+                listEl.classList.add('hidden');
+                displayRankRequirement();
+                calculateRankUp();
+            });
+            listEl.appendChild(item);
+        });
+        listEl.classList.remove('hidden');
+    }
+
+    function handleRankInputBlur() {
+        setTimeout(() => {
+            if (!inputEl || !valueEl) return;
+            const rankValue = inputEl.value.trim();
+            if (rankRequirements[rankValue]) {
+                if (valueEl.value !== rankValue) {
+                    valueEl.value = rankValue;
+                    displayRankRequirement();
+                    calculateRankUp();
+                }
+            }
+            if (listEl) listEl.classList.add('hidden');
+        }, 150);
+    }
+
+    function handleRankInputFocus() {
+        filterAndShowRanks();
+    }
+
+
+    inputEl.addEventListener('input', debounce(filterAndShowRanks, 300));
+    inputEl.addEventListener('focus', handleRankInputFocus);
+    inputEl.addEventListener('blur', handleRankInputBlur);
+}
+
+
+function setupDenominationSearch(inputId, valueId, listId, callback) {
+    const inputEl = el[inputId];
+    const valueEl = el[valueId];
+    const listEl = el[listId];
+
+    if (!inputEl || !valueEl || !listEl || typeof denominations === 'undefined') {
+        return;
+    }
+
+    function filterAndShowDenominations() {
+        const filterText = inputEl.value.trim().toLowerCase();
+        const filtered = denominations.filter(d => d.name.toLowerCase().startsWith(filterText));
+        renderDenominationsList(filtered);
+    }
+
+    function renderDenominationsList(list) {
+        listEl.innerHTML = '';
+        if (list.length === 0) { listEl.classList.add('hidden'); return; }
+
+        list.sort((a, b) => a.value - b.value);
+
+        list.forEach(d => {
+            const item = document.createElement('div');
+            item.className = 'p-2 hover:bg-[#3a3a5a] cursor-pointer text-sm';
+            item.textContent = d.name === 'None' ? 'None (No Abbreviation)' : d.name;
+            item.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                inputEl.value = d.name === 'None' ? '' : d.name;
+                valueEl.value = d.value;
+                listEl.classList.add('hidden');
+                if (callback) callback();
+            });
+            listEl.appendChild(item);
+        });
+        listEl.classList.remove('hidden');
+    }
+
+    function handleDenominationBlur() {
+         setTimeout(() => {
+            if (!inputEl || !valueEl) return;
+            const inputText = inputEl.value.trim();
+            const foundDenom = denominations.find(d => d.name.toLowerCase() === inputText.toLowerCase());
+
+            if (foundDenom) {
+                valueEl.value = foundDenom.value;
+                inputEl.value = foundDenom.name === 'None' ? '' : foundDenom.name;
+            } else if (inputText === '') {
+                valueEl.value = 1;
+            } else {
+                const currentValue = parseFloat(valueEl.value) || 1;
+                const currentDenom = denominations.find(d => d.value == currentValue);
+                if (currentDenom) {
+                    inputEl.value = currentDenom.name !== 'None' ? currentDenom.name : '';
+                } else {
+                    inputEl.value = '';
+                    valueEl.value = 1;
+                }
+            }
+
+            if (listEl) listEl.classList.add('hidden');
+            if (callback) callback();
+        }, 150);
+    }
+
+    function handleDenominationFocus() {
+        filterAndShowDenominations();
+    }
+
+    inputEl.addEventListener('input', debounce(filterAndShowDenominations, 300));
+    inputEl.addEventListener('focus', handleDenominationFocus);
+    inputEl.addEventListener('blur', handleDenominationBlur);
+}
+
+document.addEventListener('click', (event) => {
+    const relativeContainers = document.querySelectorAll('.relative');
+    let clickedInsideAContainer = false;
+
+    relativeContainers.forEach(container => {
+        if (container.contains(event.target)) {
+            clickedInsideAContainer = true;
+        }
+    });
+
+    if (!clickedInsideAContainer) {
+        const allLists = document.querySelectorAll('.search-list');
+        allLists.forEach(list => list.classList.add('hidden'));
+    }
+});
+
+function syncEnergyData(sourceInputId, sourceDenomInputId, sourceDenomValueId) {
+    const sourceValue = el[sourceInputId]?.value || '';
+    const sourceDenomInput = el[sourceDenomInputId]?.value || '';
+    const sourceDenomValue = el[sourceDenomValueId]?.value || '1';
+
+    const energyInputMap = {
+        'currentEnergy': ['currentEnergyETA', 'currentEnergyTTE'],
+        'energyPerClick': ['energyPerClickETA', 'energyPerClickTTE'],
+        'currentEnergyETA': ['currentEnergy', 'currentEnergyTTE'],
+        'energyPerClickETA': ['energyPerClick', 'energyPerClickTTE'],
+        'currentEnergyTTE': ['currentEnergy', 'currentEnergyETA'],
+        'energyPerClickTTE': ['energyPerClick', 'energyPerClickETA']
+    };
+    
+    const criticalInputMap = {
+        'energyCriticalChance': ['energyCriticalChanceETA', 'energyCriticalChanceTTE'],
+        'criticalEnergy': ['criticalEnergyETA', 'criticalEnergyTTE'],
+        'energyCriticalChanceETA': ['energyCriticalChance', 'criticalEnergyTTE'],
+        'criticalEnergyETA': ['criticalEnergy', 'criticalEnergyTTE'],
+        'energyCriticalChanceTTE': ['energyCriticalChance', 'energyCriticalChanceETA'],
+        'criticalEnergyTTE': ['criticalEnergy', 'criticalEnergyETA']
+    };
+
+
+    const denomInputMap = {
+        'currentEnergyDenominationInput': ['currentEnergyETADenominationInput', 'currentEnergyTTEDenominationInput'],
+        'currentEnergyDenominationValue': ['currentEnergyETADenominationValue', 'currentEnergyTTEDenominationValue'],
+        'energyPerClickDenominationInput': ['energyPerClickETADenominationInput', 'energyPerClickTTEDenominationInput'],
+        'energyPerClickDenominationValue': ['energyPerClickETADenominationValue', 'energyPerClickTTEDenominationValue'],
+        'currentEnergyETADenominationInput': ['currentEnergyDenominationInput', 'currentEnergyTTEDenominationInput'],
+        'currentEnergyETADenominationValue': ['currentEnergyDenominationValue', 'currentEnergyTTEDenominationValue'],
+        'energyPerClickETADenominationInput': ['energyPerClickDenominationInput', 'energyPerClickTTEDenominationInput'],
+        'energyPerClickETADenominationValue': ['energyPerClickDenominationValue', 'energyPerClickTTEDenominationValue'],
+        'currentEnergyTTEDenominationInput': ['currentEnergyDenominationInput', 'currentEnergyETADenominationInput'],
+        'currentEnergyTTEDenominationValue': ['currentEnergyDenominationValue', 'currentEnergyETADenominationValue'],
+        'energyPerClickTTEDenominationInput': ['energyPerClickDenominationInput', 'energyPerClickETADenominationInput'],
+        'energyPerClickTTEDenominationValue': ['energyPerClickDenominationValue', 'energyPerClickETADenominationValue']
+    };
+
+    const targetInputs = energyInputMap[sourceInputId] || [];
+    targetInputs.forEach(targetId => {
+        if (el[targetId]) el[targetId].value = sourceValue;
+    });
+
+    const targetCriticalInputs = criticalInputMap[sourceInputId] || [];
+    targetCriticalInputs.forEach(targetId => {
+         if (el[targetId]) el[targetId].value = sourceValue;
+    });
+
+
+    const targetDenomInputs = denomInputMap[sourceDenomInputId] || [];
+    targetDenomInputs.forEach(targetId => {
+        if (el[targetId]) el[targetId].value = sourceDenomInput;
+    });
+
+    const targetDenomValues = denomInputMap[sourceDenomValueId] || [];
+    targetDenomValues.forEach(targetId => {
+        if (el[targetId]) el[targetId].value = sourceDenomValue;
+    });
+
+    calculateRankUp();
+    calculateEnergyETA();
+    calculateTimeToEnergy();
+}
+
+
+function startTabFlashing() {
+    if (tabFlashInterval === null) {
+        let isFlashing = false;
+        tabFlashInterval = setInterval(() => {
+            document.title = isFlashing ? ORIGINAL_TITLE : FLASH_TITLE;
+            isFlashing = !isFlashing;
+        }, FLASH_INTERVAL_MS);
+    }
+}
+
+function stopTabFlashing() {
+    if (tabFlashInterval !== null) {
+        clearInterval(tabFlashInterval);
+        tabFlashInterval = null;
+        document.title = ORIGINAL_TITLE;
+        isAlertPending = false;
+    }
+}
+
+function checkNotificationPermission() {
+    if (!el.alertPermissionStatus || !el.requestPermissionBtn) return;
+
+    if (!("Notification" in window)) {
+        el.alertPermissionStatus.innerText = "Permissions: Not Supported";
+        el.requestPermissionBtn.disabled = true;
+        el.requestPermissionBtn.classList.remove('active');
+        return;
+    }
+
+    const status = Notification.permission;
+    el.alertPermissionStatus.innerText = `Permissions: ${status.charAt(0).toUpperCase() + status.slice(1)}`;
+    el.requestPermissionBtn.disabled = status === 'granted';
+    if (status === 'granted') {
+        el.alertPermissionStatus.classList.remove('text-red-400');
+        el.alertPermissionStatus.classList.add('text-green-400');
+        el.requestPermissionBtn.classList.remove('active');
+        el.requestPermissionBtn.innerText = "Permissions Granted";
+    } else {
+        el.alertPermissionStatus.classList.add('text-red-400');
+        el.alertPermissionStatus.classList.remove('text-green-400');
+        el.requestPermissionBtn.classList.add('active');
+        el.requestPermissionBtn.innerText = "Request Notifications";
+    }
+}
+
+function requestNotificationPermission() {
+    if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+        Notification.requestPermission().then(permission => {
+            checkNotificationPermission();
+            if (permission === 'granted') {
+                scheduleNextAlert();
+            }
+        });
+    }
+}
+
+function calculateNextAlert() {
+    const now = new Date();
+    const currentMinute = now.getMinutes();
+    const currentSecond = now.getSeconds();
+    
+    let earliestNextTime = Infinity;
+    let nextDungeon = null;
+    let selectedAlerts = [];
+
+    Object.keys(dungeonIntervals).forEach(name => {
+        const item = dungeonIntervals[name];
+        const checkbox = el[`alert-${item.id}-dungeon`] || el[`alert-${item.id}-raid`];
+        
+        if (checkbox && checkbox.checked) {
+            selectedAlerts.push(name);
+            const startMinute = item.startMinute;
+            
+            let minutesUntilStart;
+            
+            if (startMinute >= currentMinute) {
+                minutesUntilStart = startMinute - currentMinute;
+            } else {
+                minutesUntilStart = (60 - currentMinute) + startMinute;
+            }
+
+            let timeInSeconds = (minutesUntilStart * 60) - currentSecond;
+            
+            if (timeInSeconds <= 0) {
+                timeInSeconds += 3600; 
+            }
+
+            if (timeInSeconds < earliestNextTime) {
+                earliestNextTime = timeInSeconds;
+                nextDungeon = name;
+            }
+        }
+    });
+
+    if (nextDungeon) {
+        return {
+            name: nextDungeon,
+            timeInSeconds: earliestNextTime
+        };
+    }
+
+    return null;
+}
+
+function fireAlert(dungeonName) {
+    if (Notification.permission === 'granted') {
+        const notification = new Notification("Dungeon Alert: Dungeon Ready!", {
+            body: `${dungeonName} is now ready! You have a 2-minute window to join.`,
+            icon: 'icon.webp'
+        });
+        
+        if (el.alertSound) {
+            el.alertSound.currentTime = 0;
+            el.alertSound.play().catch(e => console.log("Audio playback blocked or failed:", e));
+        }
+    }
+    
+    isAlertPending = true;
+    if (document.visibilityState !== 'visible') {
+        startTabFlashing();
+    }
+
+    scheduleNextAlert();
+}
+
+function scheduleNextAlert() {
+    if (nextAlertTimeout) {
+        clearTimeout(nextAlertTimeout);
+    }
+    
+    if (!calculateNextAlert()) {
+        stopTabFlashing();
+    }
+    
+    const nextAlert = calculateNextAlert();
+    
+    if (nextAlert && Notification.permission === 'granted') {
+        const timeUntilAlertMs = Math.max(2000, nextAlert.timeInSeconds * 1000); 
+        
+        nextAlertTimeout = setTimeout(() => {
+            fireAlert(nextAlert.name);
+        }, timeUntilAlertMs);
+    }
+    
+    startCountdownDisplay();
+}
+
+function updateCountdownDisplay() {
+    const nextAlert = calculateNextAlert();
+    
+    if (el.nextDungeonTimer && el.nextDungeonName) {
+        if (nextAlert) {
+            el.nextDungeonTimer.innerText = formatTime(nextAlert.timeInSeconds);
+            el.nextDungeonName.innerText = `Next: ${nextAlert.name} (${dungeonIntervals[nextAlert.name].startMinute}m mark)`;
+        } else {
+            el.nextDungeonTimer.innerText = "N/A";
+            el.nextDungeonName.innerText = "Select dungeons to track.";
+        }
+    }
+}
+
+function startCountdownDisplay() {
+    if (countdownInterval) return;
+    updateCountdownDisplay();
+    countdownInterval = setInterval(() => {
+        updateCountdownDisplay();
+    }, 1000);
+}
+
+function stopCountdownDisplay() {
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+    }
+}
+
+function saveAlertsData() {
+    try {
+        const savedAlerts = {};
+        Object.keys(dungeonIntervals).forEach(name => {
+            const id = dungeonIntervals[name].id;
+            const checkbox = el[`alert-${id}-dungeon`] || el[`alert-${id}-raid`];
+            if (checkbox) {
+                savedAlerts[name] = checkbox.checked;
+            }
+        });
+        localStorage.setItem('ae_alerts_selected', JSON.stringify(savedAlerts));
+    } catch (e) {
+    }
+}
+
+function loadAlertsData() {
+    try {
+        const savedAlerts = JSON.parse(localStorage.getItem('ae_alerts_selected')) || {};
+        
+        Object.keys(dungeonIntervals).forEach(name => {
+            const id = dungeonIntervals[name].id;
+            const checkbox = el[`alert-${id}-dungeon`] || el[`alert-${id}-raid`];
+            if (checkbox) {
+                checkbox.checked = savedAlerts[name] || false;
+            }
+        });
+        checkNotificationPermission();
+        scheduleNextAlert();
+    } catch (e) {
+    }
+}
+
+function toggleCompletedVisibility() {
+    const isHidden = el['hide-completed-checkbox'] ? el['hide-completed-checkbox'].checked : false;
+    
+    if (el['hide-completed-checkbox']) {
+        try {
+            localStorage.setItem('ae_checklist_hide_completed', isHidden ? 'true' : 'false');
+        } catch (e) {}
+    }
+
+    const searchTerm = el['checklist-search'] ? el['checklist-search'].value : '';
+    const categoryFilter = el['category-filter'] ? el['category-filter'].value : '';
+    filterChecklistItems(searchTerm, categoryFilter);
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -2047,9 +3244,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (lootPanel) lootPanel.appendChild(el.clickerSpeedLoot);
     }
     
-    // ----------------------------------------------------
-    // Production-ready event listener for Tab Flashing
-    // ----------------------------------------------------
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') {
             stopTabFlashing();
@@ -2057,8 +3251,6 @@ document.addEventListener('DOMContentLoaded', () => {
             startTabFlashing();
         }
     });
-    // ----------------------------------------------------
-
 
     const BACKGROUND_KEY = 'ae_image_background';
 
@@ -2311,9 +3503,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el.lootDropMin) el.lootDropMin.addEventListener('input', lootDebounce);
     if (el.lootDropMax) el.lootDropMax.addEventListener('input', lootDebounce);
     if (el.lootBaseDropRate) el.lootBaseDropRate.addEventListener('input', lootDebounce);
-    if (el.lootTimeTargetHours) el.lootTimeTargetHours.addEventListener('input', lootDebounce);
-    if (el.lootTimeTargetMinutes) el.lootTimeTargetMinutes.addEventListener('input', lootDebounce);
-    if (el.yourKillsPerSecond) el.yourKillsPerSecond.addEventListener('input', lootDebounce);
+
+    // Loot Target Dropdowns
+    if (el.lootTimeTargetHours) el.lootTimeTargetHours.addEventListener('change', lootDebounce);
+    if (el.lootTimeTargetMinutes) el.lootTimeTargetMinutes.addEventListener('change', lootDebounce);
+    
     if (el.lootDropTargetCount) el.lootDropTargetCount.addEventListener('input', lootDebounce);
 
     if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
@@ -2408,12 +3602,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // --- ALERT SPECIFIC LOGIC ---
     if (el.requestPermissionBtn) {
         el.requestPermissionBtn.addEventListener('click', requestNotificationPermission);
     }
     
-    // Checkbox change listener for alerts
     Object.keys(dungeonIntervals).forEach(name => {
         const id = dungeonIntervals[name].id;
         const checkbox = el[`alert-${id}-dungeon`] || el[`alert-${id}-raid`];
@@ -2463,302 +3655,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!checklistContainer) {
             return;
         }
-
-        const CHECKLIST_SAVE_KEY = 'ae_checklist_progress';
-
-        function styleChecklistItem(checkbox, isChecked) {
-            const span = checkbox.nextElementSibling;
-            if (span) {
-                if (isChecked) {
-                    span.style.textDecoration = 'line-through';
-                    span.style.color = '#888';
-                } else {
-                    span.style.textDecoration = 'none';
-                    span.style.color = '#ccc';
-                }
-            }
-        }
-        
-        function createChecklistItem(item, savedData) {
-            const label = document.createElement('label');
-            label.className = 'checklist-item';
-            label.htmlFor = item.id;
-
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.id = item.id;
-            checkbox.name = item.id;
-            checkbox.checked = !!savedData[item.id];
-
-            const span = document.createElement('span');
-            span.textContent = item.name;
-
-            label.appendChild(checkbox);
-            label.appendChild(span);
-
-            styleChecklistItem(checkbox, checkbox.checked);
-            return label;
-        }
-
-        function updateAllWorldTitles(savedData) {
-            if (typeof checklistDataByWorld === 'undefined') return;
-
-            if (!savedData) {
-                try {
-                    savedData = JSON.parse(localStorage.getItem(CHECKLIST_SAVE_KEY)) || {};
-                } catch (e) {
-                    savedData = {};
-                }
-            }
-
-            const worldNames = Object.keys(checklistDataByWorld);
-            let overallTotal = 0;
-            let overallCompleted = 0;
-            let categoryStats = { 
-                gachas: {total: 0, completed: 0}, 
-                progressions: {total: 0, completed: 0}, 
-                sssRank: {total: 0, completed: 0}, 
-                auras: {total: 0, completed: 0}, 
-                accessories: {total: 0, completed: 0},
-                quests: {total: 0, completed: 0} 
-            };
-
-            for (const worldName of worldNames) {
-                const world = checklistDataByWorld[worldName];
-                const worldNameId = worldName.replace(/\s+/g, '-').toLowerCase();
-                const worldTitleEl = document.getElementById(`world-title-${worldNameId}`);
-
-                let totalItems = 0;
-                let completedItems = 0;
-        
-                const categories = ['gachas', 'progressions', 'sssRank', 'auras', 'accessories', 'quests'];
-                categories.forEach(catKey => {
-                    if (world[catKey]) {
-                        totalItems += world[catKey].length;
-                        if (categoryStats[catKey]) {
-                            categoryStats[catKey].total += world[catKey].length;
-                        }
-                        
-                        world[catKey].forEach(item => {
-                            if (savedData[item.id]) {
-                                completedItems++;
-                                if (categoryStats[catKey]) {
-                                    categoryStats[catKey].completed++;
-                                }
-                            }
-                        });
-                        
-                        const subTitleEl = document.getElementById(`${catKey}-title-${worldNameId}`);
-                        if(subTitleEl) {
-                            const subTotal = world[catKey].length;
-                            const subCompleted = world[catKey].filter(item => savedData[item.id]).length;
-                            let catName = catKey.charAt(0).toUpperCase() + catKey.slice(1);
-                            if (catKey === 'sssRank') catName = 'SSS Rank';
-                            
-                            subTitleEl.innerHTML = `${catName} <span class="category-badge badge-${catKey}">${subCompleted}/${subTotal}</span>`;
-                        }
-                    }
-                });
-
-                if (worldTitleEl) {
-                    const percentage = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
-                    worldTitleEl.innerText = `${worldName} (${completedItems} / ${totalItems})`;
-                    worldTitleEl.style.setProperty('--progress', `${percentage}%`);
-                }
-                overallTotal += totalItems;
-                overallCompleted += completedItems;
-            }
-            
-            const overallProgressText = el['overall-progress-text'];
-            const overallProgressFill = el['overall-progress-fill'];
-            if (overallProgressText && overallProgressFill) {
-                const percentage = overallTotal > 0 ? Math.round((overallCompleted / overallTotal) * 100) : 0;
-                overallProgressText.innerText = `${overallCompleted} / ${overallTotal} (${percentage}%)`;
-                overallProgressFill.style.width = `${percentage}%`;
-            }
-            
-            Object.keys(categoryStats).forEach(cat => {
-                let elId;
-                if (cat === 'sssRank') elId = 'sssrank-count';
-                else elId = `${cat}-count`;
-                
-                const countEl = document.getElementById(elId);
-                if (countEl) {
-                    countEl.innerText = `${categoryStats[cat].completed}/${categoryStats[cat].total}`;
-                } else {
-                }
-            });
-        }
-
-        function saveChecklistData() {
-            if (typeof checklistDataByWorld === 'undefined') return;
-
-            try {
-                const savedData = {};
-                if (!checklistPanel) return;
-                const checkboxes = checklistPanel.querySelectorAll('input[type="checkbox"]');
-                checkboxes.forEach(cb => {
-                    if(cb.checked) {
-                        savedData[cb.id] = true;
-                    }
-                });
-                localStorage.setItem(CHECKLIST_SAVE_KEY, JSON.stringify(savedData));
-                updateAllWorldTitles(savedData);
-            } catch (e) {
-            }
-        }
-
-        function populateWorldChecklists(savedData) {
-            if (typeof checklistDataByWorld === 'undefined') return;
-
-            checklistContainer.innerHTML = '';
-
-            const worldOrder = Object.keys(checklistDataByWorld);
-            if (checklistDataByWorld["Miscellaneous"]) {
-                worldOrder.push("Miscellaneous");
-            }
-
-            for (const worldName of worldOrder) {
-                if (!checklistDataByWorld[worldName]) continue;
-
-                const world = checklistDataByWorld[worldName];
-                const worldNameId = worldName.replace(/\s+/g, '-').toLowerCase();
-
-                const section = document.createElement('section');
-                
-                const worldHeader = document.createElement('div');
-                worldHeader.className = 'world-section-header';
-                
-                const title = document.createElement('h2');
-                title.className = 'world-section-title';
-                title.id = `world-title-${worldNameId}`;
-                title.innerText = `${worldName} (0 / 0)`; 
-                worldHeader.appendChild(title);
-
-                const worldToggleContainer = document.createElement('div');
-                worldToggleContainer.className = 'toggle-container world-toggle';
-
-                const checkAllWorldBtn = document.createElement('button');
-                checkAllWorldBtn.className = 'toggle-btn world-check-all';
-                checkAllWorldBtn.innerText = 'Check All';
-                checkAllWorldBtn.dataset.worldId = worldNameId; 
-
-                const uncheckAllWorldBtn = document.createElement('button');
-                uncheckAllWorldBtn.className = 'toggle-btn world-uncheck-all';
-                uncheckAllWorldBtn.innerText = 'Uncheck All';
-                uncheckAllWorldBtn.dataset.worldId = worldNameId; 
-
-                worldToggleContainer.appendChild(checkAllWorldBtn);
-                worldToggleContainer.appendChild(uncheckAllWorldBtn);
-                worldHeader.appendChild(worldToggleContainer);
-                
-                section.appendChild(worldHeader);
-
-                const categories = [
-                    { key: 'gachas', name: 'Gachas', css: 'gachas' },
-                    { key: 'progressions', name: 'Progressions', css: 'progressions' },
-                    { key: 'sssRank', name: 'SSS Rank', css: 'sssRank' },
-                    { key: 'auras', name: 'Auras', css: 'auras' },
-                    { key: 'accessories', name: 'Accessories', css: 'accessories' },
-                    { key: 'quests', name: 'Quests', css: 'quests' }
-                ];
-
-                const subsections = [];
-
-                categories.forEach(cat => {
-                    if (world[cat.key] && world[cat.key].length > 0) {
-                        const subSection = document.createElement('div');
-                        subSection.className = 'checklist-category-subsection';
-                        
-                        const subTitle = document.createElement('h3');
-                        subTitle.className = `world-subsection-title ${cat.css}`;
-                        subTitle.id = `${cat.key}-title-${worldNameId}`;
-                        subTitle.innerText = `${cat.name} (0 / ${world[cat.key].length})`;
-                        subSection.appendChild(subTitle);
-                        
-                        const listDiv = document.createElement('div');
-                        listDiv.className = 'space-y-2';
-                        world[cat.key].forEach(item => {
-                            listDiv.appendChild(createChecklistItem(item, savedData));
-                        });
-                        subSection.appendChild(listDiv);
-                        subsections.push(subSection);
-                    }
-                });
-
-                if (subsections.length > 0) {
-                    const grid = document.createElement('div');
-                    let gridCols = 'md:grid-cols-2 lg:grid-cols-3';
-                    if (subsections.length === 1) gridCols = ''; 
-                    if (subsections.length === 2) gridCols = 'md:grid-cols-2'; 
-                    
-                    grid.className = `grid grid-cols-1 ${gridCols} gap-6 mt-4`;
-                    
-                    subsections.forEach(sub => grid.appendChild(sub));
-                    section.appendChild(grid);
-                }
-
-                checklistContainer.appendChild(section);
-            }
-        }
-
-        function loadChecklistData() {
-            if (typeof checklistDataByWorld === 'undefined') return;
-
-            try {
-                const savedData = JSON.parse(localStorage.getItem(CHECKLIST_SAVE_KEY)) || {};
-                populateWorldChecklists(savedData);
-                updateAllWorldTitles(savedData);
-            } catch (e) {
-                populateWorldChecklists({});
-                updateAllWorldTitles({});
-            }
-        }
-
-        function filterChecklistItems(searchTerm = '', categoryFilter = '') {
-            const searchLower = searchTerm.toLowerCase();
-            const worldSections = checklistPanel.querySelectorAll('section');
-            
-            worldSections.forEach(section => {
-                const subsections = section.querySelectorAll('.checklist-category-subsection');
-                let sectionHasVisible = false;
-                
-                subsections.forEach(subsection => {
-                    const subTitle = subsection.querySelector('h3');
-                    if (!subTitle) return;
-                    
-                    const items = subsection.querySelectorAll('.checklist-item');
-                    let visibleItems = 0;
-                    
-                    const subId = subTitle.id;
-                    const categoryMatch = !categoryFilter || (categoryFilter === 'sssrank' ? subId.includes('sssRank-title') : subId.includes(`${categoryFilter}-title`));
-                    
-                    items.forEach(item => {
-                        const text = item.textContent.toLowerCase();
-                        const searchMatch = !searchTerm || text.includes(searchLower);
-                        
-                        if (categoryMatch && searchMatch) {
-                            item.style.display = 'flex';
-                            visibleItems++;
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
-                    
-                    if (visibleItems > 0) {
-                        subsection.style.display = ''; 
-                        sectionHasVisible = true;
-                    } else {
-                        subsection.style.display = 'none';
-                    }
-                });
-                
-                section.style.display = sectionHasVisible ? 'block' : 'none';
-            });
-        }
         
         checklistPanel.addEventListener('change', (e) => {
-            if (e.target.type === 'checkbox') {
+            if (e.target.type === 'checkbox' && e.target.id !== 'hide-completed-checkbox') {
                 const item = e.target.closest('.checklist-item');
                 if (e.target.checked && item) {
                     item.classList.add('completed');
@@ -2806,6 +3705,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const searchTerm = el['checklist-search'] ? el['checklist-search'].value : '';
                 filterChecklistItems(searchTerm, e.target.value);
             });
+        }
+        
+        if (el['hide-completed-checkbox']) {
+            el['hide-completed-checkbox'].addEventListener('change', toggleCompletedVisibility);
         }
 
         if (el['check-all-btn']) {

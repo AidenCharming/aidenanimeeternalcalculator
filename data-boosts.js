@@ -32,7 +32,7 @@ const boostItems = [
     {
         id: 'spooky-drop-potion',
         name: 'Spooky Drop Potion',
-        multiplier: 2.5,
+        multiplier: 3,
         type: 'loot_mult'
     },
     {
@@ -44,13 +44,13 @@ const boostItems = [
     {
         id: 'drop-macaron',
         name: 'Drop Macaron',
-        additive: 0.2,
+        additive: 0.20,
         type: 'loot_add'
     },
     {
         id: 'hot-sauce',
         name: 'Hot Sauce',
-        additive: 0.1,
+        additive: 0.10,
         type: 'loot_add'
     },
     {
