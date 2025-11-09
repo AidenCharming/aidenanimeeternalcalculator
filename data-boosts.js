@@ -38,7 +38,7 @@ const boostItems = [
     {
         id: 'drop-potion',
         name: 'Drop Potion',
-        multiplier: 2,
+        multiplier: 0.2,
         type: 'loot_mult'
     },
     {
