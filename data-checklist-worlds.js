@@ -604,17 +604,15 @@ const checklistDataByWorld = {
       gachas: [
           { id: 'c196', name: 'Spirit Pact' },
           { id: 'c197', name: 'Witch Factor' },
-          { id: 'c198', name: 'Artificial Spirit Blessings' },
-          { id: 'c199', name: 'Witch Factor' },
-          { id: 'c200', name: 'Re:Spirit Pact' },
-          { id: 'c201', name: 'Re: Witch Token' },
-          { id: 'c202', name: 'Artifical Spirit Blessings' },
-          { id: 'c203', name: 'Gospel Curses' },
+          { id: 'c198', name: 'Re:Spirit Pact' },
+          { id: 'c199', name: 'Re: Witch Token' },
+          { id: 'c200', name: 'Artifical Spirit Blessings' },
+          { id: 'c201', name: 'Gospel Curses' },
       ],
       progressions: [
       ],
       sssRank: [
-          { id: 'c204', name: 'Roswald' }
+          { id: 'c202', name: 'Roswald' }
       ],
       auras: [],
       accessories: [],
