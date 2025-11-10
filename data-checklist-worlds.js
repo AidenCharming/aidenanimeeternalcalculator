@@ -571,7 +571,9 @@ const checklistDataByWorld = {
         { id: 'c188', name: 'Gekar Morra' }
     ],
     auras: [],
-    accessories: [],
+    accessories: [
+        { id: 'c997', name: 'Orrs Pants (S)' },
+    ],
     quests: [
       { id: 'cq56', name: 'Demon Fruit Quest'},
       { id: 'cq57', name: 'Key Quests'},
