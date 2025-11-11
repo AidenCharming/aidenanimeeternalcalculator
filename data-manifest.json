@@ -21,6 +21,7 @@
         "Tournament Raid.json"
     ],
     "dungeons": [
+        "Adventurer Dungeon.json",
         "Crazy Dungeon.json",
         "Easy Dungeon.json",
         "Hard Dungeon.json",
@@ -28,6 +29,7 @@
         "Kaiju Base Dungeon.json",
         "Medium Dungeon.json",
         "Nightmare Dungeon.json",
-        "Suffering Dungeon.json"
+        "Suffering Dungeon.json",
+        "Torment Dungeon.json"
     ]
 }

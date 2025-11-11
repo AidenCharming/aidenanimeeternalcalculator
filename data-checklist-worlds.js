@@ -210,7 +210,7 @@ const checklistDataByWorld = {
     progressions: [
       { id: 'c49', name: 'Ten (110)' },
 	  { id: 'c50', name: 'Contract of Greed (100)' },
-	  { id: 'c51', name: 'Energy Obelisk (30)' }
+	  { id: 'c51', name: 'Energy Obelisk (100)' }
     ],
     sssRank: [
       { id: 'c52', name: 'Killas Godspeed' }
@@ -319,7 +319,7 @@ const checklistDataByWorld = {
     progressions: [
 	  { id: 'c82', name: 'Swordsman Energy (210)' },
       { id: 'c83', name: 'Swordsman Damage (110)' },
-	  { id: 'c84', name: 'Damage Obelisk (30)' }
+	  { id: 'c84', name: 'Damage Obelisk (100)' }
 	],
     sssRank: [
       { id: 'c85', name: 'The Paladin' }
