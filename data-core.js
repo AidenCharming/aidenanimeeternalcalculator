@@ -440,7 +440,7 @@ const worldData = {
             "Felis": 6.34E+177,
             "Emilli": 6.68E+178,
             "Bellatrice": 6.68E+182,
-			"Bellatrice 20%": 3.34E+183,
+			"Bellatrice 20%": 1.33E+182,
             "Roswald": 6.68E+186
         }
     }
