@@ -22,10 +22,12 @@ const FLASH_INTERVAL_MS = 1000;
 
 const CHECKLIST_SAVE_KEY = 'ae_checklist_progress';
 
-const LOOT_RESPAWN_DELAY = 3.0; // Seconds
-const LOOT_KILL_OVERHEAD = 0.5; // Additional time added to single mob kill time
+const LOOT_RESPAWN_DELAY = 3.0;
+const LOOT_KILL_OVERHEAD = 0.5;
 const SLOW_CPS = 1.0919;
 const FAST_CPS = 5.88505;
+
+let currentNumberFormat = 'letters';
 
 function isWorldCompleted(worldSection) {
     const checkboxes = worldSection.querySelectorAll('.checklist-item input[type="checkbox"]');
@@ -414,7 +416,6 @@ function setFarmingMode(mode, button) {
     buttons.forEach(btn => btn.classList.remove('active'));
     button.classList.add('active');
     
-    // Check which panel the button belongs to
     if (button.closest('#panel-ttk') && el.fourSpotFarming) {
         el.fourSpotFarming.checked = (mode === 'four');
         calculateTTK();
@@ -474,16 +475,188 @@ function toggleTheme() {
     }
 }
 
+/**
+ * Takes a large number and finds the best matching letter denomination and base number.
+ * @param {number} num The large number to split.
+ * @returns {{value: number, name: string, multiplier: number}}
+ */
+function splitNumberToDenom(num) {
+    if (num === 0) return { value: 0, name: '', multiplier: 1 };
+    
+    if (typeof denominations === 'undefined') {
+        return { value: num, name: '', multiplier: 1 }; 
+    }
+    
+    const reversedDenoms = [...denominations].sort((a, b) => b.value - a.value);
+
+    // Find the denomination that keeps the base value between 1 (inclusive) and 1000 (exclusive)
+    for (const denom of reversedDenoms) {
+        const baseValue = num / denom.value;
+        if (baseValue >= 1 && baseValue < 1000) {
+            return {
+                value: parseFloat(baseValue.toFixed(2)),
+                name: denom.name === 'None' ? '' : denom.name,
+                multiplier: denom.value
+            };
+        }
+    }
+    
+    // Fallback: If smaller than K, return the number itself. If larger than max, use max denom.
+    const largestDenom = denominations[denominations.length - 1];
+    if (num >= largestDenom.value) {
+        const baseValue = num / largestDenom.value;
+        return { 
+            value: parseFloat(baseValue.toFixed(2)), 
+            name: largestDenom.name, 
+            multiplier: largestDenom.value 
+        };
+    }
+
+    return { value: parseFloat(num.toFixed(2)), name: '', multiplier: 1 };
+}
+
+function setNumberFormat(format) {
+    if (format === currentNumberFormat) return;
+
+    const previousFormat = currentNumberFormat;
+    currentNumberFormat = format;
+    try {
+        localStorage.setItem('ae_number_format', format);
+    } catch (e) { }
+
+    const scientificBtn = el['format-toggle-scientific'];
+    const lettersBtn = el['format-toggle-letters'];
+
+    if (scientificBtn && lettersBtn) {
+        if (format === 'scientific') {
+            scientificBtn.classList.add('active');
+            lettersBtn.classList.remove('active');
+        } else {
+            scientificBtn.classList.remove('active');
+            lettersBtn.classList.add('active');
+        }
+    }
+
+    const denomInputs = document.querySelectorAll('.grid-denom .relative');
+    const isScientific = format === 'scientific';
+
+    denomInputs.forEach(container => {
+        const input = container.querySelector('input[type="text"]');
+        if (input) {
+            container.style.display = isScientific ? 'none' : 'block';
+        }
+    });
+    
+    const inputPairs = [
+        { numId: 'currentEnergy', denomId: 'currentEnergyDenominationInput', valueId: 'currentEnergyDenominationValue' },
+        { numId: 'energyPerClick', denomId: 'energyPerClickDenominationInput', valueId: 'energyPerClickDenominationValue' },
+        { numId: 'currentEnergyETA', denomId: 'currentEnergyETADenominationInput', valueId: 'currentEnergyETADenominationValue' },
+        { numId: 'targetEnergyETA', denomId: 'targetEnergyETADenominationInput', valueId: 'targetEnergyETADenominationValue' },
+        { numId: 'energyPerClickETA', denomId: 'energyPerClickETADenominationInput', valueId: 'energyPerClickETADenominationValue' },
+        { numId: 'currentEnergyTTE', denomId: 'currentEnergyTTEDenominationInput', valueId: 'currentEnergyTTEDenominationValue' },
+        { numId: 'energyPerClickTTE', denomId: 'energyPerClickTTEDenominationInput', valueId: 'energyPerClickTTEDenominationValue' },
+        { numId: 'yourDPSMin', denomId: 'dpsDenominationInput', valueId: 'dpsDenominationValue' },
+        { numId: 'yourDPSMax', denomId: 'dpsMaxDenominationInput', valueId: 'dpsMaxDenominationValue' },
+        { numId: 'yourDPSActivity', denomId: 'dpsActivityDenominationInput', valueId: 'dpsActivityDenominationValue' },
+    ];
+
+    if (previousFormat !== format) {
+        inputPairs.forEach(pair => {
+            const numEl = el[pair.numId];
+            const denomInputEl = el[pair.denomId];
+            const denomValueEl = el[pair.valueId];
+
+            if (numEl && denomInputEl && denomValueEl) {
+                let multiplier = previousFormat === 'letters' ? parseNumberInput(denomValueEl.value) : 1;
+                let rawNumber = parseNumberInput(numEl.value) * multiplier;
+                
+                if (format === 'scientific') {
+                    numEl.value = rawNumber.toExponential(2).replace('e+', 'e');
+                    denomInputEl.value = '';
+                    denomValueEl.value = 1;
+                } else {
+                    const split = splitNumberToDenom(rawNumber);
+                    numEl.value = split.value;
+                    denomInputEl.value = split.name;
+                    denomValueEl.value = split.multiplier;
+                }
+            }
+        });
+    }
+
+    displayRankRequirement();
+    calculateRankUp();
+    calculateEnergyETA();
+    calculateTimeToEnergy();
+    calculateLootDrops();
+    calculateTTK();
+    if (el.enemySelect && el.enemySelect.value) displayEnemyHealth(); 
+    calculateStarCalc();
+}
+
+function loadNumberFormat() {
+    try {
+        const savedFormat = localStorage.getItem('ae_number_format') || 'letters';
+        
+        currentNumberFormat = savedFormat; 
+        
+        const scientificBtn = el['format-toggle-scientific'];
+        const lettersBtn = el['format-toggle-letters'];
+        
+        if (scientificBtn && lettersBtn) {
+            if (currentNumberFormat === 'scientific') {
+                scientificBtn.classList.add('active');
+                lettersBtn.classList.remove('active');
+            } else {
+                scientificBtn.classList.remove('active');
+                lettersBtn.classList.add('active');
+            }
+        }
+    } catch (e) {
+        currentNumberFormat = 'letters';
+    }
+    
+    const denomInputs = document.querySelectorAll('.grid-denom .relative');
+    const isScientific = currentNumberFormat === 'scientific';
+    
+    denomInputs.forEach(container => {
+        const input = container.querySelector('input[type="text"]');
+        if (input) {
+            container.style.display = isScientific ? 'none' : 'block';
+            
+            if (isScientific) {
+                const hiddenValueInput = container.querySelector('input[type="hidden"]');
+                if (hiddenValueInput) {
+                    hiddenValueInput.value = 1;
+                }
+            }
+        }
+    });
+}
+
+function parseNumberInput(value) {
+    if (typeof value !== 'string') return 0;
+    
+    const parsed = Number(value.trim());
+    return isFinite(parsed) ? parsed : 0;
+}
 
 function getNumberValue(id) {
     if (el[id]) {
-        return parseFloat(el[id].value) || 0;
+        return parseNumberInput(el[id].value);
     }
     return 0;
 }
 
 function formatNumber(num) {
     if (num === 0) return '0';
+    if (!isFinite(num)) return 'N/A';
+    
+    if (currentNumberFormat === 'scientific') {
+        if (num < 1000) return num.toLocaleString(undefined, { maximumFractionDigits: 2 });
+        return num.toExponential(2).replace('e+', 'e');
+    }
+    
     if (num < 1000) return num.toLocaleString(undefined, { maximumFractionDigits: 2 });
     const reversedDenominations = typeof denominations !== 'undefined' ? [...denominations].reverse() : [];
     for (const denom of reversedDenominations) {
@@ -928,7 +1101,6 @@ function loadLootData() {
         if (el.lootSpecialDropRate) el.lootSpecialDropRate.value = localStorage.getItem('ae_loot_specialRate') || 1;
         if (el.lootSpecialItemName) el.lootSpecialItemName.value = localStorage.getItem('ae_loot_specialItemName') || 'Special Drops';
         
-        // Restore kill time value, setting to default (Instakill) if none saved
         const savedKillTime = localStorage.getItem('ae_loot_mobKillTime');
         if (el.lootMobKillTime) {
             el.lootMobKillTime.value = savedKillTime !== null ? savedKillTime : 'instakill';
@@ -953,7 +1125,7 @@ function loadLootData() {
         if (el.lootTokenTargetCount) el.lootTokenTargetCount.value = localStorage.getItem('ae_loot_targetTokenCount') || 1;
 
         if (el.lootSpecialItemName) {
-            el.lootSpecialItemName.dispatchEvent(new Event('input')); // Update result label immediately
+            el.lootSpecialItemName.dispatchEvent(new Event('input'));
         }
 
         calculateLootDrops();
@@ -1020,15 +1192,15 @@ function calculateEnergyETA() {
     const isFastClicker = el.clickerSpeedETA ? el.clickerSpeedETA.checked : false;
 
     const currentEnergyValue = getNumberValue('currentEnergyETA');
-    const currentEnergyDenom = el.currentEnergyETADenominationValue ? (parseFloat(el.currentEnergyETADenominationValue.value) || 1) : 1;
+    const currentEnergyDenom = currentNumberFormat === 'letters' ? (el.currentEnergyETADenominationValue ? (parseFloat(el.currentEnergyETADenominationValue.value) || 1) : 1) : 1;
     const currentEnergy = currentEnergyValue * currentEnergyDenom;
 
     const targetEnergyValue = getNumberValue('targetEnergyETA');
-    const targetEnergyDenom = el.targetEnergyETADenominationValue ? (parseFloat(el.targetEnergyETADenominationValue.value) || 1) : 1;
+    const targetEnergyDenom = currentNumberFormat === 'letters' ? (el.targetEnergyETADenominationValue ? (parseFloat(el.targetEnergyETADenominationValue.value) || 1) : 1) : 1;
     const targetEnergy = targetEnergyValue * targetEnergyDenom;
 
     const energyPerClickValue = getNumberValue('energyPerClickETA');
-    const energyPerClickDenom = el.energyPerClickETADenominationValue ? (parseFloat(el.energyPerClickETADenominationValue.value) || 1) : 1;
+    const energyPerClickDenom = currentNumberFormat === 'letters' ? (el.energyPerClickETADenominationValue ? (parseFloat(el.energyPerClickETADenominationValue.value) || 1) : 1) : 1;
     const baseEnergyPerClick = energyPerClickValue * energyPerClickDenom;
 
     const effectiveEnergyPerClick = getEffectiveEnergyPerClick(
@@ -1080,11 +1252,11 @@ function calculateTimeToEnergy() {
     const isFastClicker = el.clickerSpeedTTE ? el.clickerSpeedTTE.checked : false;
 
     const currentEnergyValue = getNumberValue('currentEnergyTTE');
-    const currentEnergyDenom = el.currentEnergyTTEDenominationValue ? (parseFloat(el.currentEnergyTTEDenominationValue.value) || 1) : 1;
+    const currentEnergyDenom = currentNumberFormat === 'letters' ? (el.currentEnergyTTEDenominationValue ? (parseFloat(el.currentEnergyTTEDenominationValue.value) || 1) : 1) : 1;
     const currentEnergy = currentEnergyValue * currentEnergyDenom;
 
     const energyPerClickValue = getNumberValue('energyPerClickTTE');
-    const energyPerClickDenom = el.energyPerClickTTEDenominationValue ? (parseFloat(el.energyPerClickTTEDenominationValue.value) || 1) : 1;
+    const energyPerClickDenom = currentNumberFormat === 'letters' ? (el.energyPerClickTTEDenominationValue ? (parseFloat(el.energyPerClickTTEDenominationValue.value) || 1) : 1) : 1;
     const baseEnergyPerClick = energyPerClickValue * energyPerClickDenom;
 
     const effectiveEnergyPerClick = getEffectiveEnergyPerClick(
@@ -1215,42 +1387,31 @@ function calculateTimeToEnergy() {
     saveTimeToEnergyData();
 }
 
-/**
- * Calculates the estimated token and special drop rates based on user inputs,
- * accounting for multiplier effects and farming modes/kill speeds.
- */
 function calculateLootDrops() {
     if (!el.lootTokensResult || !el.lootSpecialDropsResult) return;
 
-    // --- 1. Get Base Inputs ---
     const tokenDropMin = getNumberValue('lootTokenDropMin');
     const tokenDropMax = getNumberValue('lootTokenDropMax');
-    const baseTokenRate = getNumberValue('lootBaseTokenDropRate') / 100; // Convert to ratio
+    const baseTokenRate = getNumberValue('lootBaseTokenDropRate') / 100;
     const tokenMultiplier = getNumberValue('lootTokenMultiplier');
 
-    const specialDropRate = getNumberValue('lootSpecialDropRate') / 100; // Convert to ratio
-    // Special Drop Quantity is fixed at 1
+    const specialDropRate = getNumberValue('lootSpecialDropRate') / 100;
     const specialItemName = el.lootSpecialItemName ? el.lootSpecialItemName.value.trim() : 'Special Drops';
     
-    // UI Label Update
     if (el.specialItemLabel) {
         el.specialItemLabel.innerText = `Avg ${specialItemName} per Target Time:`;
     }
 
-    // Get time target
     const targetHours = getNumberValue('lootTimeTargetHours');
     const targetMinutes = getNumberValue('lootTimeTargetMinutes');
     const targetTimeInSeconds = (targetHours * 3600) + (targetMinutes * 60);
     
-    // Get target tokens
     const targetTokenCount = getNumberValue('lootTokenTargetCount') || 1;
 
-    // Get mob kill time or use 'instakill' placeholder
     const killTimeInput = el.lootMobKillTime ? el.lootMobKillTime.value : 'N/A';
     const farmingMode = el.lootFarmingMode ? el.lootFarmingMode.value : 'single';
     const spotMultiplier = farmingMode === 'four' ? 4 : 1;
     
-    // Guard Clause: Check for essential inputs
     if (tokenMultiplier <= 0 || killTimeInput === 'N/A' || targetTimeInSeconds <= 0) {
         el.lootTokensResult.innerText = 'N/A';
         el.lootSpecialDropsResult.innerText = 'N/A';
@@ -1259,57 +1420,34 @@ function calculateLootDrops() {
         return;
     }
 
-    // --- 2. Calculate Effective Kills Per Second (KPS_eff) ---
-    
-    // Determine player's raw time per kill. 'instakill' is treated as minimal time.
-    let rawTimePerKill = parseFloat(killTimeInput);
+    let rawTimePerKill = parseNumberInput(killTimeInput);
     if (killTimeInput === 'instakill') {
-        // Use a near-zero time for instakill, effectively testing the overhead limit
         rawTimePerKill = 0.001;
     }
     
     const timeToCompleteKill = rawTimePerKill + LOOT_KILL_OVERHEAD;
     
-    // Time to wait for a respawn in this spot. For single spot it's 3.0s, for 4-spot it's 3.0s/4.
     const respawnLimitPerKill = LOOT_RESPAWN_DELAY / spotMultiplier;
 
-    // Effective time per cycle is the maximum of the player's kill time (plus overhead) and the respawn time
     const timePerCycle = Math.max(timeToCompleteKill, respawnLimitPerKill);
     
-    // Effective Kills Per Second (KPS_eff)
     const effectiveKillsPerSecond = 1 / timePerCycle;
 
-    // --- 3. Calculate Token Drops per Second (Multiplier Affected) ---
-
-    // a) Calculate the average base tokens per drop event (before player multiplier)
     const avgTokenDropQuantity = (tokenDropMin + tokenDropMax) / 2;
 
-    // b) Calculate the final average tokens per kill
-    // Formula: (Avg Qty) * (Player Multiplier) * (Base Rate) * (Spot Multiplier)
     const avgTokensPerKill_Final = 
         avgTokenDropQuantity * tokenMultiplier * baseTokenRate * spotMultiplier;
 
-    // c) Final Tokens per Second
     const tokensPerSecond = effectiveKillsPerSecond * avgTokensPerKill_Final;
 
-    // --- 4. Calculate Special Drops per Second (Multiplier UN-Affected) ---
-    
-    // Special Drop Quantity is always 1, and it's not affected by the Token Multiplier.
-    // Formula: (Qty: 1) * (Special Drop Rate) * (Spot Multiplier)
     const avgSpecialDropsPerKill_Final = 
         1 * specialDropRate * spotMultiplier;
     
-    // Final Special Drops per Second
     const specialDropsPerSecond = effectiveKillsPerSecond * avgSpecialDropsPerKill_Final;
 
-
-    // --- 5. Final Results Calculation ---
-    
-    // Total Drops for the Target Time
     let totalTokensEstimate = tokensPerSecond * targetTimeInSeconds / 2.8;
     let totalSpecialDropsEstimate = specialDropsPerSecond * targetTimeInSeconds / 2.8;
     
-    // Time to reach the Target Token Count
     let timeToTargetTokens = 0;
     if (tokensPerSecond > 0) {
         timeToTargetTokens = targetTokenCount / tokensPerSecond;
@@ -1318,12 +1456,10 @@ function calculateLootDrops() {
     }
 
     if (el.lootTokensResult) {
-        // Tokens can be fractional due to the multiplier and rate, so we show the fractional average
         el.lootTokensResult.innerText = formatNumber(totalTokensEstimate);
     }
 
     if (el.lootSpecialDropsResult) {
-        // Special drops can also be fractional average
         el.lootSpecialDropsResult.innerText = formatNumber(totalSpecialDropsEstimate);
     }
 
@@ -1346,8 +1482,8 @@ function calculateTTK() {
     const dpsMinInput = getNumberValue('yourDPSMin');
     const dpsMaxInput = getNumberValue('yourDPSMax');
     
-    const dpsMinMultiplier = el.dpsDenominationValue ? (parseFloat(el.dpsDenominationValue.value) || 1) : 1;
-    const dpsMaxMultiplier = el.dpsMaxDenominationValue ? (parseFloat(el.dpsMaxDenominationValue.value) || 1) : 1; 
+    const dpsMinMultiplier = currentNumberFormat === 'letters' ? (el.dpsDenominationValue ? (parseFloat(el.dpsDenominationValue.value) || 1) : 1) : 1;
+    const dpsMaxMultiplier = currentNumberFormat === 'letters' ? (el.dpsMaxDenominationValue ? (parseFloat(el.dpsMaxDenominationValue.value) || 1) : 1) : 1; 
     
     const dpsMin = dpsMinInput * dpsMinMultiplier;
     const dpsMax = dpsMaxInput * dpsMaxMultiplier;
@@ -1383,7 +1519,7 @@ function calculateTTK() {
         const ENEMY_RESPAWN_TIME = 3;
         const ENEMY_GROUP_SIZE = isFourSpot ? 4 : 1;
         const respawnLimitPerKill = ENEMY_RESPAWN_TIME / ENEMY_GROUP_SIZE;
-        const yourTimePerKill = timeInSeconds + LOOT_KILL_OVERHEAD; // Use overhead constant
+        const yourTimePerKill = timeInSeconds + LOOT_KILL_OVERHEAD;
         const effectiveTimePerKill = Math.max(yourTimePerKill, respawnLimitPerKill);
         const totalTimeInSeconds = effectiveTimePerKill * quantity;
 
@@ -1436,11 +1572,11 @@ function calculateRankUp() {
     const isFastClicker = el.clickerSpeed ? el.clickerSpeed.checked : false;
 
     const currentEnergyValue = getNumberValue('currentEnergy');
-    const currentEnergyDenom = el.currentEnergyDenominationValue ? (parseFloat(el.currentEnergyDenominationValue.value) || 1) : 1;
+    const currentEnergyDenom = currentNumberFormat === 'letters' ? (el.currentEnergyDenominationValue ? (parseFloat(el.currentEnergyDenominationValue.value) || 1) : 1) : 1;
     const currentEnergy = currentEnergyValue * currentEnergyDenom;
 
     const energyPerClickValue = getNumberValue('energyPerClick');
-    const energyPerClickDenom = el.energyPerClickDenominationValue ? (parseFloat(el.energyPerClickDenominationValue.value) || 1) : 1;
+    const energyPerClickDenom = currentNumberFormat === 'letters' ? (el.energyPerClickDenominationValue ? (parseFloat(el.energyPerClickDenominationValue.value) || 1) : 1) : 1;
     const baseEnergyPerClick = energyPerClickValue * energyPerClickDenom;
 
     const effectiveEnergyPerClick = getEffectiveEnergyPerClick(
@@ -1557,7 +1693,7 @@ function displayEnemyHealth() {
     if (world && world.enemies && world.enemies[selectedEnemy]) {
         const healthValue = world.enemies[selectedEnemy];
         enemyHealthInput.value = healthValue;
-        enemyHealthDisplay.innerText = formatNumber(healthValue);
+        enemyHealthDisplay.innerText = formatNumber(healthValue); 
     } else {
         enemyHealthInput.value = '';
         enemyHealthDisplay.innerText = 'Select an enemy to see health';
@@ -1612,7 +1748,6 @@ function populateBoostDurations() {
         if (minutesEl) populateMinutesDropdown(minutesEl);
     });
     
-    // Loot Target Dropdowns
     if (el.lootTimeTargetHours) populateHoursDropdown(el.lootTimeTargetHours);
     if (el.lootTimeTargetMinutes) populateMinutesDropdown(el.lootTimeTargetMinutes);
 }
@@ -1623,17 +1758,14 @@ function populateLootKillTimeDropdown() {
 
     selectElement.innerHTML = '';
     
-    // Add the "Instakill" option
     let option = document.createElement('option');
     option.value = 'instakill';
     option.innerText = 'Instakill (<0.5s Kill Time)';
     selectElement.appendChild(option);
     
-    // Populate standard time options (0.1 to 60.0s, in sensible steps)
     for (let s = 0.1; s <= 60.0; s += 0.1) {
         const value = Math.round(s * 10) / 10;
         
-        // Skip intermediate values to keep the list clean (e.g., show .5, .0, but not .1, .2, .3, .4)
         if (value > 1 && value < 10 && value * 10 % 5 !== 0) continue;
         if (value >= 10 && value % 1 !== 0) continue;
 
@@ -1642,7 +1774,6 @@ function populateLootKillTimeDropdown() {
         option.innerText = `${value.toFixed(1)} Seconds`;
         selectElement.appendChild(option);
         
-        // Increment by a larger step once we pass 1 second
         if (s >= 1 && s < 10) s += 0.4;
         else if (s >= 10) s += 0.9;
     }
@@ -1840,7 +1971,7 @@ function calculateMaxStage() {
     }
 
     const activity = activityData[selection];
-    const yourDPS = (getNumberValue('yourDPSActivity') || 0) * (parseFloat(el.dpsActivityDenominationValue.value) || 1);
+    const yourDPS = (getNumberValue('yourDPSActivity') || 0) * (currentNumberFormat === 'letters' ? (parseFloat(el.dpsActivityDenominationValue.value) || 1) : 1);
     const timeLimit = getNumberValue('activityTimeLimit');
     const resultEl = el.activityResult;
 
@@ -1859,7 +1990,7 @@ function calculateMaxStage() {
 
         for (let i = 1; i <= maxStages; i++) {
             const stageKey = `Room ${i}`;
-            let stageHealth = parseFloat(activity.enemies[stageKey]);
+            let stageHealth = parseNumberInput(activity.enemies[stageKey]);
 
             if (!stageHealth) {
                 break;
@@ -1895,7 +2026,7 @@ function calculateKeyRunTime() {
     const resultEl = el.keyRunTimeResult;
     const returnTimeEl = el.keyRunReturnTime;
     
-    const yourDPS = (getNumberValue('yourDPSActivity') || 0) * (parseFloat(el.dpsActivityDenominationValue.value) || 1);
+    const yourDPS = (getNumberValue('yourDPSActivity') || 0) * (currentNumberFormat === 'letters' ? (parseFloat(el.dpsActivityDenominationValue.value) || 1) : 1);
     const completedStage = calculateMaxStage();
 
     if (!activity || keyQuantity <= 0 || yourDPS <= 0 || completedStage <= 0) {
@@ -1910,7 +2041,7 @@ function calculateKeyRunTime() {
 
     for (let i = 1; i <= completedStage; i++) {
         const stageKey = `Room ${i}`;
-        let stageHealth = parseFloat(activity.enemies[stageKey]);
+        let stageHealth = parseNumberInput(activity.enemies[stageKey]);
         
         let enemyMultiplier = 1;
         if (activity.type === 'raid' && !singleEnemyRaids.includes(activityName)) {
@@ -2069,7 +2200,7 @@ function setupDenominationSearch(inputId, valueId, listId, callback) {
             } else if (inputText === '') {
                 valueEl.value = 1;
             } else {
-                const currentValue = parseFloat(valueEl.value) || 1;
+                const currentValue = parseNumberInput(valueEl.value) || 1;
                 const currentDenom = denominations.find(d => d.value == currentValue);
                 if (currentDenom) {
                     inputEl.value = currentDenom.name !== 'None' ? currentDenom.name : '';
@@ -2141,7 +2272,7 @@ function syncEnergyData(sourceInputId, sourceDenomInputId, sourceDenomValueId) {
         'currentEnergyETADenominationInput': ['currentEnergyDenominationInput', 'currentEnergyTTEDenominationInput'],
         'currentEnergyETADenominationValue': ['currentEnergyDenominationValue', 'currentEnergyTTEDenominationValue'],
         'energyPerClickETADenominationInput': ['energyPerClickDenominationInput', 'energyPerClickTTEDenominationInput'],
-        'energyPerClickETADenominationValue': ['energyPerClickDenominationValue', 'energyPerClickTTEDenominationValue'],
+        'energyPerClickDenominationValue': ['energyPerClickDenominationValue', 'energyPerClickTTEDenominationValue'],
         'currentEnergyTTEDenominationInput': ['currentEnergyDenominationInput', 'currentEnergyETADenominationInput'],
         'currentEnergyTTEDenominationValue': ['currentEnergyDenominationValue', 'currentEnergyETADenominationValue'],
         'energyPerClickTTEDenominationInput': ['energyPerClickDenominationInput', 'energyPerClickETADenominationInput'],
@@ -2398,32 +2529,6 @@ function toggleCompletedVisibility() {
 }
 
 
-function populateHoursDropdown(selectElement) {
-    if (!selectElement) return;
-    
-    selectElement.innerHTML = '';
-    
-    for (let i = 0; i <= 48; i++) {
-        const option = document.createElement('option');
-        option.value = i;
-        option.innerText = `${i} Hour${i === 1 ? '' : 's'}`;
-        selectElement.appendChild(option);
-    }
-}
-
-function populateMinutesDropdown(selectElement) {
-    if (!selectElement) return;
-
-    selectElement.innerHTML = '';
-    
-    for (let i = 0; i <= 59; i++) {
-        const option = document.createElement('option');
-        option.value = i;
-        option.innerText = `${i} Minute${i === 1 ? '' : 's'}`;
-        selectElement.appendChild(option);
-    }
-}
-
 function populateTimeToReturnDropdown() {
     populateHoursDropdown(el.timeToReturnSelect);
 }
@@ -2432,40 +2537,12 @@ function populateTimeToReturnMinutesDropdown() {
     populateMinutesDropdown(el.timeToReturnSelectMinutes);
 }
 
-function populateStarLevelDropdown() {
-    if (!el.starLevelSelect || typeof starCostData === 'undefined') return;
-    
-    const select = el.starLevelSelect;
-    select.innerHTML = '<option value="">-- Select Level --</option>';
-    Object.keys(starCostData).forEach(level => {
-        const option = document.createElement('option');
-        option.value = level;
-        option.innerText = `Star ${level}`;
-        select.appendChild(option);
-    });
-}
-
-function populateStarSpeedDropdown() {
-    if (!el.starSpeedSelect || typeof starSpeedData === 'undefined') return;
-
-    const select = el.starSpeedSelect;
-    select.innerHTML = '<option value="">-- Select Speed --</option>';
-    Object.keys(starSpeedData).forEach(level => {
-        const option = document.createElement('option');
-        option.value = level;
-        option.innerText = `Star Speed ${level}`;
-        select.appendChild(option);
-    });
-}
-
-
 document.addEventListener('DOMContentLoaded', () => {
     
     document.querySelectorAll('[id]').forEach(element => {
         el[element.id] = element;
     });
 
-    // Handle new loot farming mode container
     const lootFarmingModeContainer = el['loot-farming-mode-container'];
     if (lootFarmingModeContainer) {
         lootFarmingModeContainer.addEventListener('click', (e) => {
@@ -2531,7 +2608,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const clickerSpeedControls = document.querySelectorAll('.toggle-container');
     if (clickerSpeedControls) {
         clickerSpeedControls.forEach(container => {
-            // Only attach listener if it's not the loot farming mode container, which has its own listener
             if (container.id !== 'loot-farming-mode-container') { 
                 container.addEventListener('click', (e) => {
                     const button = e.target.closest('.toggle-btn');
@@ -2544,6 +2620,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             setClickerSpeed(button.dataset.clickerspeedTte, button);
                         } else if (button.dataset.farmingMode) {
                             setFarmingMode(button.dataset.farmingMode, button);
+                        } else if (button.dataset.format) {
+                            setNumberFormat(button.dataset.format);
                         }
                     }
                 });
@@ -2551,6 +2629,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const formatToggleScientific = el['format-toggle-scientific'];
+    const formatToggleLetters = el['format-toggle-letters'];
+    
+    if (formatToggleScientific) {
+        formatToggleScientific.addEventListener('click', () => setNumberFormat('scientific'));
+    }
+    if (formatToggleLetters) {
+        formatToggleLetters.addEventListener('click', () => setNumberFormat('letters'));
+    }
 
     switchTab('rankup');
     
@@ -2560,7 +2647,7 @@ document.addEventListener('DOMContentLoaded', () => {
     populateBoostDurations();
     populateStarLevelDropdown();
     populateStarSpeedDropdown();
-    populateLootKillTimeDropdown(); // UPDATED: Loot Mob Kill Time
+    populateLootKillTimeDropdown();
 
     loadAllData().then(() => {
         
@@ -2721,7 +2808,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const lootDebounce = debounce(calculateLootDrops, 300);
 
-    // NEW Loot Inputs
     if (el.lootTokenDropMin) el.lootTokenDropMin.addEventListener('input', lootDebounce);
     if (el.lootTokenDropMax) el.lootTokenDropMax.addEventListener('input', lootDebounce);
     if (el.lootBaseTokenDropRate) el.lootBaseTokenDropRate.addEventListener('input', lootDebounce);
@@ -2737,7 +2823,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (el.lootMobKillTime) el.lootMobKillTime.addEventListener('change', lootDebounce);
 
-    // Loot Target Dropdowns
     if (el.lootTimeTargetHours) el.lootTimeTargetHours.addEventListener('change', lootDebounce);
     if (el.lootTimeTargetMinutes) el.lootTimeTargetMinutes.addEventListener('change', lootDebounce);
     
@@ -2835,10 +2920,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    loadNumberFormat();
     loadRankUpData();
     loadETAData();
     loadTimeToEnergyData(); 
-    loadLootData(); // UPDATED
+    loadLootData();
     loadTTKData();
     loadStarData();
     loadAlertsData(); 
@@ -2857,7 +2943,7 @@ document.addEventListener('DOMContentLoaded', () => {
         el.currentEnergyTTE.dispatchEvent(new Event('input'));
     }
     
-    calculateLootDrops(); // UPDATED
+    calculateLootDrops();
     calculateMaxStage();
     calculateKeyRunTime();
     calculateStarCalc();

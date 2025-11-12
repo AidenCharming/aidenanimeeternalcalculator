@@ -264,8 +264,8 @@ const checklistDataByWorld = {
     auras: [],
     accessories: [],
     quests: [
-      { id: 'cq24', name: 'Key Quests'},
-      { id: 'cq25', name: 'Obelisk Quest'}
+      { id: 'cq26', name: 'Key Quests'},
+      { id: 'cq27', name: 'Obelisk Quest'}
     ]
   },
   "Kaiju Base": {
@@ -284,8 +284,8 @@ const checklistDataByWorld = {
     ],
     accessories: [],
     quests: [
-      { id: 'cq26', name: 'Key Quests'},
-      { id: 'cq27', name: 'Obelisk Quest'}
+      { id: 'cq28', name: 'Key Quests'},
+      { id: 'cq29', name: 'Obelisk Quest'}
     ]
   },
   "Tempest Capital": {
@@ -307,8 +307,8 @@ const checklistDataByWorld = {
       { id: 'c79', name: 'Slime Mask (S)' }
     ],
     quests: [
-      { id: 'cq28', name: 'Key Quests'},
-      { id: 'cq29', name: 'Obelisk Quest'}
+      { id: 'cq30', name: 'Key Quests'},
+      { id: 'cq31', name: 'Obelisk Quest'}
     ]
   },
   "Virtual City": {
@@ -329,9 +329,9 @@ const checklistDataByWorld = {
     ],
     accessories: [],
     quests: [
-      { id: 'cq30', name: 'Hero License Quest'},
-      { id: 'cq31', name: 'Key Quests'},
-      { id: 'cq32', name: 'Obelisk Quest'}
+      { id: 'cq32', name: 'Hero License Quest'},
+      { id: 'cq33', name: 'Key Quests'},
+      { id: 'cq34', name: 'Obelisk Quest'}
     ]
   },
   "Cairo": {
@@ -353,8 +353,8 @@ const checklistDataByWorld = {
       { id: 'c93', name: 'Greenello Scarf (C)' }
     ],
     quests: [
-      { id: 'cq33', name: 'Key Quests'},
-      { id: 'cq34', name: 'Obelisk Quest'}
+      { id: 'cq35', name: 'Key Quests'},
+      { id: 'cq36', name: 'Obelisk Quest'}
     ]
   },
   "Ghoul City": {
@@ -374,9 +374,9 @@ const checklistDataByWorld = {
     ],
     accessories: [],
     quests: [
-      { id: 'cq35', name: 'CCG Quests'},
-      { id: 'cq36', name: 'Key Quests'},
-      { id: 'cq37', name: 'Obelisk Quest'}
+      { id: 'cq37', name: 'CCG Quests'},
+      { id: 'cq38', name: 'Key Quests'},
+      { id: 'cq39', name: 'Obelisk Quest'}
     ]
   },
   "Chainsaw City": {
@@ -397,9 +397,9 @@ const checklistDataByWorld = {
       { id: 'c106', name: 'Pokita Slides (D)' }
     ],
     quests: [
-      { id: 'cq38', name: 'Hero License Quests'},
-      { id: 'cq39', name: 'Key Quests'},
-      { id: 'cq40', name: 'Obelisk Quest'}
+      { id: 'cq40', name: 'Hero License Quests'},
+      { id: 'cq41', name: 'Key Quests'},
+      { id: 'cq42', name: 'Obelisk Quest'}
     ]
   },
   "Tokyo Empire": {
@@ -428,8 +428,8 @@ const checklistDataByWorld = {
       { id: 'c120', name: 'Fire Eye Patch (SS)' }
     ],
     quests: [
-      { id: 'cq42', name: 'Key Quests'},
-      { id: 'cq43', name: 'Obelisk Quest'}
+      { id: 'cq43', name: 'Key Quests'},
+      { id: 'cq44', name: 'Obelisk Quest'}
     ]
   },
   "Green Planet": {
@@ -453,9 +453,9 @@ const checklistDataByWorld = {
       { id: 'c130', name: 'Scarffy (D)' }
     ],
     quests: [
-      { id: 'cq43', name: 'Green Planet Quests'},
-      { id: 'cq44', name: 'Key Quests'},
-      { id: 'cq45', name: 'Obelisk Quest'}
+      { id: 'cq45', name: 'Green Planet Quests'},
+      { id: 'cq46', name: 'Key Quests'},
+      { id: 'cq47', name: 'Obelisk Quest'}
     ]
   },
   "Hollow World": {
@@ -474,8 +474,8 @@ const checklistDataByWorld = {
     auras: [],
     accessories: [],
     quests: [
-      { id: 'cq46', name: 'Key Quests'},
-      { id: 'cq47', name: 'Obelisk Quest'}
+      { id: 'cq48', name: 'Key Quests'},
+      { id: 'cq49', name: 'Obelisk Quest'}
     ]
   },
   "Shadow Academy": {
@@ -502,9 +502,9 @@ const checklistDataByWorld = {
       { id: 'c162', name: 'Crested Wingbands (B)' }
     ],
     quests: [
-      { id: 'cq48', name: 'Hero License Quests'},
-      { id: 'cq49', name: 'Key Quests'},
-      { id: 'cq50', name: 'Obelisk Quest'}
+      { id: 'cq50', name: 'Hero License Quests'},
+      { id: 'cq51', name: 'Key Quests'},
+      { id: 'cq52', name: 'Obelisk Quest'}
     ]
   },
   "Z City": {
@@ -525,8 +525,8 @@ const checklistDataByWorld = {
       { id: 'c169', name: 'Red Hero Boots (S)' }
     ],
     quests: [
-      { id: 'cq51', name: 'Key Quests'},
-      { id: 'cq52', name: 'Obelisk Quest'}
+      { id: 'cq53', name: 'Key Quests'},
+      { id: 'cq54', name: 'Obelisk Quest'}
     ]
   },
   "Great Tomb": {
@@ -550,8 +550,8 @@ const checklistDataByWorld = {
       { id: 'c179', name: 'Jalbathar Wings (Tomb Arena)' }
     ],
     quests: [
-      { id: 'cq53', name: 'Key Quests'},
-      { id: 'cq54', name: 'Obelisk Quest'}
+      { id: 'cq55', name: 'Key Quests'},
+      { id: 'cq56', name: 'Obelisk Quest'}
     ]
   },
   "Thriller Park": {
@@ -575,9 +575,10 @@ const checklistDataByWorld = {
         { id: 'c997', name: 'Orrs Pants (S)' },
     ],
     quests: [
-      { id: 'cq56', name: 'Demon Fruit Quest'},
-      { id: 'cq57', name: 'Key Quests'},
-      { id: 'cq58', name: 'Obelisk Quest'}
+      { id: 'cq57', name: 'Demon Fruit Quest'},
+      { id: 'cq58', name: 'Demon Fruit Quest'},
+      { id: 'cq59', name: 'Key Quests'},
+      { id: 'cq60', name: 'Obelisk Quest'}
     ]
   },
   "Amusement Park": {
@@ -589,38 +590,41 @@ const checklistDataByWorld = {
         { id: 'c191', name: 'Assassin Energy (100)' },
         { id: 'c192', name: 'Assassin Damage (100)' },
         { id: 'c193', name: 'Assassin Critical Energy (10)' },
-        { id: 'c194', name: 'Assassin Critical Damage (10)' }
+        { id: 'c194', name: 'Assassin Critical Damage (10)' },
+        { id: 'c195', name: 'Assassin Craft' },
       ],
       sssRank: [
-          { id: 'c195', name: 'Tagamura' }
+          { id: 'c196', name: 'Tagamura' }
       ],
       auras: [],
       accessories: [],
     quests: [
-      { id: 'cq59', name: 'Key Quests'},
-      { id: 'cq60', name: 'Obelisk Quest'},
-      { id: 'cq61', name: 'The Order Quest'}
+      { id: 'cq61', name: 'Assassin Quest'},
+      { id: 'cq62', name: 'Key Quests'},
+      { id: 'cq63', name: 'Obelisk Quest'},
+      { id: 'cq64', name: 'The Order Quest'}
     ]
   },
     "Re:Manor": {
       gachas: [
-          { id: 'c196', name: 'Spirit Pact' },
-          { id: 'c197', name: 'Witch Factor' },
-          { id: 'c198', name: 'Re:Spirit Pact' },
-          { id: 'c199', name: 'Re: Witch Token' },
-          { id: 'c200', name: 'Artifical Spirit Blessings' },
-          { id: 'c201', name: 'Gospel Curses' },
+          { id: 'c197', name: 'Spirit Pact' },
+          { id: 'c198', name: 'Witch Factor' },
+          { id: 'c199', name: 'Re:Spirit Pact' },
+          { id: 'c200', name: 'Re: Witch Token' },
+          { id: 'c201', name: 'Artifical Spirit Blessings' },
+          { id: 'c202', name: 'Gospel Curses' },
+          { id: 'c203', name: 'Witch Authority' }
       ],
       progressions: [
       ],
       sssRank: [
-          { id: 'c202', name: 'Roswald' }
+          { id: 'c204', name: 'Roswald' }
       ],
       auras: [],
       accessories: [],
     quests: [
-      { id: 'cq62', name: 'Key Quests'},
-      { id: 'cq63', name: 'Obelisk Quest'}
+      { id: 'cq65', name: 'Key Quests'},
+      { id: 'cq66', name: 'Obelisk Quest'}
     ]
   },
 };

@@ -320,7 +320,6 @@ body.blue-theme header {
 }
 
 main.calculator-card {
-  /* Removed height constraint for the parent container */
 }
 
 .flex.border-b-2 {
@@ -334,11 +333,9 @@ main.calculator-card {
   min-width: 220px;
   flex-shrink: 0;
   
-  /* STICKY SIDEBAR SETUP */
   position: sticky;
   top: 60px;
   align-self: flex-start;
-  /* Use fixed viewport height for the sticky element */
   height: calc(100vh - 60px); 
   overflow-y: auto;
 }
@@ -429,9 +426,7 @@ main.calculator-card {
   padding: 8px;
 }
 
-/* NEW SMALL LABEL STYLES for Loot Calc dropdowns */
 .input-label-small {
-    /* Base label styles, adjusted for density */
     color: #999; 
     font-weight: 500;
     font-size: 11px;
@@ -579,6 +574,33 @@ button:active {
   width: fit-content;
 }
 
+.topbar-right .toggle-container {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    gap: 0;
+    border-radius: 0;
+}
+
+.topbar-right .toggle-container .toggle-btn {
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 12px;
+    border: 1px solid #555;
+    background: #333;
+}
+
+.topbar-right .toggle-container .toggle-btn:hover {
+    background: #444;
+}
+
+.topbar-right .toggle-container .toggle-btn.active {
+    background: #7c3aed;
+    color: #fff;
+    border-color: #7c3aed;
+}
+
 .toggle-btn {
   padding: 6px 12px;
   background: transparent;
@@ -645,7 +667,6 @@ button:active {
   align-items: end;
 }
 
-/* NEW ALERT ITEM STYLE */
 .alert-item {
   display: flex;
   align-items: center;
@@ -687,12 +708,24 @@ button:active {
   
   .topbar-right {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     width: 100%;
     margin-top: 4px;
+    gap: 8px;
   }
 
+  .topbar-right .toggle-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+  }
+
+  .topbar-right .toggle-container .toggle-btn {
+      flex: 1;
+  }
+  
   .topbar-title {
     font-size: 1.25rem;
   }
@@ -702,24 +735,20 @@ button:active {
   }
   
   .calculator-card {
-    /* Change to column layout on small screens */
     flex-direction: column;
     position: static; 
   }
   
   .flex.border-b-2 {
-    /* This is the SIDEBAR/Tab controls */
     width: 100%;
     min-width: 100%;
     border-right: none !important;
     border-bottom: 1px solid #222 !important;
     
-    /* Make the tabs scroll horizontally */
     flex-direction: row !important;
     padding: 0;
     overflow-x: auto;
     
-    /* Override sticky settings for mobile layout */
     position: static;
     top: 0;
     align-self: auto;
@@ -727,7 +756,6 @@ button:active {
     max-height: none;
     overflow-y: hidden;
     
-    /* Ensure no scrollbar appears unless content overflows */
     -webkit-overflow-scrolling: touch;
   }
   
@@ -737,7 +765,7 @@ button:active {
     border-left: none !important;
     border-bottom: 2px solid transparent !important;
     white-space: nowrap;
-    flex-shrink: 0; /* Prevent buttons from shrinking too much */
+    flex-shrink: 0;
   }
   
   .tab-btn.active {
