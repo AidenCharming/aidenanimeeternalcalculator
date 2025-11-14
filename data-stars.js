@@ -302,5 +302,25 @@ const starRarityDataByLevel = {
         { name: 'Mythical', percent: 0.0001 },
         { name: 'Phantom', percent: 0.000007 },
         { name: 'Supreme', percent: 0.0000002 }
+    ],
+    "27": [
+        { name: 'Common', percent: 0.312131 },
+        { name: 'Uncommon', percent: 0.312131 },
+        { name: 'Rare', percent: 0.312131 },
+        { name: 'Epic', percent: 0.06 },
+        { name: 'Legendary', percent: 0.0035 },
+        { name: 'Mythical', percent: 0.0001 },
+        { name: 'Phantom', percent: 0.000007 },
+        { name: 'Supreme', percent: 0.0000002 }
+    ],
+    "28": [
+        { name: 'Common', percent: 0.312131 },
+        { name: 'Uncommon', percent: 0.312131 },
+        { name: 'Rare', percent: 0.312131 },
+        { name: 'Epic', percent: 0.06 },
+        { name: 'Legendary', percent: 0.0035 },
+        { name: 'Mythical', percent: 0.0001 },
+        { name: 'Phantom', percent: 0.000007 },
+        { name: 'Supreme', percent: 0.0000002 }
     ]
 };
