@@ -445,7 +445,7 @@ const worldData = {
             "Roswald": 6.68E+186
         }
     },
-    "Placeholder": {
+    "Asfordo Academy": {
         "enemies": {
             "Euphy": "66.8E+180",
             "Reloush": "1.34e182",
