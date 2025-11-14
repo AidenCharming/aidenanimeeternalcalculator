@@ -241,7 +241,6 @@ function populateWorldChecklists(savedData) {
         uncheckAllWorldBtn.dataset.worldId = worldNameId; 
 
         worldToggleContainer.appendChild(checkAllWorldBtn);
-        worldToggleContainer.appendChild(uncheckAllWorldBtn);
         worldHeader.appendChild(worldToggleContainer);
         
         section.appendChild(worldHeader);
@@ -571,7 +570,12 @@ function setNumberFormat(format) {
                 let rawNumber = parseNumberInput(numEl.value) * multiplier;
                 
                 if (format === 'scientific') {
-                    numEl.value = rawNumber.toExponential(2).replace('e+', 'e');
+                    // Check if rawNumber is a valid finite number before calling toExponential
+                    if (isFinite(rawNumber)) {
+                        numEl.value = rawNumber.toExponential(2).replace('e+', 'e');
+                    } else {
+                        numEl.value = '0'; 
+                    }
                     denomInputEl.value = '';
                     denomValueEl.value = 1;
                 } else {
@@ -637,7 +641,7 @@ function loadNumberFormat() {
 function parseNumberInput(value) {
     if (typeof value !== 'string') return 0;
     
-    const parsed = Number(value.trim());
+    const parsed = Number(value.trim().replace(/[eE]\+/g, 'e')); // Normalize E+ to e
     return isFinite(parsed) ? parsed : 0;
 }
 
@@ -651,6 +655,12 @@ function getNumberValue(id) {
 function formatNumber(num) {
     if (num === 0) return '0';
     if (!isFinite(num)) return 'N/A';
+    
+    // Ensure num is a primitive number before calling methods
+    if (typeof num !== 'number') {
+        num = parseNumberInput(String(num));
+        if (!isFinite(num)) return 'N/A';
+    }
     
     if (currentNumberFormat === 'scientific') {
         if (num < 1000) return num.toLocaleString(undefined, { maximumFractionDigits: 2 });
@@ -1692,8 +1702,28 @@ function displayEnemyHealth() {
 
     if (world && world.enemies && world.enemies[selectedEnemy]) {
         const healthValue = world.enemies[selectedEnemy];
-        enemyHealthInput.value = healthValue;
-        enemyHealthDisplay.innerText = formatNumber(healthValue); 
+        
+        let displayValue;
+        let numericHealth;
+
+        // Check if the current format mode is 'scientific' AND the data stored is a string (meaning it might be a custom scientific format)
+        if (currentNumberFormat === 'scientific' && typeof healthValue === 'string') {
+            // Forcing display to the raw string value (e.g., "66.8E+180")
+            displayValue = healthValue.replace('E+', 'e').toLowerCase();
+            
+            // Still parse the number for actual calculations (used by calculateTTK)
+            numericHealth = parseNumberInput(healthValue);
+        } else {
+            // Normal path: Convert to number and format it
+            numericHealth = parseNumberInput(String(healthValue));
+            displayValue = formatNumber(numericHealth);
+        }
+
+        // Set the hidden input value to the raw number for calculations
+        enemyHealthInput.value = numericHealth;
+
+        // Display the determined value
+        enemyHealthDisplay.innerText = displayValue; 
     } else {
         enemyHealthInput.value = '';
         enemyHealthDisplay.innerText = 'Select an enemy to see health';
@@ -1990,7 +2020,8 @@ function calculateMaxStage() {
 
         for (let i = 1; i <= maxStages; i++) {
             const stageKey = `Room ${i}`;
-            let stageHealth = parseNumberInput(activity.enemies[stageKey]);
+            // Safely convert the enemy health (which could be a string) to a number
+            let stageHealth = parseNumberInput(String(activity.enemies[stageKey]));
 
             if (!stageHealth) {
                 break;
@@ -2041,7 +2072,8 @@ function calculateKeyRunTime() {
 
     for (let i = 1; i <= completedStage; i++) {
         const stageKey = `Room ${i}`;
-        let stageHealth = parseNumberInput(activity.enemies[stageKey]);
+        // Safely convert the enemy health (which could be a string) to a number
+        let stageHealth = parseNumberInput(String(activity.enemies[stageKey]));
         
         let enemyMultiplier = 1;
         if (activity.type === 'raid' && !singleEnemyRaids.includes(activityName)) {

@@ -627,25 +627,26 @@ const checklistDataByWorld = {
       { id: 'cq66', name: 'Obelisk Quest'}
     ]
   },
-      "Placeholder": {
+      "Asfordo Academy": {
       gachas: [
-          { id: 'c197', name: 'Placeholder' }
+          { id: 'c205', name: 'Geass Potential' },
+          { id: 'c206', name: 'Knightmare Frames' }
       ],
       progressions: [
-        { id: 'c204', name: 'Placeholder' }
+        { id: 'c207', name: 'Geass Leveling' },
+        { id: 'c207', name: 'Geass Evolver' }
       ],
       sssRank: [
-          { id: 'c204', name: 'Placeholder' }
+          { id: 'c204', name: 'Emperor Reloush' }
       ],
       auras: [
-        { id: 'c204', name: 'Placeholder' }
       ],
       accessories: [
-        { id: 'c204', name: 'Placeholder' }
       ],
     quests: [
-      { id: 'cq67', name: 'Key Quests'},
-      { id: 'cq68', name: 'Obelisk Quest'}
+      { id: 'cq69', name: 'Black Knights Quest'},
+      { id: 'cq70', name: 'Key Quests'},
+      { id: 'cq71', name: 'Obelisk Quest'}
     ]
   },
 };
