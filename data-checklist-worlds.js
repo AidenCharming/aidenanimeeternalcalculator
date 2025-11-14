@@ -7,7 +7,7 @@ const checklistDataByWorld = {
       {id: 'h2', name: 'Halloween Bag Leveling' },
       { id: 'h3', name: 'Ghost Leveling' },
       { id: 'h4', name: 'Overdrive Saw' },
-	  { id: 'h5', name: 'Energy Zombies' }
+	    { id: 'h5', name: 'Energy Zombies' }
     ],
     sssRank: [],
     auras: [
@@ -625,6 +625,27 @@ const checklistDataByWorld = {
     quests: [
       { id: 'cq65', name: 'Key Quests'},
       { id: 'cq66', name: 'Obelisk Quest'}
+    ]
+  },
+      "Placeholder": {
+      gachas: [
+          { id: 'c197', name: 'Placeholder' }
+      ],
+      progressions: [
+        { id: 'c204', name: 'Placeholder' }
+      ],
+      sssRank: [
+          { id: 'c204', name: 'Placeholder' }
+      ],
+      auras: [
+        { id: 'c204', name: 'Placeholder' }
+      ],
+      accessories: [
+        { id: 'c204', name: 'Placeholder' }
+      ],
+    quests: [
+      { id: 'cq67', name: 'Key Quests'},
+      { id: 'cq68', name: 'Obelisk Quest'}
     ]
   },
 };

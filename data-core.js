@@ -443,5 +443,18 @@ const worldData = {
 			"Bellatrice 20%": 1.33E+182,
             "Roswald": 6.68E+186
         }
+    },
+    "Placeholder": {
+        "enemies": {
+            "Placeholder": 3.10E+173,
+            "Placeholder": 3.10E+174,
+            "Placeholder": 5.58E+175,
+            "Placeholder": 6.02E+176,
+            "Placeholder": 6.34E+177,
+            "Placeholder": 6.68E+178,
+            "Placeholder": 6.68E+182,
+			"Placeholder 20%": 1.33E+182,
+            "Placeholder": 6.68E+186
+        }
     }
 };
