@@ -4,17 +4,18 @@ const checklistDataByWorld = {
       { id: 'h1', name: 'Halloween Gacha' }
     ],
     progressions: [
-      {id: 'h997', name: 'Halloween Bag Leveling' },
+      {id: 'h2', name: 'Halloween Bag Leveling' },
       { id: 'h3', name: 'Ghost Leveling' },
-      { id: 'h999', name: 'Overdrive Saw' }
+      { id: 'h4', name: 'Overdrive Saw' },
+	  { id: 'h5', name: 'Energy Zombies' }
     ],
     sssRank: [],
     auras: [
-      { id: 'h4', name: 'Candy Aura (Carotto)' },
-      { id: 'h5', name: 'Pumpkin Aura (Evil Bald Man)' },
-      { id: 'h6', name: 'Plague Aura (Pumpkinado)' },
-      { id: 'h7', name: 'Spookweb Aura (Bald Warlock)' },
-      { id: 'h8', name: 'Demonflame Aura (Spook-Suke)' }
+      { id: 'h6', name: 'Candy Aura (Carotto)' },
+      { id: 'h7', name: 'Pumpkin Aura (Evil Bald Man)' },
+      { id: 'h8', name: 'Plague Aura (Pumpkinado)' },
+      { id: 'h9', name: 'Spookweb Aura (Bald Warlock)' },
+      { id: 'h10', name: 'Demonflame Aura (Spook-Suke)' }
     ],
     accessories: [],
     quests: []
@@ -575,7 +576,6 @@ const checklistDataByWorld = {
         { id: 'c997', name: 'Orrs Pants (S)' },
     ],
     quests: [
-      { id: 'cq57', name: 'Demon Fruit Quest'},
       { id: 'cq58', name: 'Demon Fruit Quest'},
       { id: 'cq59', name: 'Key Quests'},
       { id: 'cq60', name: 'Obelisk Quest'}
