@@ -448,7 +448,7 @@ const worldData = {
     "Asfordo Academy": {
         "enemies": {
             "Euphy": "66.8E+180",
-            "Reloush": "1.34e182",
+            "Reloush": "1.34e183",
             "Ogi": "24e183",
             "Anja": "258e183",
             "Kalla": "2.73e186",
