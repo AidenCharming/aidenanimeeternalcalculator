@@ -447,13 +447,13 @@ const worldData = {
     },
     "Asfordo Academy": {
         "enemies": {
-            "Euphy": "66.8E+180",
+            "Euphy": "6.68e181",
             "Reloush": "1.34e183",
-            "Ogi": "24e183",
-            "Anja": "258e183",
+            "Ogi": "2.4e184",
+            "Anja": "2.58e185",
             "Kalla": "2.73e186",
             "Susaku": "2.88e187",
-            "Zero": "288e189",
+            "Zero": "2.88e191",
 			"Zero 20%": "57.6e189",
             "Emperor Reloush": "2.88e195"
         }
