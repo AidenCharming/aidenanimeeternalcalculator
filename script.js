@@ -29,6 +29,19 @@ const FAST_CPS = 5.88505;
 
 let currentNumberFormat = 'letters';
 
+function toEngineeringNotation(num) {
+    if (num === 0) return "0";
+    if (!isFinite(num)) return "N/A";
+    if (Math.abs(num) < 1000) return num.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    
+    let log10 = Math.log10(Math.abs(num));
+    let exponent = Math.floor(log10 / 3) * 3;
+    let mantissa = num / Math.pow(10, exponent);
+    
+    // parseFloat removes trailing zeros (e.g., "172.00" -> 172)
+    return parseFloat(mantissa.toFixed(2)) + 'e' + exponent;
+}
+
 function isWorldCompleted(worldSection) {
     const checkboxes = worldSection.querySelectorAll('.checklist-item input[type="checkbox"]');
     if (checkboxes.length === 0) return true; 
@@ -172,7 +185,6 @@ function updateAllWorldTitles(savedData) {
         const countEl = document.getElementById(elId);
         if (countEl) {
             countEl.innerText = `${categoryStats[cat].completed}/${categoryStats[cat].total}`;
-        } else {
         }
     });
 }
@@ -193,8 +205,7 @@ function saveChecklistData() {
         localStorage.setItem(CHECKLIST_SAVE_KEY, JSON.stringify(savedData));
         updateAllWorldTitles(savedData);
         filterChecklistItems(el['checklist-search']?.value, el['category-filter']?.value);
-    } catch (e) {
-    }
+    } catch (e) {}
 }
 
 function populateWorldChecklists(savedData) {
@@ -474,11 +485,6 @@ function toggleTheme() {
     }
 }
 
-/**
- * Takes a large number and finds the best matching letter denomination and base number.
- * @param {number} num The large number to split.
- * @returns {{value: number, name: string, multiplier: number}}
- */
 function splitNumberToDenom(num) {
     if (num === 0) return { value: 0, name: '', multiplier: 1 };
     
@@ -488,7 +494,6 @@ function splitNumberToDenom(num) {
     
     const reversedDenoms = [...denominations].sort((a, b) => b.value - a.value);
 
-    // Find the denomination that keeps the base value between 1 (inclusive) and 1000 (exclusive)
     for (const denom of reversedDenoms) {
         const baseValue = num / denom.value;
         if (baseValue >= 1 && baseValue < 1000) {
@@ -500,7 +505,6 @@ function splitNumberToDenom(num) {
         }
     }
     
-    // Fallback: If smaller than K, return the number itself. If larger than max, use max denom.
     const largestDenom = denominations[denominations.length - 1];
     if (num >= largestDenom.value) {
         const baseValue = num / largestDenom.value;
@@ -524,25 +528,20 @@ function setNumberFormat(format) {
     } catch (e) { }
 
     const scientificBtn = el['format-toggle-scientific'];
+    const engineeringBtn = el['format-toggle-engineering'];
     const lettersBtn = el['format-toggle-letters'];
 
-    if (scientificBtn && lettersBtn) {
-        if (format === 'scientific') {
-            scientificBtn.classList.add('active');
-            lettersBtn.classList.remove('active');
-        } else {
-            scientificBtn.classList.remove('active');
-            lettersBtn.classList.add('active');
-        }
-    }
+    if (scientificBtn) scientificBtn.classList.toggle('active', format === 'scientific');
+    if (engineeringBtn) engineeringBtn.classList.toggle('active', format === 'engineering');
+    if (lettersBtn) lettersBtn.classList.toggle('active', format === 'letters');
 
     const denomInputs = document.querySelectorAll('.grid-denom .relative');
-    const isScientific = format === 'scientific';
+    const isSimpleInput = format === 'scientific' || format === 'engineering';
 
     denomInputs.forEach(container => {
         const input = container.querySelector('input[type="text"]');
         if (input) {
-            container.style.display = isScientific ? 'none' : 'block';
+            container.style.display = isSimpleInput ? 'none' : 'block';
         }
     });
     
@@ -569,20 +568,32 @@ function setNumberFormat(format) {
                 let multiplier = previousFormat === 'letters' ? parseNumberInput(denomValueEl.value) : 1;
                 let rawNumber = parseNumberInput(numEl.value) * multiplier;
                 
-                if (format === 'scientific') {
-                    // Check if rawNumber is a valid finite number before calling toExponential
-                    if (isFinite(rawNumber)) {
+                if (isFinite(rawNumber)) {
+                    if (format === 'scientific') {
                         numEl.value = rawNumber.toExponential(2).replace('e+', 'e');
+                    } else if (format === 'engineering') {
+                         let log10 = Math.log10(Math.abs(rawNumber));
+                         if (Math.abs(rawNumber) < 1000 || !isFinite(log10)) {
+                             numEl.value = rawNumber;
+                         } else {
+                             let exponent = Math.floor(log10 / 3) * 3;
+                             let mantissa = rawNumber / Math.pow(10, exponent);
+                             // parseFloat here prevents trailing zeros (e.g., 172.00 -> 172)
+                             numEl.value = parseFloat(mantissa.toFixed(2)) + 'e' + exponent;
+                         }
                     } else {
-                        numEl.value = '0'; 
+                        const split = splitNumberToDenom(rawNumber);
+                        numEl.value = split.value;
+                        denomInputEl.value = split.name;
+                        denomValueEl.value = split.multiplier;
                     }
+                } else {
+                    numEl.value = '0'; 
+                }
+                
+                if (isSimpleInput) {
                     denomInputEl.value = '';
                     denomValueEl.value = 1;
-                } else {
-                    const split = splitNumberToDenom(rawNumber);
-                    numEl.value = split.value;
-                    denomInputEl.value = split.name;
-                    denomValueEl.value = split.multiplier;
                 }
             }
         });
@@ -601,34 +612,28 @@ function setNumberFormat(format) {
 function loadNumberFormat() {
     try {
         const savedFormat = localStorage.getItem('ae_number_format') || 'letters';
-        
         currentNumberFormat = savedFormat; 
         
         const scientificBtn = el['format-toggle-scientific'];
+        const engineeringBtn = el['format-toggle-engineering'];
         const lettersBtn = el['format-toggle-letters'];
         
-        if (scientificBtn && lettersBtn) {
-            if (currentNumberFormat === 'scientific') {
-                scientificBtn.classList.add('active');
-                lettersBtn.classList.remove('active');
-            } else {
-                scientificBtn.classList.remove('active');
-                lettersBtn.classList.add('active');
-            }
-        }
+        if (scientificBtn) scientificBtn.classList.toggle('active', currentNumberFormat === 'scientific');
+        if (engineeringBtn) engineeringBtn.classList.toggle('active', currentNumberFormat === 'engineering');
+        if (lettersBtn) lettersBtn.classList.toggle('active', currentNumberFormat === 'letters');
     } catch (e) {
         currentNumberFormat = 'letters';
     }
     
     const denomInputs = document.querySelectorAll('.grid-denom .relative');
-    const isScientific = currentNumberFormat === 'scientific';
+    const isSimpleInput = currentNumberFormat === 'scientific' || currentNumberFormat === 'engineering';
     
     denomInputs.forEach(container => {
         const input = container.querySelector('input[type="text"]');
         if (input) {
-            container.style.display = isScientific ? 'none' : 'block';
+            container.style.display = isSimpleInput ? 'none' : 'block';
             
-            if (isScientific) {
+            if (isSimpleInput) {
                 const hiddenValueInput = container.querySelector('input[type="hidden"]');
                 if (hiddenValueInput) {
                     hiddenValueInput.value = 1;
@@ -641,7 +646,7 @@ function loadNumberFormat() {
 function parseNumberInput(value) {
     if (typeof value !== 'string') return 0;
     
-    const parsed = Number(value.trim().replace(/[eE]\+/g, 'e')); // Normalize E+ to e
+    const parsed = Number(value.trim().replace(/[eE]\+/g, 'e')); 
     return isFinite(parsed) ? parsed : 0;
 }
 
@@ -656,18 +661,19 @@ function formatNumber(num) {
     if (num === 0) return '0';
     if (!isFinite(num)) return 'N/A';
     
-    // Ensure num is a primitive number before calling methods
     if (typeof num !== 'number') {
         num = parseNumberInput(String(num));
         if (!isFinite(num)) return 'N/A';
     }
     
+    if (Math.abs(num) < 1000) return num.toLocaleString(undefined, { maximumFractionDigits: 2 });
+
     if (currentNumberFormat === 'scientific') {
-        if (num < 1000) return num.toLocaleString(undefined, { maximumFractionDigits: 2 });
         return num.toExponential(2).replace('e+', 'e');
+    } else if (currentNumberFormat === 'engineering') {
+        return toEngineeringNotation(num);
     }
     
-    if (num < 1000) return num.toLocaleString(undefined, { maximumFractionDigits: 2 });
     const reversedDenominations = typeof denominations !== 'undefined' ? [...denominations].reverse() : [];
     for (const denom of reversedDenominations) {
         if (denom.value > 1 && num >= denom.value) {
@@ -1702,27 +1708,20 @@ function displayEnemyHealth() {
 
     if (world && world.enemies && world.enemies[selectedEnemy]) {
         const healthValue = world.enemies[selectedEnemy];
-        
         let displayValue;
         let numericHealth;
 
-        // Check if the current format mode is 'scientific' AND the data stored is a string (meaning it might be a custom scientific format)
-        if (currentNumberFormat === 'scientific' && typeof healthValue === 'string') {
-            // Forcing display to the raw string value (e.g., "66.8E+180")
-            displayValue = healthValue.replace('E+', 'e').toLowerCase();
-            
-            // Still parse the number for actual calculations (used by calculateTTK)
+        const isSimpleFormat = currentNumberFormat === 'scientific' || currentNumberFormat === 'engineering';
+
+        if (isSimpleFormat && typeof healthValue === 'string') {
             numericHealth = parseNumberInput(healthValue);
+            displayValue = formatNumber(numericHealth);
         } else {
-            // Normal path: Convert to number and format it
             numericHealth = parseNumberInput(String(healthValue));
             displayValue = formatNumber(numericHealth);
         }
 
-        // Set the hidden input value to the raw number for calculations
         enemyHealthInput.value = numericHealth;
-
-        // Display the determined value
         enemyHealthDisplay.innerText = displayValue; 
     } else {
         enemyHealthInput.value = '';
@@ -1934,7 +1933,7 @@ function calculateStarCalc() {
 
 async function loadAllData() {
     try {
-        const response = await fetch('activity-bundle.json?v=V_CACHE_BUST');
+        const response = await fetch('activity-bundle.json?v=6.0');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -2020,7 +2019,6 @@ function calculateMaxStage() {
 
         for (let i = 1; i <= maxStages; i++) {
             const stageKey = `Room ${i}`;
-            // Safely convert the enemy health (which could be a string) to a number
             let stageHealth = parseNumberInput(String(activity.enemies[stageKey]));
 
             if (!stageHealth) {
@@ -2072,7 +2070,6 @@ function calculateKeyRunTime() {
 
     for (let i = 1; i <= completedStage; i++) {
         const stageKey = `Room ${i}`;
-        // Safely convert the enemy health (which could be a string) to a number
         let stageHealth = parseNumberInput(String(activity.enemies[stageKey]));
         
         let enemyMultiplier = 1;
@@ -2662,10 +2659,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const formatToggleScientific = el['format-toggle-scientific'];
+    const formatToggleEngineering = el['format-toggle-engineering'];
     const formatToggleLetters = el['format-toggle-letters'];
     
     if (formatToggleScientific) {
         formatToggleScientific.addEventListener('click', () => setNumberFormat('scientific'));
+    }
+    if (formatToggleEngineering) {
+        formatToggleEngineering.addEventListener('click', () => setNumberFormat('engineering'));
     }
     if (formatToggleLetters) {
         formatToggleLetters.addEventListener('click', () => setNumberFormat('letters'));
