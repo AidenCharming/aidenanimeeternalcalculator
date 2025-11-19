@@ -38,7 +38,6 @@ function toEngineeringNotation(num) {
     let exponent = Math.floor(log10 / 3) * 3;
     let mantissa = num / Math.pow(10, exponent);
     
-    // parseFloat removes trailing zeros (e.g., "172.00" -> 172)
     return parseFloat(mantissa.toFixed(2)) + 'e' + exponent;
 }
 
@@ -2571,6 +2570,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[id]').forEach(element => {
         el[element.id] = element;
     });
+    
+    const isLocal = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
+    if (!isLocal) {
+        ['tab-time-to-energy', 'tab-lootcalc'].forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) btn.style.display = 'none';
+        });
+    }
 
     const lootFarmingModeContainer = el['loot-farming-mode-container'];
     if (lootFarmingModeContainer) {
