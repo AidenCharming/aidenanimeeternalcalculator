@@ -209,7 +209,12 @@ body {
 }
 
 body.game-theme {
-  background: url('background.webp') center/cover no-repeat fixed, #0a0a0a;
+  background-color: #1a1a2e; /* Fallback color */
+  background-image: url('background.webp');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 body.blue-theme {

@@ -2573,7 +2573,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const isLocal = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
     if (!isLocal) {
-        ['tab-time-to-energy', 'tab-lootcalc'].forEach(id => {
+        ['tab-time-to-energy'].forEach(id => {
             const btn = document.getElementById(id);
             if (btn) btn.style.display = 'none';
         });
