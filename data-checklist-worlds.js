@@ -634,10 +634,10 @@ const checklistDataByWorld = {
       ],
       progressions: [
         { id: 'c207', name: 'Geass Leveling' },
-        { id: 'c207', name: 'Geass Evolver' }
+        { id: 'c208', name: 'Geass Evolver' }
       ],
       sssRank: [
-          { id: 'c204', name: 'Emperor Reloush' }
+          { id: 'c209', name: 'Emperor Reloush' }
       ],
       auras: [
       ],
@@ -647,6 +647,29 @@ const checklistDataByWorld = {
       { id: 'cq69', name: 'Black Knights Quest'},
       { id: 'cq70', name: 'Key Quests'},
       { id: 'cq71', name: 'Obelisk Quest'}
+    ]
+  },
+        "Science Village": {
+      gachas: [
+          { id: 'c210', name: 'IQ' },
+          { id: 'c211', name: 'Scientific Weapons' }
+      ],
+      progressions: [
+        { id: 'c213', name: 'Scientific Tools Crafting' },
+        { id: 'c214', name: 'Science Material Updgrades (100)' }
+      ],
+      sssRank: [
+          { id: 'c215', name: 'Tsukaro' }
+      ],
+      auras: [
+        { id: 'c216', name: 'Zero Cape (SS)' },
+        { id: 'c217', name: 'Zero Mask (SS)' },
+      ],
+      accessories: [
+      ],
+    quests: [
+      { id: 'cq72', name: 'Key Quests'},
+      { id: 'cq73', name: 'Obelisk Quest'}
     ]
   },
 };
