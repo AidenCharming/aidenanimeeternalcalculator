@@ -1260,143 +1260,123 @@ function calculateEnergyETA() {
     }
     saveETAData();
 }
-
 function calculateTimeToEnergy() {
     if (!el.timeToEnergyResult || typeof boostItems === 'undefined') return;
 
+    // ... (Step 1: Base Production calculation remains the same) ...
     const isFastClicker = el.clickerSpeedTTE ? el.clickerSpeedTTE.checked : false;
+    const clicksPerSecond = isFastClicker ? FAST_CPS : SLOW_CPS;
 
     const currentEnergyValue = getNumberValue('currentEnergyTTE');
     const currentEnergyDenom = currentNumberFormat === 'letters' ? (el.currentEnergyTTEDenominationValue ? (parseFloat(el.currentEnergyTTEDenominationValue.value) || 1) : 1) : 1;
-    const currentEnergy = currentEnergyValue * currentEnergyDenom;
+    const startEnergy = currentEnergyValue * currentEnergyDenom;
 
     const energyPerClickValue = getNumberValue('energyPerClickTTE');
     const energyPerClickDenom = currentNumberFormat === 'letters' ? (el.energyPerClickTTEDenominationValue ? (parseFloat(el.energyPerClickTTEDenominationValue.value) || 1) : 1) : 1;
-    const baseEnergyPerClick = energyPerClickValue * energyPerClickDenom;
+    const rawBasePPC = energyPerClickValue * energyPerClickDenom;
 
-    const effectiveEnergyPerClick = getEffectiveEnergyPerClick(
-        baseEnergyPerClick, 
+    const effectivePPC = getEffectiveEnergyPerClick(
+        rawBasePPC, 
         'energyCriticalChanceTTE', 
         'criticalEnergyTTE'
     );
 
+    const baseEPS = effectivePPC * clicksPerSecond;
+
+    // ... (Step 2: Time Target remains the same) ...
     const timeInHours = getNumberValue('timeToReturnSelect');
     const timeInMinutes = getNumberValue('timeToReturnSelectMinutes');
-    const targetTimeInSeconds = (timeInHours * 3600) + (timeInMinutes * 60);
+    const targetDuration = (timeInHours * 3600) + (timeInMinutes * 60);
 
-    const clicksPerSecond = isFastClicker ? FAST_CPS : SLOW_CPS;
-    const baseEnergyPerSecond = effectiveEnergyPerClick * clicksPerSecond;
-
-    const returnTimeEl = el.timeToEnergyReturnTime;
     const resultEl = el.timeToEnergyResult;
-    const tableBody = el.boostSimulationTableBody;
+    const returnTimeEl = el.timeToEnergyReturnTime;
 
-    if (baseEnergyPerSecond <= 0 || targetTimeInSeconds <= 0) {
-        resultEl.innerText = formatNumber(currentEnergy);
+    if (baseEPS <= 0 || targetDuration <= 0) {
+        resultEl.innerText = formatNumber(startEnergy);
         if (returnTimeEl) returnTimeEl.innerText = "Select a time";
-        if (tableBody) tableBody.innerHTML = '';
+        if (el.boostSimulationTableBody) el.boostSimulationTableBody.innerHTML = '';
         saveTimeToEnergyData();
         return;
     }
 
-    
-    const allActiveBoosts = [];
-    boostItems.filter(item => item.type === 'energy').forEach(item => {
-        const hours = getNumberValue(`boost-${item.id}-hours`);
-        const minutes = getNumberValue(`boost-${item.id}-minutes`);
-        const duration = (hours * 3600) + (minutes * 60);
+    // --- 3. Build Priority Queues (Logic remains same) ---
+    const potionPriority = ['spooky-energy-potion', 'energy-potion', 'small-potion'];
+    const foodPriority = ['energy-macaron', 'chocolate-bar'];
 
-        if (duration > 0) {
-            allActiveBoosts.push({
-                id: item.id,
-                multiplier: item.multiplier,
-                duration: duration
-            });
-        }
-    });
+    const buildQueue = (priorityList) => {
+        let queue = [];
+        priorityList.forEach(id => {
+            const itemData = boostItems.find(b => b.id === id);
+            if (!itemData) return;
 
-    const primaryChainIds = ['spooky-energy-potion', 'energy-potion', 'small-potion'];
-    const secondaryChainIds = ['energy-macaron', 'chocolate-bar'];
+            const h = getNumberValue(`boost-${id}-hours`);
+            const m = getNumberValue(`boost-${id}-minutes`);
+            const duration = (h * 3600) + (m * 60);
 
-    const calculateEnergyForDuration = (targetDuration) => {
-        let currentTotalEnergyGained = 0;
-        let remainingDuration = targetDuration;
-        
-        const primaryQueue = allActiveBoosts.filter(b => primaryChainIds.includes(b.id))
-                                         .sort((a, b) => primaryChainIds.indexOf(a.id) - primaryChainIds.indexOf(b.id));
-        
-        const secondaryQueue = allActiveBoosts.filter(b => secondaryChainIds.includes(b.id))
-                                           .sort((a, b) => secondaryChainIds.indexOf(a.id) - secondaryChainIds.indexOf(b.id));
-
-        const primaryRemaining = new Map(primaryQueue.map(b => [b.id, b.duration]));
-        const secondaryRemaining = new Map(secondaryQueue.map(b => [b.id, b.duration]));
-
-        while (remainingDuration > 0 && (primaryQueue.length > 0 || secondaryQueue.length > 0)) {
-            
-            const currentPrimary = primaryQueue.length > 0 ? primaryQueue[0] : null;
-            const currentSecondary = secondaryQueue.length > 0 ? secondaryQueue[0] : null;
-
-            let currentPrimaryMultiplier = currentPrimary ? currentPrimary.multiplier : 1.0;
-            let currentSecondaryMultiplier = currentSecondary ? currentSecondary.multiplier : 1.0;
-            
-            let segmentDuration = remainingDuration;
-
-            if (currentPrimary) {
-                segmentDuration = Math.min(segmentDuration, primaryRemaining.get(currentPrimary.id));
+            if (duration > 0) {
+                queue.push({
+                    id: id,
+                    multiplier: itemData.multiplier, // Uses 1.25 / 1.10
+                    remaining: duration
+                });
             }
-            if (currentSecondary) {
-                segmentDuration = Math.min(segmentDuration, secondaryRemaining.get(currentSecondary.id));
-            }
-
-            const totalMultiplier = currentPrimaryMultiplier * currentSecondaryMultiplier;
-            const energyInSegment = baseEnergyPerSecond * totalMultiplier * segmentDuration;
-            currentTotalEnergyGained += energyInSegment;
-            
-            remainingDuration -= segmentDuration;
-
-            if (currentPrimary) {
-                const newTime = primaryRemaining.get(currentPrimary.id) - segmentDuration;
-                primaryRemaining.set(currentPrimary.id, newTime);
-                if (newTime <= 0) {
-                    primaryQueue.shift();
-                }
-            }
-            if (currentSecondary) {
-                const newTime = secondaryRemaining.get(currentSecondary.id) - segmentDuration;
-                secondaryRemaining.set(currentSecondary.id, newTime);
-                if (newTime <= 0) {
-                    secondaryQueue.shift();
-                }
-            }
-        }
-        
-        if (remainingDuration > 0) {
-            currentTotalEnergyGained += baseEnergyPerSecond * 1.0 * remainingDuration;
-        }
-
-        return currentEnergy + currentTotalEnergyGained;
+        });
+        return queue;
     };
 
+    let potionQueue = buildQueue(potionPriority);
+    let foodQueue = buildQueue(foodPriority);
 
-    const finalTotalEnergy = calculateEnergyForDuration(targetTimeInSeconds);
+    // --- 4. Run Simulation (Multiplicative Logic) ---
+    let accumulatedEnergy = 0;
+    let timeElapsed = 0;
 
-    resultEl.innerText = formatNumber(finalTotalEnergy);
+    while (timeElapsed < targetDuration) {
+        // Defaults are 1.0 (Neutral Multiplier)
+        const currentPotion = potionQueue.length > 0 ? potionQueue[0] : { multiplier: 1.0, remaining: Infinity };
+        const currentFood = foodQueue.length > 0 ? foodQueue[0] : { multiplier: 1.0, remaining: Infinity };
+
+        const pMult = currentPotion.multiplier;
+        const fMult = currentFood.multiplier; // Now 1.25, not 0.25
+
+        // Determine segment duration
+        const timeRemainingInSim = targetDuration - timeElapsed;
+        const stepDuration = Math.min(
+            timeRemainingInSim,
+            currentPotion.remaining,
+            currentFood.remaining
+        );
+
+        // CORRECT MATH: Multiplicative
+        // Example: Base * 2.0 * 1.25 = Base * 2.5
+        const totalMultiplier = pMult * fMult;
+        
+        const segmentEnergy = baseEPS * totalMultiplier * stepDuration;
+        accumulatedEnergy += segmentEnergy;
+
+        // Update State
+        timeElapsed += stepDuration;
+
+        if (currentPotion.remaining !== Infinity) {
+            currentPotion.remaining -= stepDuration;
+            if (currentPotion.remaining <= 0.1) potionQueue.shift();
+        }
+        if (currentFood.remaining !== Infinity) {
+            currentFood.remaining -= stepDuration;
+            if (currentFood.remaining <= 0.1) foodQueue.shift();
+        }
+    }
+
+    // --- 5. Render Results ---
+    const finalTotal = startEnergy + accumulatedEnergy;
+    resultEl.innerText = formatNumber(finalTotal);
 
     if (returnTimeEl) {
         const now = new Date();
-        const returnTime = new Date(now.getTime() + targetTimeInSeconds * 1000);
-        const returnString = returnTime.toLocaleString('en-US', { 
-            month: 'short', 
-            day: 'numeric', 
-            hour: 'numeric', 
-            minute: '2-digit', 
-            hour12: true 
-        });
-        returnTimeEl.innerText = `Return on: ${returnString}`;
-    }
-    
-    if (tableBody) {
-        tableBody.innerHTML = ''; 
+        const arrival = new Date(now.getTime() + targetDuration * 1000);
+        returnTimeEl.innerText = `Return on: ${arrival.toLocaleString('en-US', { 
+            month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true 
+        })}`;
     }
 
     saveTimeToEnergyData();
@@ -2570,14 +2550,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[id]').forEach(element => {
         el[element.id] = element;
     });
-    
-    const isLocal = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
-    if (!isLocal) {
-        ['tab-time-to-energy'].forEach(id => {
-            const btn = document.getElementById(id);
-            if (btn) btn.style.display = 'none';
-        });
-    }
 
     const lootFarmingModeContainer = el['loot-farming-mode-container'];
     if (lootFarmingModeContainer) {
