@@ -1421,35 +1421,36 @@ function calculateLootDrops() {
     }
     
     const timeToCompleteKill = rawTimePerKill + LOOT_KILL_OVERHEAD;
-    
     const respawnLimitPerKill = LOOT_RESPAWN_DELAY / spotMultiplier;
-
     const timePerCycle = Math.max(timeToCompleteKill, respawnLimitPerKill);
-    
     const effectiveKillsPerSecond = 1 / timePerCycle;
 
     const avgTokenDropQuantity = (tokenDropMin + tokenDropMax) / 2;
 
-    const avgTokensPerKill_Final = 
-        avgTokenDropQuantity * tokenMultiplier * baseTokenRate * spotMultiplier;
+    // --- Raw Rates (Theoretical Maximums) ---
+    const rawTokensPerSecond = effectiveKillsPerSecond * avgTokenDropQuantity * tokenMultiplier * baseTokenRate * spotMultiplier;
+    const rawSpecialDropsPerSecond = effectiveKillsPerSecond * 1 * specialDropRate * spotMultiplier;
 
-    const tokensPerSecond = effectiveKillsPerSecond * avgTokensPerKill_Final;
-
-    const avgSpecialDropsPerKill_Final = 
-        1 * specialDropRate * spotMultiplier;
+    // --- REALITY FACTOR ADJUSTMENT (The Fix) ---
+    // We apply the 2.8 divisor HERE so it applies to BOTH calculations equally.
+    const REALITY_FACTOR = 2.8;
     
-    const specialDropsPerSecond = effectiveKillsPerSecond * avgSpecialDropsPerKill_Final;
+    const effectiveTokensPerSecond = rawTokensPerSecond / REALITY_FACTOR;
+    const effectiveSpecialDropsPerSecond = rawSpecialDropsPerSecond / REALITY_FACTOR;
 
-    let totalTokensEstimate = tokensPerSecond * targetTimeInSeconds / 2.8;
-    let totalSpecialDropsEstimate = specialDropsPerSecond * targetTimeInSeconds / 2.8;
+    // 1. Calculate Totals based on Effective Rate
+    let totalTokensEstimate = effectiveTokensPerSecond * targetTimeInSeconds;
+    let totalSpecialDropsEstimate = effectiveSpecialDropsPerSecond * targetTimeInSeconds;
     
+    // 2. Calculate Time to Target based on Effective Rate
     let timeToTargetTokens = 0;
-    if (tokensPerSecond > 0) {
-        timeToTargetTokens = targetTokenCount / tokensPerSecond;
+    if (effectiveTokensPerSecond > 0) {
+        timeToTargetTokens = targetTokenCount / effectiveTokensPerSecond;
     } else if (targetTokenCount > 0) {
         timeToTargetTokens = Infinity;
     }
 
+    // --- Update UI ---
     if (el.lootTokensResult) {
         el.lootTokensResult.innerText = formatNumber(totalTokensEstimate);
     }
