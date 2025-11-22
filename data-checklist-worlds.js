@@ -642,6 +642,8 @@ const checklistDataByWorld = {
       auras: [
       ],
       accessories: [
+        { id: 'c210', name: 'Zero Cape (SS)' },
+        { id: 'c211', name: 'Zero Mask (SS)' },
       ],
     quests: [
       { id: 'cq69', name: 'Black Knights Quest'},
@@ -651,19 +653,17 @@ const checklistDataByWorld = {
   },
         "Science Village": {
       gachas: [
-          { id: 'c210', name: 'IQ' },
-          { id: 'c211', name: 'Scientific Weapons' }
+          { id: 'c212', name: 'IQ' },
+          { id: 'c213', name: 'Scientific Weapons' }
       ],
       progressions: [
-        { id: 'c213', name: 'Scientific Tools Crafting' },
-        { id: 'c214', name: 'Science Material Updgrades (100)' }
+        { id: 'c214', name: 'Scientific Tools Crafting' },
+        { id: 'c215', name: 'Science Material Updgrades (100)' }
       ],
       sssRank: [
-          { id: 'c215', name: 'Tsukaro' }
+          { id: 'c216', name: 'Tsukaro' }
       ],
       auras: [
-        { id: 'c216', name: 'Zero Cape (SS)' },
-        { id: 'c217', name: 'Zero Mask (SS)' },
       ],
       accessories: [
       ],
