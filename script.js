@@ -322,26 +322,33 @@ function filterChecklistItems(searchTerm = '', categoryFilter = '') {
     });
 }
 
-function switchTab(activeTab) {
-    tabs.forEach(tab => {
-        const panel = el[`panel-${tab}`]; 
-        const button = el[`tab-${tab}`];
-        if (panel && button) {
-            if (tab === activeTab) {
-                panel.classList.remove('hidden');
-                button.classList.add('active');
-                if (tab === 'alerts') {
-                    startCountdownDisplay();
-                }
-            } else {
-                panel.classList.add('hidden');
-                button.classList.remove('active');
-                if (tab === 'alerts') {
-                    stopCountdownDisplay();
+    function switchTab(activeTab) {
+        tabs.forEach(tab => {
+            const panel = el[`panel-${tab}`]; 
+            const button = el[`tab-${tab}`];
+            if (panel && button) {
+                if (tab === activeTab) {
+                    panel.classList.remove('hidden');
+                    button.classList.add('active');
+                    if (tab === 'alerts') {
+                        startCountdownDisplay();
+                    }
+                } else {
+                    panel.classList.add('hidden');
+                    button.classList.remove('active');
+                    if (tab === 'alerts') {
+                        stopCountdownDisplay();
+                    }
                 }
             }
-        }
     });
+    
+    const mobileNav = document.getElementById('mobile-nav-select');
+    if (mobileNav && mobileNav.value !== activeTab) {
+        mobileNav.value = activeTab;
+    }
+    
+    // 3. Handle Alerts/Flashing
     if (activeTab === 'alerts' || document.visibilityState === 'visible') {
         stopTabFlashing();
     }
@@ -2083,6 +2090,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[id]').forEach(element => {
         el[element.id] = element;
     });
+    const mobileNavSelect = el['mobile-nav-select'];
+    if (mobileNavSelect) {
+        mobileNavSelect.addEventListener('change', (e) => {
+            switchTab(e.target.value);
+        });
+    }
     const lootFarmingModeContainer = el['loot-farming-mode-container'];
     if (lootFarmingModeContainer) {
         lootFarmingModeContainer.addEventListener('click', (e) => {

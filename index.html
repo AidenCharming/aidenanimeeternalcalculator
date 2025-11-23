@@ -79,14 +79,32 @@
             <div class="flex border-b-2 border-gray-700 mb-6" id="tab-controls">
                 <button id="tab-rankup" class="tab-btn active" data-tab="rankup">Rank Up</button>
                 <button id="tab-eta" class="tab-btn" data-tab="eta">Target Energy ETA</button>
+                <button id="tab-time-to-energy" class="tab-btn" data-tab="time-to-energy">Time to Energy</button>
+                <button id="tab-lootcalc" class="tab-btn" data-tab="lootcalc">Loot Calc</button>
                 <button id="tab-ttk" class="tab-btn" data-tab="ttk">Time to Kill</button>
                 <button id="tab-raid" class="tab-btn" data-tab="raid">Raids / Dungeons</button>
-                <button id="tab-lootcalc" class="tab-btn" data-tab="lootcalc">Loot Calc</button>
+                <button id="tab-alerts" class="tab-btn" data-tab="alerts">Dungeon Alerts</button>
                 <button id="tab-star" class="tab-btn" data-tab="star">Star Calc</button> 
                 <button id="tab-checklist" class="tab-btn" data-tab="checklist">Checklist</button>
-                <button id="tab-time-to-energy" class="tab-btn" data-tab="time-to-energy">Time to Energy (TESTING report any bugs to AidenCharming's DMs on discord)</button>
-                <button id="tab-alerts" class="tab-btn" data-tab="alerts">Dungeon Alerts</button>
             </div>
+
+            <div class="mobile-nav-wrapper" id="mobile-tab-controls">
+                <label for="mobile-nav-select" class="input-label-small" style="margin-bottom: 5px;">Select Calculator Tool</label>
+                <div class="relative">
+                    <select id="mobile-nav-select" class="select-field w-full rounded-lg" style="padding: 12px; font-size: 16px; font-weight: 600; border-color: #7c3aed;">
+                        <option value="rankup">Rank Up</option>
+                        <option value="eta">Target Energy ETA</option>
+                        <option value="time-to-energy">Time to Energy</option>
+                        <option value="lootcalc">Loot Calc</option>
+                        <option value="ttk">Time to Kill</option>
+                        <option value="raid">Raids / Dungeons</option>
+                        <option value="alerts">Dungeon Alerts</option>
+                        <option value="star">Star Calc</option>
+                        <option value="checklist">Checklist</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="content-wrapper">
             <div id="panel-rankup">
                 <div class="max-w-xl space-y-6"> 
