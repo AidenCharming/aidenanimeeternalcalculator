@@ -2511,5 +2511,25 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         loadChecklistData();
+    const handleScroll = () => {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+        const threshold = 20;
+
+        if (scrollTop > threshold) {
+            document.body.classList.add('scrolled');
+        } else {
+            document.body.classList.remove('scrolled');
+        }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('touchmove', handleScroll, { passive: true });
+
+    setTimeout(() => {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+        if (scrollTop <= 20 && window.innerWidth <= 768) {
+            document.body.classList.add('scrolled');
+        }
+    }, 5000);
     } else {}
 });

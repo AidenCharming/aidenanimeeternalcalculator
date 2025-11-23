@@ -1,3 +1,4 @@
+/* [Previous Styles - Unchanged] */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -178,6 +179,7 @@ body.blue-theme header {
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
+  padding-bottom: 100px !important;
 }
 .hidden {
   display: none !important;
@@ -576,9 +578,14 @@ button:active {
   .mobile-nav-wrapper {
     display: block !important;
   }
-  .content-wrapper {
+  /* Fix for mobile wrapper visibility on scroll */
+  /* Move content padding management to body scroll state if needed, 
+     but header sticky behavior handles it generally. 
+  */
+  /* .content-wrapper {
     padding: 20px 15px !important;
-  }
+  } */ /* Removing this as it might conflict if header height changes dynamically */
+
   #mobile-nav-select option {
     color: #fff;
     background: #1a1a1a;
@@ -643,5 +650,59 @@ button:active {
   .toggle-btn {
     flex: 1;
     text-align: center;
+  }
+
+  /* Collapsing Header Animation */
+  #collapsible-header-info {
+    max-height: 500px;
+    opacity: 1;
+    margin-bottom: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: top;
+    overflow: hidden;
+  }
+
+  body.scrolled #collapsible-header-info {
+    max-height: 0px !important;
+    opacity: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: scaleY(0);
+  }
+    
+  body.scrolled .topbar-content {
+    gap: 0 !important; 
+  }
+    
+  body.scrolled .topbar-right {
+    margin-top: 0 !important;
+  }
+    
+  body.scrolled .topbar {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom-color: #7c3aed;
+  }
+}
+
+/* New styles for the mobile nav inside header */
+.mobile-nav-wrapper {
+  display: none;
+  padding: 10px 0 0 0;
+  background: transparent;
+  border-bottom: none;
+  width: 100%;
+  margin-top: 10px;
+  border-top: 1px solid #333;
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    flex-direction: column;
+    height: auto;
+    padding-bottom: 12px; 
+  }
+  .mobile-nav-wrapper {
+      display: block !important;
   }
 }

@@ -594,7 +594,8 @@ const checklistDataByWorld = {
         { id: 'c182', name: 'Assassin Craft' },
       ],
       sssRank: [
-          { id: 'c183', name: 'Tagamura' }
+          { id: 'c183', name: 'Tagamura' },
+          { id: 'c184', name: 'Takemoto' }
       ],
       auras: [],
       accessories: [],
@@ -607,22 +608,22 @@ const checklistDataByWorld = {
   },
     "Re:Manor": {
       gachas: [
-          { id: 'c184', name: 'Spirit Pact' },
-          { id: 'c185', name: 'Witch Factor' },
-          { id: 'c186', name: 'Re:Spirit Pact' },
-          { id: 'c187', name: 'Re: Witch Token' },
-          { id: 'c188', name: 'Artifical Spirit Blessings' },
-          { id: 'c189', name: 'Gospel Curses' },
-          { id: 'c190', name: 'Witch Authority' }
+          { id: 'c185', name: 'Spirit Pact' },
+          { id: 'c186', name: 'Witch Factor' },
+          { id: 'c187', name: 'Re:Spirit Pact' },
+          { id: 'c188', name: 'Re: Witch Token' },
+          { id: 'c189', name: 'Artifical Spirit Blessings' },
+          { id: 'c190', name: 'Gospel Curses' },
+          { id: 'c191', name: 'Witch Authority' }
       ],
       progressions: [
       ],
       sssRank: [
-          { id: 'c191', name: 'Roswald' }
+          { id: 'c192', name: 'Roswald' }
       ],
       auras: [
-          { id: 'c192', name: 'Blue Oni Aura (C)' },
-          { id: 'c193', name: 'Pink Oni Aura (D)' }
+          { id: 'c193', name: 'Blue Oni Aura (C)' },
+          { id: 'c194', name: 'Pink Oni Aura (D)' }
       ],
       accessories: [],
     quests: [
@@ -632,21 +633,21 @@ const checklistDataByWorld = {
   },
       "Asfordo Academy": {
       gachas: [
-          { id: 'c194', name: 'Geass Potential' },
-          { id: 'c195', name: 'Knightmare Frames' }
+          { id: 'c195', name: 'Geass Potential' },
+          { id: 'c196', name: 'Knightmare Frames' }
       ],
       progressions: [
-        { id: 'c196', name: 'Geass Leveling' },
-        { id: 'c197', name: 'Geass Evolver' }
+        { id: 'c197', name: 'Geass Leveling' },
+        { id: 'c198', name: 'Geass Evolver' }
       ],
       sssRank: [
-          { id: 'c198', name: 'Emperor Reloush' }
+          { id: 'c199', name: 'Emperor Reloush' }
       ],
       auras: [
       ],
       accessories: [
-        { id: 'c199', name: 'Zero Cape (SS)' },
-        { id: 'c200', name: 'Zero Mask (SS)' },
+        { id: 'c200', name: 'Zero Cape (SS)' },
+        { id: 'c201', name: 'Zero Mask (SS)' },
       ],
     quests: [
       { id: 'cq66', name: 'Black Knights Quest'},
@@ -656,15 +657,15 @@ const checklistDataByWorld = {
   },
         "Science Village": {
       gachas: [
-          { id: 'c201', name: 'IQ' },
-          { id: 'c202', name: 'Scientific Weapons' }
+          { id: 'c202', name: 'IQ' },
+          { id: 'c203', name: 'Scientific Weapons' }
       ],
       progressions: [
-        { id: 'c203', name: 'Scientific Tools Crafting' },
-        { id: 'c204', name: 'Science Material Updgrades (100)' }
+        { id: 'c204', name: 'Scientific Tools Crafting' },
+        { id: 'c205', name: 'Science Material Updgrades (100)' }
       ],
       sssRank: [
-          { id: 'c205', name: 'Tsukaro' }
+          { id: 'c206', name: 'Tsukaro' }
       ],
       auras: [
       ],
