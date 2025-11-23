@@ -493,14 +493,14 @@ const checklistDataByWorld = {
       { id: 'c144', name: 'Shadow Arts Leveling (50)' }
     ],
     sssRank: [
-      { id: 'c150', name: 'Shadow' }
+      { id: 'c145', name: 'Shadow' }
     ],
     auras: [
-      { id: 'c160', name: 'Bloody Aura (SS)' }
+      { id: 'c146', name: 'Bloody Aura (SS)' }
     ],
     accessories: [
-      { id: 'c161', name: 'Neck Fur (D)' },
-      { id: 'c162', name: 'Crested Wingbands (B)' }
+      { id: 'c147', name: 'Neck Fur (D)' },
+      { id: 'c148', name: 'Crested Wingbands (B)' }
     ],
     quests: [
       { id: 'cq50', name: 'Hero License Quests'},
@@ -510,20 +510,20 @@ const checklistDataByWorld = {
   },
   "Z City": {
     gachas: [
-      { id: 'c163', name: 'Energy Threat Level' },
-      { id: 'c164', name: 'Punch Power' }
+      { id: 'c149', name: 'Energy Threat Level' },
+      { id: 'c150', name: 'Punch Power' }
     ],
     progressions: [
-      { id: 'c165', name: 'Energy Threat Leveling (50)' },
-      { id: 'c166', name: 'Punch Power Leveling (50)' },
-	  { id: 'c167', name: 'Hide N Punch (10)' },
+      { id: 'c151', name: 'Energy Threat Leveling (50)' },
+      { id: 'c152', name: 'Punch Power Leveling (50)' },
+	  { id: 'c153', name: 'Hide N Punch (10)' },
     ],
     sssRank: [
-      { id: 'c168', name: 'Galaxy Hunter' }
+      { id: 'c154', name: 'Galaxy Hunter' }
     ],
     auras: [],
     accessories: [
-      { id: 'c169', name: 'Red Hero Boots (S)' }
+      { id: 'c155', name: 'Red Hero Boots (S)' }
     ],
     quests: [
       { id: 'cq53', name: 'Key Quests'},
@@ -532,23 +532,23 @@ const checklistDataByWorld = {
   },
   "Great Tomb": {
     gachas: [
-      { id: 'c170', name: 'Adventurer Rank' },
-      { id: 'c171', name: 'Magic Tier' }
+      { id: 'c156', name: 'Adventurer Rank' },
+      { id: 'c157', name: 'Magic Tier' }
     ],
     progressions: [
-      { id: 'c172', name: 'Mana Growth (100)' },
-      { id: 'c173', name: 'Ultimate Cast (100)' },
-      { id: 'c174', name: 'Adventurer Level (50)' },
-      { id: 'c175', name: 'Magic Tier Level (50)' }
+      { id: 'c158', name: 'Mana Growth (100)' },
+      { id: 'c159', name: 'Ultimate Cast (100)' },
+      { id: 'c160', name: 'Adventurer Level (50)' },
+      { id: 'c161', name: 'Magic Tier Level (50)' }
     ],
     sssRank: [
-      { id: 'c176', name: 'Anz Ool Gawn' }
+      { id: 'c162', name: 'Anz Ool Gawn' }
     ],
     auras: [],
     accessories: [
-      { id: 'c177', name: 'Jalbathar Tail (Tomb Arena)' },
-      { id: 'c178', name: 'Jalbathar Mask (Tomb Arena)' },
-      { id: 'c179', name: 'Jalbathar Wings (Tomb Arena)' }
+      { id: 'c163', name: 'Jalbathar Tail (Tomb Arena)' },
+      { id: 'c164', name: 'Jalbathar Mask (Tomb Arena)' },
+      { id: 'c165', name: 'Jalbathar Wings (Tomb Arena)' }
     ],
     quests: [
       { id: 'cq55', name: 'Key Quests'},
@@ -557,119 +557,122 @@ const checklistDataByWorld = {
   },
   "Thriller Park": {
     gachas: [
-        { id: 'c180', name: 'Thriller Zombie' },
-        { id: 'c181', name: 'Nightmare Evolution' },
-        { id: 'c182', name: 'Zombie Crafts' },
-        { id: 'c183', name: 'Special Zombie' },
-        { id: 'c184', name: 'Zombie Booster' }
+        { id: 'c166', name: 'Thriller Zombie' },
+        { id: 'c167', name: 'Nightmare Evolution' },
+        { id: 'c168', name: 'Zombie Crafts' },
+        { id: 'c169', name: 'Special Zombie' },
+        { id: 'c170', name: 'Zombie Booster' }
     ],
     progressions: [
-        { id: 'c185', name: 'Special Zombie Crafting (10)' },
-        { id: 'c186', name: 'Special Zombie Fusion (2)' },
-        { id: 'c187', name: 'Demon Fruit Leveling (4)' }
+        { id: 'c171', name: 'Special Zombie Crafting (10)' },
+        { id: 'c172', name: 'Special Zombie Fusion (2)' },
+        { id: 'c173', name: 'Demon Fruit Leveling (4)' }
     ],
     sssRank: [
-        { id: 'c188', name: 'Gekar Morra' }
+        { id: 'c174', name: 'Gekar Morra' }
     ],
     auras: [],
     accessories: [
-        { id: 'c997', name: 'Orrs Pants (S)' },
+        { id: 'c175', name: 'Orrs Pants (S)' },
     ],
     quests: [
-      { id: 'cq58', name: 'Demon Fruit Quest'},
-      { id: 'cq59', name: 'Key Quests'},
-      { id: 'cq60', name: 'Obelisk Quest'}
+      { id: 'cq57', name: 'Demon Fruit Quest'},
+      { id: 'cq58', name: 'Key Quests'},
+      { id: 'cq59', name: 'Obelisk Quest'}
     ]
   },
   "Amusement Park": {
       gachas: [
-          { id: 'c189', name: 'Assasin Grade' },
-          { id: 'c190', name: 'Assasin Skill' }
+          { id: 'c176', name: 'Assasin Grade' },
+          { id: 'c177', name: 'Assasin Skill' }
       ],
       progressions: [
-        { id: 'c191', name: 'Assassin Energy (100)' },
-        { id: 'c192', name: 'Assassin Damage (100)' },
-        { id: 'c193', name: 'Assassin Critical Energy (10)' },
-        { id: 'c194', name: 'Assassin Critical Damage (10)' },
-        { id: 'c195', name: 'Assassin Craft' },
+        { id: 'c178', name: 'Assassin Energy (100)' },
+        { id: 'c179', name: 'Assassin Damage (100)' },
+        { id: 'c180', name: 'Assassin Critical Energy (10)' },
+        { id: 'c181', name: 'Assassin Critical Damage (10)' },
+        { id: 'c182', name: 'Assassin Craft' },
       ],
       sssRank: [
-          { id: 'c196', name: 'Tagamura' }
+          { id: 'c183', name: 'Tagamura' }
       ],
       auras: [],
       accessories: [],
     quests: [
-      { id: 'cq61', name: 'Assassin Quest'},
-      { id: 'cq62', name: 'Key Quests'},
-      { id: 'cq63', name: 'Obelisk Quest'},
-      { id: 'cq64', name: 'The Order Quest'}
+      { id: 'cq60', name: 'Assassin Quest'},
+      { id: 'cq61', name: 'Key Quests'},
+      { id: 'cq62', name: 'Obelisk Quest'},
+      { id: 'cq63', name: 'The Order Quest'}
     ]
   },
     "Re:Manor": {
       gachas: [
-          { id: 'c197', name: 'Spirit Pact' },
-          { id: 'c198', name: 'Witch Factor' },
-          { id: 'c199', name: 'Re:Spirit Pact' },
-          { id: 'c200', name: 'Re: Witch Token' },
-          { id: 'c201', name: 'Artifical Spirit Blessings' },
-          { id: 'c202', name: 'Gospel Curses' },
-          { id: 'c203', name: 'Witch Authority' }
+          { id: 'c184', name: 'Spirit Pact' },
+          { id: 'c185', name: 'Witch Factor' },
+          { id: 'c186', name: 'Re:Spirit Pact' },
+          { id: 'c187', name: 'Re: Witch Token' },
+          { id: 'c188', name: 'Artifical Spirit Blessings' },
+          { id: 'c189', name: 'Gospel Curses' },
+          { id: 'c190', name: 'Witch Authority' }
       ],
       progressions: [
       ],
       sssRank: [
-          { id: 'c204', name: 'Roswald' }
+          { id: 'c191', name: 'Roswald' }
       ],
-      auras: [],
+      auras: [
+          { id: 'c192', name: 'Blue Oni Aura (C)' },
+          { id: 'c193', name: 'Pink Oni Aura (D)' }
+      ],
       accessories: [],
     quests: [
-      { id: 'cq65', name: 'Key Quests'},
-      { id: 'cq66', name: 'Obelisk Quest'}
+      { id: 'cq64', name: 'Key Quests'},
+      { id: 'cq65', name: 'Obelisk Quest'}
     ]
   },
       "Asfordo Academy": {
       gachas: [
-          { id: 'c205', name: 'Geass Potential' },
-          { id: 'c206', name: 'Knightmare Frames' }
+          { id: 'c194', name: 'Geass Potential' },
+          { id: 'c195', name: 'Knightmare Frames' }
       ],
       progressions: [
-        { id: 'c207', name: 'Geass Leveling' },
-        { id: 'c208', name: 'Geass Evolver' }
+        { id: 'c196', name: 'Geass Leveling' },
+        { id: 'c197', name: 'Geass Evolver' }
       ],
       sssRank: [
-          { id: 'c209', name: 'Emperor Reloush' }
+          { id: 'c198', name: 'Emperor Reloush' }
       ],
       auras: [
       ],
       accessories: [
-        { id: 'c210', name: 'Zero Cape (SS)' },
-        { id: 'c211', name: 'Zero Mask (SS)' },
+        { id: 'c199', name: 'Zero Cape (SS)' },
+        { id: 'c200', name: 'Zero Mask (SS)' },
       ],
     quests: [
-      { id: 'cq69', name: 'Black Knights Quest'},
-      { id: 'cq70', name: 'Key Quests'},
-      { id: 'cq71', name: 'Obelisk Quest'}
+      { id: 'cq66', name: 'Black Knights Quest'},
+      { id: 'cq67', name: 'Key Quests'},
+      { id: 'cq68', name: 'Obelisk Quest'}
     ]
   },
         "Science Village": {
       gachas: [
-          { id: 'c212', name: 'IQ' },
-          { id: 'c213', name: 'Scientific Weapons' }
+          { id: 'c201', name: 'IQ' },
+          { id: 'c202', name: 'Scientific Weapons' }
       ],
       progressions: [
-        { id: 'c214', name: 'Scientific Tools Crafting' },
-        { id: 'c215', name: 'Science Material Updgrades (100)' }
+        { id: 'c203', name: 'Scientific Tools Crafting' },
+        { id: 'c204', name: 'Science Material Updgrades (100)' }
       ],
       sssRank: [
-          { id: 'c216', name: 'Tsukaro' }
+          { id: 'c205', name: 'Tsukaro' }
       ],
       auras: [
       ],
       accessories: [
       ],
     quests: [
-      { id: 'cq72', name: 'Key Quests'},
-      { id: 'cq73', name: 'Obelisk Quest'}
+      { id: 'cq69', name: 'Key Quests'},
+      { id: 'cq70', name: 'Obelisk Quest'}
     ]
   },
 };
