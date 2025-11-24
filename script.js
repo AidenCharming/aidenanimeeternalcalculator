@@ -19,7 +19,7 @@ const ORIGINAL_TITLE = document.title;
 const FLASH_TITLE = '[!!! DUNGEON READY !!!]';
 const FLASH_INTERVAL_MS = 1000;
 const CHECKLIST_SAVE_KEY = 'ae_checklist_progress';
-const LOOT_RESPAWN_DELAY = 3.0;
+const LOOT_RESPAWN_DELAY = 2.5;
 const LOOT_KILL_OVERHEAD = 0.5;
 const SLOW_CPS = 1.0919;
 const FAST_CPS = 5.88505;
@@ -86,11 +86,11 @@ function createChecklistItem(item, savedData) {
     return label;
 }
 
-function updateAllWorldTitles(savedData) {
+async function updateAllWorldTitles(savedData) {
     if (typeof checklistDataByWorld === 'undefined') return;
     if (!savedData) {
         try {
-            savedData = JSON.parse(localStorage.getItem(CHECKLIST_SAVE_KEY)) || {};
+            savedData = await localforage.getItem(CHECKLIST_SAVE_KEY) || {};
         } catch (e) {
             savedData = {};
         }
@@ -163,19 +163,21 @@ function updateAllWorldTitles(savedData) {
     });
 }
 
-function saveChecklistData() {
+async function saveChecklistData() {
     if (typeof checklistDataByWorld === 'undefined') return;
     try {
-        const savedData = {};
+        let savedData = await localforage.getItem(CHECKLIST_SAVE_KEY) || {};
         const checklistPanel = el['panel-checklist'];
         if (!checklistPanel) return;
         const checkboxes = checklistPanel.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach(cb => {
             if(cb.checked) {
                 savedData[cb.id] = true;
+            } else {
+                delete savedData[cb.id];
             }
         });
-        localStorage.setItem(CHECKLIST_SAVE_KEY, JSON.stringify(savedData));
+        await localforage.setItem(CHECKLIST_SAVE_KEY, savedData);
         updateAllWorldTitles(savedData);
         filterChecklistItems(el['checklist-search']?.value, el['category-filter']?.value);
     } catch (e) {}
@@ -255,15 +257,15 @@ function populateWorldChecklists(savedData) {
     }
 }
 
-function loadChecklistData() {
+async function loadChecklistData() {
     if (typeof checklistDataByWorld === 'undefined') return;
     try {
-        const savedData = JSON.parse(localStorage.getItem(CHECKLIST_SAVE_KEY)) || {};
+        const savedData = await localforage.getItem(CHECKLIST_SAVE_KEY) || {};
         populateWorldChecklists(savedData);
         updateAllWorldTitles(savedData);
-        const hideCompleted = localStorage.getItem('ae_checklist_hide_completed') === 'true';
+        const hideCompleted = await localforage.getItem('ae_checklist_hide_completed');
         if (el['hide-completed-checkbox']) {
-            el['hide-completed-checkbox'].checked = hideCompleted;
+            el['hide-completed-checkbox'].checked = (hideCompleted === 'true' || hideCompleted === true);
         }
         filterChecklistItems(el['checklist-search']?.value, el['category-filter']?.value);
     } catch (e) {
@@ -322,33 +324,30 @@ function filterChecklistItems(searchTerm = '', categoryFilter = '') {
     });
 }
 
-    function switchTab(activeTab) {
-        tabs.forEach(tab => {
-            const panel = el[`panel-${tab}`]; 
-            const button = el[`tab-${tab}`];
-            if (panel && button) {
-                if (tab === activeTab) {
-                    panel.classList.remove('hidden');
-                    button.classList.add('active');
-                    if (tab === 'alerts') {
-                        startCountdownDisplay();
-                    }
-                } else {
-                    panel.classList.add('hidden');
-                    button.classList.remove('active');
-                    if (tab === 'alerts') {
-                        stopCountdownDisplay();
-                    }
+function switchTab(activeTab) {
+    tabs.forEach(tab => {
+        const panel = el[`panel-${tab}`]; 
+        const button = el[`tab-${tab}`];
+        if (panel && button) {
+            if (tab === activeTab) {
+                panel.classList.remove('hidden');
+                button.classList.add('active');
+                if (tab === 'alerts') {
+                    startCountdownDisplay();
+                }
+            } else {
+                panel.classList.add('hidden');
+                button.classList.remove('active');
+                if (tab === 'alerts') {
+                    stopCountdownDisplay();
                 }
             }
+        }
     });
-    
     const mobileNav = document.getElementById('mobile-nav-select');
     if (mobileNav && mobileNav.value !== activeTab) {
         mobileNav.value = activeTab;
     }
-    
-    // 3. Handle Alerts/Flashing
     if (activeTab === 'alerts' || document.visibilityState === 'visible') {
         stopTabFlashing();
     }
@@ -399,18 +398,18 @@ function copyResult(elementId) {
     }
 }
 
-function toggleTheme() {
+async function toggleTheme() {
     const body = document.body;
-    const currentTheme = localStorage.getItem('ae_theme') || 'dark';
+    let currentTheme = await localforage.getItem('ae_theme') || 'dark';
     if (currentTheme === 'dark') {
         body.className = 'game-theme';
-        localStorage.setItem('ae_theme', 'game');
+        await localforage.setItem('ae_theme', 'game');
     } else if (currentTheme === 'game') {
         body.className = 'blue-theme';
-        localStorage.setItem('ae_theme', 'blue');
+        await localforage.setItem('ae_theme', 'blue');
     } else {
         body.className = '';
-        localStorage.setItem('ae_theme', 'dark');
+        await localforage.setItem('ae_theme', 'dark');
     }
 }
 
@@ -442,12 +441,12 @@ function splitNumberToDenom(num) {
     return { value: parseFloat(num.toFixed(2)), name: '', multiplier: 1 };
 }
 
-function setNumberFormat(format) {
+async function setNumberFormat(format) {
     if (format === currentNumberFormat) return;
     const previousFormat = currentNumberFormat;
     currentNumberFormat = format;
     try {
-        localStorage.setItem('ae_number_format', format);
+        await localforage.setItem('ae_number_format', format);
     } catch (e) { }
     const scientificBtn = el['format-toggle-scientific'];
     const engineeringBtn = el['format-toggle-engineering'];
@@ -520,9 +519,9 @@ function setNumberFormat(format) {
     calculateStarCalc();
 }
 
-function loadNumberFormat() {
+async function loadNumberFormat() {
     try {
-        const savedFormat = localStorage.getItem('ae_number_format') || 'letters';
+        const savedFormat = await localforage.getItem('ae_number_format') || 'letters';
         currentNumberFormat = savedFormat; 
         const scientificBtn = el['format-toggle-scientific'];
         const engineeringBtn = el['format-toggle-engineering'];
@@ -609,51 +608,51 @@ function debounce(func, delay) {
     };
 }
 
-function saveRankUpData() {
+async function saveRankUpData() {
     try {
-        if (el.rankSelect) localStorage.setItem('ae_rankSelect', el.rankSelect.value);
-        if (el.rankInput) localStorage.setItem('ae_rankInput', el.rankInput.value);
-        if (el.currentEnergy) localStorage.setItem('ae_currentEnergy', el.currentEnergy.value);
-        if (el.currentEnergyDenominationInput) localStorage.setItem('ae_currentEnergyDenomInput', el.currentEnergyDenominationInput.value);
-        if (el.currentEnergyDenominationValue) localStorage.setItem('ae_currentEnergyDenomValue', el.currentEnergyDenominationValue.value);
-        if (el.energyPerClick) localStorage.setItem('ae_energyPerClick', el.energyPerClick.value);
-        if (el.energyPerClickDenominationInput) localStorage.setItem('ae_energyPerClickDenomInput', el.energyPerClickDenominationInput.value);
-        if (el.energyPerClickDenominationValue) localStorage.setItem('ae_energyPerClickDenomValue', el.energyPerClickDenominationValue.value);
-        if (el.clickerSpeed) localStorage.setItem('ae_clickerSpeed', el.clickerSpeed.checked);
-        if (el.energyCriticalChance) localStorage.setItem('ae_rankup_critChance', el.energyCriticalChance.value);
-        if (el.criticalEnergy) localStorage.setItem('ae_rankup_critEnergy', el.criticalEnergy.value);
+        if (el.rankSelect) await localforage.setItem('ae_rankSelect', el.rankSelect.value);
+        if (el.rankInput) await localforage.setItem('ae_rankInput', el.rankInput.value);
+        if (el.currentEnergy) await localforage.setItem('ae_currentEnergy', el.currentEnergy.value);
+        if (el.currentEnergyDenominationInput) await localforage.setItem('ae_currentEnergyDenomInput', el.currentEnergyDenominationInput.value);
+        if (el.currentEnergyDenominationValue) await localforage.setItem('ae_currentEnergyDenomValue', el.currentEnergyDenominationValue.value);
+        if (el.energyPerClick) await localforage.setItem('ae_energyPerClick', el.energyPerClick.value);
+        if (el.energyPerClickDenominationInput) await localforage.setItem('ae_energyPerClickDenomInput', el.energyPerClickDenominationInput.value);
+        if (el.energyPerClickDenominationValue) await localforage.setItem('ae_energyPerClickDenomValue', el.energyPerClickDenominationValue.value);
+        if (el.clickerSpeed) await localforage.setItem('ae_clickerSpeed', el.clickerSpeed.checked);
+        if (el.energyCriticalChance) await localforage.setItem('ae_rankup_critChance', el.energyCriticalChance.value);
+        if (el.criticalEnergy) await localforage.setItem('ae_rankup_critEnergy', el.criticalEnergy.value);
     } catch (e) {}
 }
 
-function loadRankUpData() {
+async function loadRankUpData() {
     try {
-        const rankSelect = localStorage.getItem('ae_rankSelect');
+        const rankSelect = await localforage.getItem('ae_rankSelect');
         if (rankSelect && el.rankSelect) {
             el.rankSelect.value = rankSelect;
             if (el.rankInput) el.rankInput.value = rankSelect;
         }
-        const rankInput = localStorage.getItem('ae_rankInput');
+        const rankInput = await localforage.getItem('ae_rankInput');
         if (rankInput && el.rankInput) el.rankInput.value = rankInput;
-        const currentEnergy = localStorage.getItem('ae_currentEnergy');
+        const currentEnergy = await localforage.getItem('ae_currentEnergy');
         if (currentEnergy && el.currentEnergy) el.currentEnergy.value = currentEnergy;
-        const currentEnergyDenomInput = localStorage.getItem('ae_currentEnergyDenomInput');
+        const currentEnergyDenomInput = await localforage.getItem('ae_currentEnergyDenomInput');
         if (currentEnergyDenomInput && el.currentEnergyDenominationInput) el.currentEnergyDenominationInput.value = currentEnergyDenomInput;
         const currentDenom = denominations.find(d => d.name === currentEnergyDenomInput);
         if (el.currentEnergyDenominationValue) {
             el.currentEnergyDenominationValue.value = currentDenom ? currentDenom.value : '1';
         }
-        const energyPerClick = localStorage.getItem('ae_energyPerClick');
+        const energyPerClick = await localforage.getItem('ae_energyPerClick');
         if (energyPerClick && el.energyPerClick) el.energyPerClick.value = energyPerClick;
-        const energyPerClickDenomInput = localStorage.getItem('ae_energyPerClickDenomInput');
+        const energyPerClickDenomInput = await localforage.getItem('ae_energyPerClickDenomInput');
         if (energyPerClickDenomInput && el.energyPerClickDenominationInput) el.energyPerClickDenominationInput.value = energyPerClickDenomInput;
         const energyPerClickDenom = denominations.find(d => d.name === energyPerClickDenomInput);
         if (el.energyPerClickDenominationValue) {
             el.energyPerClickDenominationValue.value = energyPerClickDenom ? energyPerClickDenom.value : '1';
         }
-        const clickerSpeed = localStorage.getItem('ae_clickerSpeed');
-        const isFast = (clickerSpeed === 'true');
-        if (el.energyCriticalChance) el.energyCriticalChance.value = localStorage.getItem('ae_rankup_critChance') || '';
-        if (el.criticalEnergy) el.criticalEnergy.value = localStorage.getItem('ae_rankup_critEnergy') || '';
+        const clickerSpeed = await localforage.getItem('ae_clickerSpeed');
+        const isFast = (clickerSpeed === true || clickerSpeed === 'true');
+        if (el.energyCriticalChance) el.energyCriticalChance.value = await localforage.getItem('ae_rankup_critChance') || '';
+        if (el.criticalEnergy) el.criticalEnergy.value = await localforage.getItem('ae_rankup_critEnergy') || '';
         if (el.clickerSpeed) {
             el.clickerSpeed.checked = isFast;
             const parentDiv = el.clickerSpeed.parentElement;
@@ -669,46 +668,46 @@ function loadRankUpData() {
     } catch (e) {}
 }
 
-function saveETAData() {
+async function saveETAData() {
     try {
-        if (el.targetEnergyETA) localStorage.setItem('ae_targetEnergyETA', el.targetEnergyETA.value);
-        if (el.targetEnergyETADenominationInput) localStorage.setItem('ae_targetEnergyETADenomInput', el.targetEnergyETADenominationInput.value);
-        if (el.targetEnergyETADenominationValue) localStorage.setItem('ae_targetEnergyETADenomValue', el.targetEnergyETADenominationValue.value);
-        if (el.energyCriticalChanceETA) localStorage.setItem('ae_eta_critChance', el.energyCriticalChanceETA.value);
-        if (el.criticalEnergyETA) localStorage.setItem('ae_eta_critEnergy', el.criticalEnergyETA.value);
+        if (el.targetEnergyETA) await localforage.setItem('ae_targetEnergyETA', el.targetEnergyETA.value);
+        if (el.targetEnergyETADenominationInput) await localforage.setItem('ae_targetEnergyETADenomInput', el.targetEnergyETADenominationInput.value);
+        if (el.targetEnergyETADenominationValue) await localforage.setItem('ae_targetEnergyETADenomValue', el.targetEnergyETADenominationValue.value);
+        if (el.energyCriticalChanceETA) await localforage.setItem('ae_eta_critChance', el.energyCriticalChanceETA.value);
+        if (el.criticalEnergyETA) await localforage.setItem('ae_eta_critEnergy', el.criticalEnergyETA.value);
     } catch(e) {}
 }
 
-function loadETAData() {
+async function loadETAData() {
     try {
-        const currentEnergyNum = localStorage.getItem('ae_currentEnergy') || '';
+        const currentEnergyNum = await localforage.getItem('ae_currentEnergy') || '';
         if (el.currentEnergyETA) el.currentEnergyETA.value = currentEnergyNum;
-        const currentEnergyDenomText = localStorage.getItem('ae_currentEnergyDenomInput') || '';
+        const currentEnergyDenomText = await localforage.getItem('ae_currentEnergyDenomInput') || '';
         if (el.currentEnergyETADenominationInput) el.currentEnergyETADenominationInput.value = currentEnergyDenomText;
         const currentDenom = denominations.find(d => d.name === currentEnergyDenomText);
         if (el.currentEnergyETADenominationValue) {
             el.currentEnergyETADenominationValue.value = currentDenom ? currentDenom.value : '1';
         }
-        const energyPerClickNum = localStorage.getItem('ae_energyPerClick') || '';
+        const energyPerClickNum = await localforage.getItem('ae_energyPerClick') || '';
         if (el.energyPerClickETA) el.energyPerClickETA.value = energyPerClickNum;
-        const energyPerClickDenomText = localStorage.getItem('ae_energyPerClickDenomInput') || '';
+        const energyPerClickDenomText = await localforage.getItem('ae_energyPerClickDenomInput') || '';
         if (el.energyPerClickETADenominationInput) el.energyPerClickETADenominationInput.value = energyPerClickDenomText;
         const energyPerClickDenom = denominations.find(d => d.name === energyPerClickDenomText);
         if (el.energyPerClickETADenominationValue) {
             el.energyPerClickETADenominationValue.value = energyPerClickDenom ? energyPerClickDenom.value : '1';
         }
-        const targetEnergyNum = localStorage.getItem('ae_targetEnergyETA') || '';
+        const targetEnergyNum = await localforage.getItem('ae_targetEnergyETA') || '';
         if (el.targetEnergyETA) el.targetEnergyETA.value = targetEnergyNum;
-        const targetEnergyDenomText = localStorage.getItem('ae_targetEnergyETADenominationInput') || '';
+        const targetEnergyDenomText = await localforage.getItem('ae_targetEnergyETADenominationInput') || '';
         if (el.targetEnergyETADenominationInput) el.targetEnergyETADenominationInput.value = targetEnergyDenomText;
         const targetDenom = denominations.find(d => d.name === targetEnergyDenomText);
         if (el.targetEnergyETADenominationValue) {
             el.targetEnergyETADenominationValue.value = targetDenom ? targetDenom.value : '1';
         }
-        if (el.energyCriticalChanceETA) el.energyCriticalChanceETA.value = localStorage.getItem('ae_eta_critChance') || '';
-        if (el.criticalEnergyETA) el.criticalEnergyETA.value = localStorage.getItem('ae_eta_critEnergy') || '';
-        const clickerSpeed = localStorage.getItem('ae_clickerSpeed');
-        const isFast = (clickerSpeed === 'true');
+        if (el.energyCriticalChanceETA) el.energyCriticalChanceETA.value = await localforage.getItem('ae_eta_critChance') || '';
+        if (el.criticalEnergyETA) el.criticalEnergyETA.value = await localforage.getItem('ae_eta_critEnergy') || '';
+        const clickerSpeed = await localforage.getItem('ae_clickerSpeed');
+        const isFast = (clickerSpeed === true || clickerSpeed === 'true');
         if (el.clickerSpeedETA) {
             el.clickerSpeedETA.checked = isFast;
             const parentDiv = el.clickerSpeedETA.parentElement;
@@ -723,26 +722,26 @@ function loadETAData() {
     } catch(e) {}
 }
 
-function saveTTKData() {
+async function saveTTKData() {
     try {
-        if (el.worldSelect) localStorage.setItem('ae_ttk_world', el.worldSelect.value);
-        if (el.enemySelect) localStorage.setItem('ae_ttk_enemy', el.enemySelect.value);
-        if (el.yourDPM) localStorage.setItem('ae_ttk_dpm', el.yourDPM.value); 
-        if (el.dpmDenominationInput) localStorage.setItem('ae_ttk_dpmDenomInput', el.dpmDenominationInput.value);
-        if (el.dpmDenominationValue) localStorage.setItem('ae_ttk_dpmDenomValue', el.dpmDenominationValue.value);
-        if (el.enemyQuantity) localStorage.setItem('ae_ttk_quantity', el.enemyQuantity.value);
-        if (el.fourSpotFarming) localStorage.setItem('ae_ttk_fourSpot', el.fourSpotFarming.checked);
+        if (el.worldSelect) await localforage.setItem('ae_ttk_world', el.worldSelect.value);
+        if (el.enemySelect) await localforage.setItem('ae_ttk_enemy', el.enemySelect.value);
+        if (el.yourDPM) await localforage.setItem('ae_ttk_dpm', el.yourDPM.value); 
+        if (el.dpmDenominationInput) await localforage.setItem('ae_ttk_dpmDenomInput', el.dpmDenominationInput.value);
+        if (el.dpmDenominationValue) await localforage.setItem('ae_ttk_dpmDenomValue', el.dpmDenominationValue.value);
+        if (el.enemyQuantity) await localforage.setItem('ae_ttk_quantity', el.enemyQuantity.value);
+        if (el.fourSpotFarming) await localforage.setItem('ae_ttk_fourSpot', el.fourSpotFarming.checked);
     } catch (e) {}
 }
 
-function loadTTKData() {
+async function loadTTKData() {
     try {
-        const dpm = localStorage.getItem('ae_ttk_dpm'); 
-        const dpmDenomInput = localStorage.getItem('ae_ttk_dpmDenomInput');
-        const quantity = localStorage.getItem('ae_ttk_quantity');
-        const fourSpot = localStorage.getItem('ae_ttk_fourSpot');
-        const world = localStorage.getItem('ae_ttk_world');
-        const enemy = localStorage.getItem('ae_ttk_enemy');
+        const dpm = await localforage.getItem('ae_ttk_dpm'); 
+        const dpmDenomInput = await localforage.getItem('ae_ttk_dpmDenomInput');
+        const quantity = await localforage.getItem('ae_ttk_quantity');
+        const fourSpot = await localforage.getItem('ae_ttk_fourSpot');
+        const world = await localforage.getItem('ae_ttk_world');
+        const enemy = await localforage.getItem('ae_ttk_enemy');
         if (el.yourDPM) el.yourDPM.value = dpm || '';
         if (el.dpmDenominationInput) el.dpmDenominationInput.value = dpmDenomInput || '';
         const dpmDenom = denominations.find(d => d.name === dpmDenomInput);
@@ -751,7 +750,7 @@ function loadTTKData() {
         }
         if (quantity && el.enemyQuantity) el.enemyQuantity.value = quantity;
         if (fourSpot !== null && el.fourSpotFarming) {
-            el.fourSpotFarming.checked = (fourSpot === 'true');
+            el.fourSpotFarming.checked = (fourSpot === true || fourSpot === 'true');
         }
         const ttkPanel = el['panel-ttk'];
         if (ttkPanel) {
@@ -777,100 +776,100 @@ function loadTTKData() {
     } catch (e) {}
 }
 
-function saveRaidData() {
+async function saveRaidData() {
     try {
-        if (el.activitySelect) localStorage.setItem('ae_raid_activity', el.activitySelect.value);
-        if (el.yourDPMActivity) localStorage.setItem('ae_raid_dpm', el.yourDPMActivity.value);
-        if (el.dpmActivityDenominationInput) localStorage.setItem('ae_raid_dpmDenomInput', el.dpmActivityDenominationInput.value);
-        if (el.dpmActivityDenominationValue) localStorage.setItem('ae_raid_dpmDenomValue', el.dpmActivityDenominationValue.value);
-        if (el.activityTimeLimit) localStorage.setItem('ae_raid_timeLimit', el.activityTimeLimit.value);
-        if (el.keyRunQuantity) localStorage.setItem('ae_raid_key_quantity', el.keyRunQuantity.value);
+        if (el.activitySelect) await localforage.setItem('ae_raid_activity', el.activitySelect.value);
+        if (el.yourDPMActivity) await localforage.setItem('ae_raid_dpm', el.yourDPMActivity.value);
+        if (el.dpmActivityDenominationInput) await localforage.setItem('ae_raid_dpmDenomInput', el.dpmActivityDenominationInput.value);
+        if (el.dpmActivityDenominationValue) await localforage.setItem('ae_raid_dpmDenomValue', el.dpmActivityDenominationValue.value);
+        if (el.activityTimeLimit) await localforage.setItem('ae_raid_timeLimit', el.activityTimeLimit.value);
+        if (el.keyRunQuantity) await localforage.setItem('ae_raid_key_quantity', el.keyRunQuantity.value);
     } catch (e) {}
 }
 
-function loadRaidData() {
+async function loadRaidData() {
     try {
-        const activity = localStorage.getItem('ae_raid_activity');
+        const activity = await localforage.getItem('ae_raid_activity');
         if (activity && el.activitySelect) {
             if (el.activitySelect.querySelector(`option[value="${activity}"]`)) {
                 el.activitySelect.value = activity;
             }
         }
-        const dpm = localStorage.getItem('ae_raid_dpm');
+        const dpm = await localforage.getItem('ae_raid_dpm');
         if (dpm && el.yourDPMActivity) el.yourDPMActivity.value = dpm;
-        const dpmDenomInput = localStorage.getItem('ae_raid_dpmDenomInput');
+        const dpmDenomInput = await localforage.getItem('ae_raid_dpmDenomInput');
         if (el.dpmActivityDenominationInput) el.dpmActivityDenominationInput.value = dpmDenomInput;
         const dpmDenom = denominations.find(d => d.name === dpmDenomInput);
         if (el.dpmActivityDenominationValue) {
             el.dpmActivityDenominationValue.value = dpmDenom ? dpmDenom.value : '1';
         }
-        const timeLimit = localStorage.getItem('ae_raid_timeLimit');
+        const timeLimit = await localforage.getItem('ae_raid_timeLimit');
         if (timeLimit && el.activityTimeLimit) el.activityTimeLimit.value = timeLimit;
-        const quantity = localStorage.getItem('ae_raid_key_quantity');
+        const quantity = await localforage.getItem('ae_raid_key_quantity');
         if (quantity && el.keyRunQuantity) el.keyRunQuantity.value = quantity;
         calculateMaxStage();
         calculateKeyRunTime();
     } catch (e) {}
 }
 
-function saveTimeToEnergyData() {
+async function saveTimeToEnergyData() {
     try {
-        if (el.currentEnergyTTE) localStorage.setItem('ae_tte_currentEnergy', el.currentEnergyTTE.value);
-        if (el.currentEnergyTTEDenominationInput) localStorage.setItem('ae_tte_currentEnergyDenomInput', el.currentEnergyTTEDenominationInput.value);
-        if (el.currentEnergyTTEDenominationValue) localStorage.setItem('ae_tte_currentEnergyDenomValue', el.currentEnergyTTEDenominationValue.value);
-        if (el.energyPerClickTTE) localStorage.setItem('ae_tte_energyPerClick', el.energyPerClickTTE.value);
-        if (el.energyPerClickTTEDenominationInput) localStorage.setItem('ae_tte_energyPerClickDenomInput', el.energyPerClickTTEDenominationInput.value);
-        if (el.energyPerClickTTEDenominationValue) localStorage.setItem('ae_tte_energyPerClickDenomValue', el.energyPerClickTTEDenominationValue.value);
-        if (el.energyCriticalChanceTTE) localStorage.setItem('ae_tte_critChance', el.energyCriticalChanceTTE.value);
-        if (el.criticalEnergyTTE) localStorage.setItem('ae_tte_critEnergy', el.criticalEnergyTTE.value);
-        if (el.timeToReturnSelect) localStorage.setItem('ae_tte_returnTime', el.timeToReturnSelect.value); 
-        if (el.timeToReturnSelectMinutes) localStorage.setItem('ae_tte_returnTimeMinutes', el.timeToReturnSelectMinutes.value);
-        if (el.clickerSpeedTTE) localStorage.setItem('ae_clickerSpeed', el.clickerSpeedTTE.checked); 
+        if (el.currentEnergyTTE) await localforage.setItem('ae_tte_currentEnergy', el.currentEnergyTTE.value);
+        if (el.currentEnergyTTEDenominationInput) await localforage.setItem('ae_tte_currentEnergyDenomInput', el.currentEnergyTTEDenominationInput.value);
+        if (el.currentEnergyTTEDenominationValue) await localforage.setItem('ae_tte_currentEnergyDenomValue', el.currentEnergyTTEDenominationValue.value);
+        if (el.energyPerClickTTE) await localforage.setItem('ae_tte_energyPerClick', el.energyPerClickTTE.value);
+        if (el.energyPerClickTTEDenominationInput) await localforage.setItem('ae_tte_energyPerClickDenomInput', el.energyPerClickTTEDenominationInput.value);
+        if (el.energyPerClickTTEDenominationValue) await localforage.setItem('ae_tte_energyPerClickDenomValue', el.energyPerClickTTEDenominationValue.value);
+        if (el.energyCriticalChanceTTE) await localforage.setItem('ae_tte_critChance', el.energyCriticalChanceTTE.value);
+        if (el.criticalEnergyTTE) await localforage.setItem('ae_tte_critEnergy', el.criticalEnergyTTE.value);
+        if (el.timeToReturnSelect) await localforage.setItem('ae_tte_returnTime', el.timeToReturnSelect.value); 
+        if (el.timeToReturnSelectMinutes) await localforage.setItem('ae_tte_returnTimeMinutes', el.timeToReturnSelectMinutes.value);
+        if (el.clickerSpeedTTE) await localforage.setItem('ae_clickerSpeed', el.clickerSpeedTTE.checked); 
         if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
-            boostItems.filter(item => item.type === 'energy').forEach(item => {
+            boostItems.filter(item => item.type === 'energy').forEach(async item => {
                 const hoursEl = el[`boost-${item.id}-hours`];
                 const minutesEl = el[`boost-${item.id}-minutes`];
                 if (hoursEl) {
-                    localStorage.setItem(`ae_tte_boost_${item.id}_hours`, hoursEl.value);
+                    await localforage.setItem(`ae_tte_boost_${item.id}_hours`, hoursEl.value);
                 }
                 if (minutesEl) {
-                    localStorage.setItem(`ae_tte_boost_${item.id}_minutes`, minutesEl.value);
+                    await localforage.setItem(`ae_tte_boost_${item.id}_minutes`, minutesEl.value);
                 }
             });
         }
     } catch (e) {}
 }
 
-function loadTimeToEnergyData() {
+async function loadTimeToEnergyData() {
      try {
-        const currentEnergyNum = localStorage.getItem('ae_tte_currentEnergy') || '';
+        const currentEnergyNum = await localforage.getItem('ae_currentEnergy') || '';
         if (el.currentEnergyTTE) el.currentEnergyTTE.value = currentEnergyNum;
-        const currentEnergyDenomText = localStorage.getItem('ae_tte_currentEnergyDenomInput') || '';
+        const currentEnergyDenomText = await localforage.getItem('ae_currentEnergyDenomInput') || '';
         if (el.currentEnergyTTEDenominationInput) el.currentEnergyTTEDenominationInput.value = currentEnergyDenomText;
         const currentDenom = denominations.find(d => d.name === currentEnergyDenomText);
         if (el.currentEnergyTTEDenominationValue) {
             el.currentEnergyTTEDenominationValue.value = currentDenom ? currentDenom.value : '1';
         }
-        const energyPerClickNum = localStorage.getItem('ae_tte_energyPerClick') || '';
+        const energyPerClickNum = await localforage.getItem('ae_energyPerClick') || '';
         if (el.energyPerClickTTE) el.energyPerClickTTE.value = energyPerClickNum;
-        const energyPerClickDenomText = localStorage.getItem('ae_tte_energyPerClickDenomInput') || '';
+        const energyPerClickDenomText = await localforage.getItem('ae_energyPerClickDenomInput') || '';
         if (el.energyPerClickTTEDenominationInput) el.energyPerClickTTEDenominationInput.value = energyPerClickDenomText;
         const energyPerClickDenom = denominations.find(d => d.name === energyPerClickDenomText);
         if (el.energyPerClickTTEDenominationValue) {
             el.energyPerClickTTEDenominationValue.value = energyPerClickDenom ? energyPerClickDenom.value : '1';
         }
-        if (el.energyCriticalChanceTTE) el.energyCriticalChanceTTE.value = localStorage.getItem('ae_tte_critChance') || '';
-        if (el.criticalEnergyTTE) localStorage.setItem('ae_tte_critEnergy', el.criticalEnergyTTE.value);
-        const returnTime = localStorage.getItem('ae_tte_returnTime');
+        if (el.energyCriticalChanceTTE) el.energyCriticalChanceTTE.value = await localforage.getItem('ae_rankup_critChance') || '';
+        if (el.criticalEnergyTTE) el.criticalEnergyTTE.value = await localforage.getItem('ae_rankup_critEnergy') || '';
+        const returnTime = await localforage.getItem('ae_tte_returnTime');
         if (returnTime && el.timeToReturnSelect) {
             el.timeToReturnSelect.value = returnTime;
         }
-        const returnTimeMinutes = localStorage.getItem('ae_tte_returnTimeMinutes');
+        const returnTimeMinutes = await localforage.getItem('ae_tte_returnTimeMinutes');
         if (returnTimeMinutes && el.timeToReturnSelectMinutes) {
             el.timeToReturnSelectMinutes.value = returnTimeMinutes;
         }
-        const clickerSpeed = localStorage.getItem('ae_clickerSpeed');
-        const isFast = (clickerSpeed === 'true');
+        const clickerSpeed = await localforage.getItem('ae_clickerSpeed');
+        const isFast = (clickerSpeed === true || clickerSpeed === 'true');
         if (el.clickerSpeedTTE) {
             el.clickerSpeedTTE.checked = isFast;
             const parentDiv = el.clickerSpeedTTE.parentElement;
@@ -882,11 +881,11 @@ function loadTimeToEnergyData() {
             }
         }
         if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
-            boostItems.filter(item => item.type === 'energy').forEach(item => {
+            boostItems.filter(item => item.type === 'energy').forEach(async item => {
                 const hoursEl = el[`boost-${item.id}-hours`];
                 const minutesEl = el[`boost-${item.id}-minutes`];
-                const savedHours = localStorage.getItem(`ae_tte_boost_${item.id}_hours`);
-                const savedMinutes = localStorage.getItem(`ae_tte_boost_${item.id}_minutes`);
+                const savedHours = await localforage.getItem(`ae_tte_boost_${item.id}_hours`);
+                const savedMinutes = await localforage.getItem(`ae_tte_boost_${item.id}_minutes`);
                 if (hoursEl && savedHours !== null) {
                     hoursEl.value = savedHours;
                 }
@@ -899,35 +898,35 @@ function loadTimeToEnergyData() {
     } catch (e) {}
 }
 
-function saveLootData() {
+async function saveLootData() {
     try {
-        if (el.lootTokenDropMin) localStorage.setItem('ae_loot_tokenMin', el.lootTokenDropMin.value);
-        if (el.lootTokenDropMax) localStorage.setItem('ae_loot_tokenMax', el.lootTokenDropMax.value);
-        if (el.lootBaseTokenDropRate) localStorage.setItem('ae_loot_baseTokenRate', el.lootBaseTokenDropRate.value);
-        if (el.lootTokenMultiplier) localStorage.setItem('ae_loot_tokenMultiplier', el.lootTokenMultiplier.value);
-        if (el.lootSpecialDropRate) localStorage.setItem('ae_loot_specialRate', el.lootSpecialDropRate.value);
-        if (el.lootSpecialItemName) localStorage.setItem('ae_loot_specialItemName', el.lootSpecialItemName.value);
-        if (el.lootMobKillTime) localStorage.setItem('ae_loot_mobKillTime', el.lootMobKillTime.value);
-        if (el.lootFarmingMode) localStorage.setItem('ae_loot_farmingMode', el.lootFarmingMode.value);
-        if (el.lootTimeTargetHours) localStorage.setItem('ae_loot_targetHours', el.lootTimeTargetHours.value);
-        if (el.lootTimeTargetMinutes) localStorage.setItem('ae_loot_targetMinutes', el.lootTimeTargetMinutes.value);
-        if (el.lootTokenTargetCount) localStorage.setItem('ae_loot_targetTokenCount', el.lootTokenTargetCount.value);
+        if (el.lootTokenDropMin) await localforage.setItem('ae_loot_tokenMin', el.lootTokenDropMin.value);
+        if (el.lootTokenDropMax) await localforage.setItem('ae_loot_tokenMax', el.lootTokenDropMax.value);
+        if (el.lootBaseTokenDropRate) await localforage.setItem('ae_loot_baseTokenRate', el.lootBaseTokenDropRate.value);
+        if (el.lootTokenMultiplier) await localforage.setItem('ae_loot_tokenMultiplier', el.lootTokenMultiplier.value);
+        if (el.lootSpecialDropRate) await localforage.setItem('ae_loot_specialRate', el.lootSpecialDropRate.value);
+        if (el.lootSpecialItemName) await localforage.setItem('ae_loot_specialItemName', el.lootSpecialItemName.value);
+        if (el.lootMobKillTime) await localforage.setItem('ae_loot_mobKillTime', el.lootMobKillTime.value);
+        if (el.lootFarmingMode) await localforage.setItem('ae_loot_farmingMode', el.lootFarmingMode.value);
+        if (el.lootTimeTargetHours) await localforage.setItem('ae_loot_targetHours', el.lootTimeTargetHours.value);
+        if (el.lootTimeTargetMinutes) await localforage.setItem('ae_loot_targetMinutes', el.lootTimeTargetMinutes.value);
+        if (el.lootTokenTargetCount) await localforage.setItem('ae_loot_targetTokenCount', el.lootTokenTargetCount.value);
     } catch (e) {}
 }
 
-function loadLootData() {
+async function loadLootData() {
     try {
-        if (el.lootTokenDropMin) el.lootTokenDropMin.value = localStorage.getItem('ae_loot_tokenMin') || 1;
-        if (el.lootTokenDropMax) el.lootTokenDropMax.value = localStorage.getItem('ae_loot_tokenMax') || 1;
-        if (el.lootBaseTokenDropRate) el.lootBaseTokenDropRate.value = localStorage.getItem('ae_loot_baseTokenRate') || 10;
-        if (el.lootTokenMultiplier) el.lootTokenMultiplier.value = localStorage.getItem('ae_loot_tokenMultiplier') || 3.16;
-        if (el.lootSpecialDropRate) el.lootSpecialDropRate.value = localStorage.getItem('ae_loot_specialRate') || 1;
-        if (el.lootSpecialItemName) el.lootSpecialItemName.value = localStorage.getItem('ae_loot_specialItemName') || 'Special Drops';
-        const savedKillTime = localStorage.getItem('ae_loot_mobKillTime');
+        if (el.lootTokenDropMin) el.lootTokenDropMin.value = await localforage.getItem('ae_loot_tokenMin') || 1;
+        if (el.lootTokenDropMax) el.lootTokenDropMax.value = await localforage.getItem('ae_loot_tokenMax') || 1;
+        if (el.lootBaseTokenDropRate) el.lootBaseTokenDropRate.value = await localforage.getItem('ae_loot_baseTokenRate') || 10;
+        if (el.lootTokenMultiplier) el.lootTokenMultiplier.value = await localforage.getItem('ae_loot_tokenMultiplier') || 3.16;
+        if (el.lootSpecialDropRate) el.lootSpecialDropRate.value = await localforage.getItem('ae_loot_specialRate') || 1;
+        if (el.lootSpecialItemName) el.lootSpecialItemName.value = await localforage.getItem('ae_loot_specialItemName') || 'Special Drops';
+        const savedKillTime = await localforage.getItem('ae_loot_mobKillTime');
         if (el.lootMobKillTime) {
             el.lootMobKillTime.value = savedKillTime !== null ? savedKillTime : 'instakill';
         }
-        const savedFarmingMode = localStorage.getItem('ae_loot_farmingMode');
+        const savedFarmingMode = await localforage.getItem('ae_loot_farmingMode');
         if (el.lootFarmingMode) {
             el.lootFarmingMode.value = savedFarmingMode || 'single';
             const modeContainer = el['loot-farming-mode-container'];
@@ -938,9 +937,9 @@ function loadLootData() {
                 if (activeBtn) activeBtn.classList.add('active');
             }
         }
-        if (el.lootTimeTargetHours) el.lootTimeTargetHours.value = localStorage.getItem('ae_loot_targetHours') || 1;
-        if (el.lootTimeTargetMinutes) el.lootTimeTargetMinutes.value = localStorage.getItem('ae_loot_targetMinutes') || 0;
-        if (el.lootTokenTargetCount) el.lootTokenTargetCount.value = localStorage.getItem('ae_loot_targetTokenCount') || 1;
+        if (el.lootTimeTargetHours) el.lootTimeTargetHours.value = await localforage.getItem('ae_loot_targetHours') || 1;
+        if (el.lootTimeTargetMinutes) el.lootTimeTargetMinutes.value = await localforage.getItem('ae_loot_targetMinutes') || 0;
+        if (el.lootTokenTargetCount) el.lootTokenTargetCount.value = await localforage.getItem('ae_loot_targetTokenCount') || 1;
         if (el.lootSpecialItemName) {
             el.lootSpecialItemName.dispatchEvent(new Event('input'));
         }
@@ -948,30 +947,30 @@ function loadLootData() {
     } catch (e) {}
 }
 
-function saveStarData() {
+async function saveStarData() {
     try {
-        if (el.starLevelSelect) localStorage.setItem('ae_star_level', el.starLevelSelect.value);
-        if (el.starSpeedSelect) localStorage.setItem('ae_star_speed', el.starSpeedSelect.value);
-        if (el.starAmount) localStorage.setItem('ae_star_amount', el.starAmount.value);
-        if (el.starBaseLuck) localStorage.setItem('ae_star_baseLuck', el.starBaseLuck.value);
-        if (el.starTimeHours) localStorage.setItem('ae_star_timeHours', el.starTimeHours.value);
+        if (el.starLevelSelect) await localforage.setItem('ae_star_level', el.starLevelSelect.value);
+        if (el.starSpeedSelect) await localforage.setItem('ae_star_speed', el.starSpeedSelect.value);
+        if (el.starAmount) await localforage.setItem('ae_star_amount', el.starAmount.value);
+        if (el.starBaseLuck) await localforage.setItem('ae_star_baseLuck', el.starBaseLuck.value);
+        if (el.starTimeHours) await localforage.setItem('ae_star_timeHours', el.starTimeHours.value);
     } catch (e) {}
 }
 
-function loadStarData() {
+async function loadStarData() {
     if (typeof starCostData === 'undefined' || typeof starSpeedData === 'undefined' || typeof starRarityDataByLevel === 'undefined') {
         return;
     }
     try {
-        const level = localStorage.getItem('ae_star_level');
+        const level = await localforage.getItem('ae_star_level');
         if (level && el.starLevelSelect) el.starLevelSelect.value = level;
-        const speed = localStorage.getItem('ae_star_speed');
+        const speed = await localforage.getItem('ae_star_speed');
         if (speed && el.starSpeedSelect) el.starSpeedSelect.value = speed;
-        const amount = localStorage.getItem('ae_star_amount');
+        const amount = await localforage.getItem('ae_star_amount');
         if (amount && el.starAmount) el.starAmount.value = amount;
-        const baseLuck = localStorage.getItem('ae_star_baseLuck');
+        const baseLuck = await localforage.getItem('ae_star_baseLuck');
         if (baseLuck && el.starBaseLuck) el.starBaseLuck.value = baseLuck;
-        const timeHours = localStorage.getItem('ae_star_timeHours');
+        const timeHours = await localforage.getItem('ae_star_timeHours');
         if (timeHours && el.starTimeHours) el.starTimeHours.value = timeHours;
         displayStarCost();
         calculateStarCalc();
@@ -1160,7 +1159,7 @@ function calculateLootDrops() {
     const avgTokenDropQuantity = (tokenDropMin + tokenDropMax) / 2;
     const rawTokensPerSecond = effectiveKillsPerSecond * avgTokenDropQuantity * tokenMultiplier * baseTokenRate * spotMultiplier;
     const rawSpecialDropsPerSecond = effectiveKillsPerSecond * 1 * specialDropRate * spotMultiplier;
-    const REALITY_FACTOR = 2.8;
+    const REALITY_FACTOR = 1.0;
     const effectiveTokensPerSecond = rawTokensPerSecond / REALITY_FACTOR;
     const effectiveSpecialDropsPerSecond = rawSpecialDropsPerSecond / REALITY_FACTOR;
     let totalTokensEstimate = effectiveTokensPerSecond * targetTimeInSeconds;
@@ -1842,7 +1841,7 @@ function syncEnergyData(sourceInputId, sourceDenomInputId, sourceDenomValueId) {
     const criticalInputMap = {
         'energyCriticalChance': ['energyCriticalChanceETA', 'energyCriticalChanceTTE'],
         'criticalEnergy': ['criticalEnergyETA', 'criticalEnergyTTE'],
-        'energyCriticalChanceETA': ['energyCriticalChance', 'criticalEnergyTTE'],
+        'energyCriticalChanceETA': ['energyCriticalChance', 'energyCriticalChanceTTE'],
         'criticalEnergyETA': ['criticalEnergy', 'criticalEnergyTTE'],
         'energyCriticalChanceTTE': ['energyCriticalChance', 'energyCriticalChanceETA'],
         'criticalEnergyTTE': ['criticalEnergy', 'criticalEnergyETA']
@@ -2037,7 +2036,7 @@ function stopCountdownDisplay() {
     }
 }
 
-function saveAlertsData() {
+async function saveAlertsData() {
     try {
         const savedAlerts = {};
         Object.keys(dungeonIntervals).forEach(name => {
@@ -2047,13 +2046,14 @@ function saveAlertsData() {
                 savedAlerts[name] = checkbox.checked;
             }
         });
-        localStorage.setItem('ae_alerts_selected', JSON.stringify(savedAlerts));
+        await localforage.setItem('ae_alerts_selected', JSON.stringify(savedAlerts));
     } catch (e) {}
 }
 
-function loadAlertsData() {
+async function loadAlertsData() {
     try {
-        const savedAlerts = JSON.parse(localStorage.getItem('ae_alerts_selected')) || {};
+        const alertsRaw = await localforage.getItem('ae_alerts_selected');
+        const savedAlerts = JSON.parse(alertsRaw) || {};
         Object.keys(dungeonIntervals).forEach(name => {
             const id = dungeonIntervals[name].id;
             const checkbox = el[`alert-${id}-dungeon`] || el[`alert-${id}-raid`];
@@ -2066,11 +2066,11 @@ function loadAlertsData() {
     } catch (e) {}
 }
 
-function toggleCompletedVisibility() {
+async function toggleCompletedVisibility() {
     const isHidden = el['hide-completed-checkbox'] ? el['hide-completed-checkbox'].checked : false;
     if (el['hide-completed-checkbox']) {
         try {
-            localStorage.setItem('ae_checklist_hide_completed', isHidden ? 'true' : 'false');
+            await localforage.setItem('ae_checklist_hide_completed', isHidden ? 'true' : 'false');
         } catch (e) {}
     }
     const searchTerm = el['checklist-search'] ? el['checklist-search'].value : '';
@@ -2121,24 +2121,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     if (el.backgroundToggle) {
-        el.backgroundToggle.addEventListener('change', () => {
+        el.backgroundToggle.addEventListener('change', async () => {
             const isImage = el.backgroundToggle.checked;
             applyBackgroundPreference(isImage);
             try {
-                localStorage.setItem(BACKGROUND_KEY, isImage ? '1' : '0');
+                await localforage.setItem(BACKGROUND_KEY, isImage ? '1' : '0');
             } catch (e) {}
         });
     }
-    try {
-        const savedPref = localStorage.getItem(BACKGROUND_KEY);
-        if (savedPref === '1') {
-            if (el.backgroundToggle) el.backgroundToggle.checked = true;
-            applyBackgroundPreference(true);
-        } else {
-            if (el.backgroundToggle) el.backgroundToggle.checked = false;
-            applyBackgroundPreference(false);
-        }
-    } catch (e) {}
+    (async () => {
+        try {
+            const savedPref = await localforage.getItem(BACKGROUND_KEY);
+            if (savedPref === '1') {
+                if (el.backgroundToggle) el.backgroundToggle.checked = true;
+                applyBackgroundPreference(true);
+            } else {
+                if (el.backgroundToggle) el.backgroundToggle.checked = false;
+                applyBackgroundPreference(false);
+            }
+        } catch (e) {}
+    })();
     const tabControls = el['tab-controls'];
     if (tabControls) {
         tabControls.addEventListener('click', (e) => {
@@ -2191,9 +2193,9 @@ document.addEventListener('DOMContentLoaded', () => {
     populateStarLevelDropdown();
     populateStarSpeedDropdown();
     populateLootKillTimeDropdown();
-    loadAllData().then(() => {
+    loadAllData().then(async () => {
         populateActivityDropdown();
-        loadRaidData();
+        await loadRaidData();
     });
     setupRankSearch('rankInput', 'rankSelect', 'rankList');
     function onRankUpCEDenomChange() {
@@ -2378,12 +2380,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el.starTimeHours) el.starTimeHours.addEventListener('input', debounce(calculateStarCalc, 300));
     if (el['theme-toggle']) {
         el['theme-toggle'].addEventListener('click', toggleTheme);
-        const savedTheme = localStorage.getItem('ae_theme') || 'dark';
-        if (savedTheme === 'game') {
-            document.body.className = 'game-theme';
-        } else if (savedTheme === 'blue') {
-            document.body.className = 'blue-theme';
-        }
+        (async () => {
+            const savedTheme = await localforage.getItem('ae_theme') || 'dark';
+            if (savedTheme === 'game') {
+                document.body.className = 'game-theme';
+            } else if (savedTheme === 'blue') {
+                document.body.className = 'blue-theme';
+            }
+        })();
     }
     if (el.worldSelect) {
         el.worldSelect.addEventListener('change', () => {
@@ -2410,107 +2414,112 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
-    loadNumberFormat();
-    loadRankUpData();
-    loadETAData();
-    loadTimeToEnergyData(); 
-    loadLootData();
-    loadTTKData();
-    loadStarData();
-    loadAlertsData(); 
-    if (el.worldSelect) {
-        populateEnemyDropdown(); 
-    } else {
-        calculateTTK();
-    }
-    if (el.currentEnergy) {
-        el.currentEnergy.dispatchEvent(new Event('input')); 
-    } else if (el.currentEnergyETA) {
-        el.currentEnergyETA.dispatchEvent(new Event('input'));
-    } else if (el.currentEnergyTTE) {
-        el.currentEnergyTTE.dispatchEvent(new Event('input'));
-    }
-    calculateLootDrops();
-    calculateMaxStage();
-    calculateKeyRunTime();
-    calculateStarCalc();
-    if (typeof checklistDataByWorld !== 'undefined' && typeof worldData !== 'undefined') {
-        const checklistPanel = el['panel-checklist']; 
-        if (!checklistPanel) {
-            return;
+    (async () => {
+        await loadNumberFormat();
+        await loadRankUpData();
+        await loadETAData();
+        await loadTimeToEnergyData(); 
+        await loadLootData();
+        await loadTTKData();
+        await loadStarData();
+        await loadAlertsData(); 
+        if (el.worldSelect) {
+            populateEnemyDropdown(); 
+        } else {
+            calculateTTK();
         }
-        const checklistContainer = el['checklist-worlds-container'];
-        if (!checklistContainer) {
-            return;
+        if (el.currentEnergy) {
+            el.currentEnergy.dispatchEvent(new Event('input')); 
+        } else if (el.currentEnergyETA) {
+            el.currentEnergyETA.dispatchEvent(new Event('input'));
+        } else if (el.currentEnergyTTE) {
+            el.currentEnergyTTE.dispatchEvent(new Event('input'));
         }
-        checklistPanel.addEventListener('change', (e) => {
-            if (e.target.type === 'checkbox' && e.target.id !== 'hide-completed-checkbox') {
-                const item = e.target.closest('.checklist-item');
-                if (e.target.checked && item) {
-                    item.classList.add('completed');
-                    setTimeout(() => item.classList.remove('completed'), 500);
-                }
-                styleChecklistItem(e.target, e.target.checked);
-                saveChecklistData();
-            }
-        });
-        checklistContainer.addEventListener('click', (e) => {
-            const target = e.target;
-            let checkValue;
-            if (target.classList.contains('world-check-all')) {
-                checkValue = true;
-            } else if (target.classList.contains('world-uncheck-all')) {
-                checkValue = false;
-            } else {
+        calculateLootDrops();
+        calculateMaxStage();
+        calculateKeyRunTime();
+        calculateStarCalc();
+        if (typeof checklistDataByWorld !== 'undefined' && typeof worldData !== 'undefined') {
+            const checklistPanel = el['panel-checklist']; 
+            if (!checklistPanel) {
                 return;
             }
-            const section = target.closest('section');
-            if (!section) return;
-            const checkboxes = section.querySelectorAll('input[type="checkbox"]');
-            checkboxes.forEach(cb => {
-                cb.checked = checkValue;
-                styleChecklistItem(cb, checkValue);
+            const checklistContainer = el['checklist-worlds-container'];
+            if (!checklistContainer) {
+                return;
+            }
+            checklistPanel.addEventListener('change', (e) => {
+                if (e.target.type === 'checkbox' && e.target.id !== 'hide-completed-checkbox') {
+                    const item = e.target.closest('.checklist-item');
+                    if (e.target.checked && item) {
+                        item.classList.add('completed');
+                        setTimeout(() => item.classList.remove('completed'), 500);
+                    }
+                    styleChecklistItem(e.target, e.target.checked);
+                    saveChecklistData();
+                }
             });
-            saveChecklistData();
-        });
-        if (el['checklist-search']) {
-            el['checklist-search'].addEventListener('input', debounce((e) => {
-                const categoryFilter = el['category-filter'] ? el['category-filter'].value : '';
-                filterChecklistItems(e.target.value, categoryFilter);
-            }, 300));
-        }
-        if (el['category-filter']) {
-            el['category-filter'].addEventListener('change', (e) => {
-                const searchTerm = el['checklist-search'] ? el['checklist-search'].value : '';
-                filterChecklistItems(searchTerm, e.target.value);
-            });
-        }
-        if (el['hide-completed-checkbox']) {
-            el['hide-completed-checkbox'].addEventListener('change', toggleCompletedVisibility);
-        }
-        if (el['check-all-btn']) {
-            el['check-all-btn'].addEventListener('click', () => {
-                if (!checklistPanel) return;
-                const checkboxes = checklistPanel.querySelectorAll('input[type="checkbox"]');
+            checklistContainer.addEventListener('click', (e) => {
+                const target = e.target;
+                let checkValue;
+                if (target.classList.contains('world-check-all')) {
+                    checkValue = true;
+                } else if (target.classList.contains('world-uncheck-all')) {
+                    checkValue = false;
+                } else {
+                    return;
+                }
+                const section = target.closest('section');
+                if (!section) return;
+                const checkboxes = section.querySelectorAll('input[type="checkbox"]');
                 checkboxes.forEach(cb => {
-                    cb.checked = true;
-                    styleChecklistItem(cb, true);
+                    cb.checked = checkValue;
+                    styleChecklistItem(cb, checkValue);
                 });
                 saveChecklistData();
             });
-        }
-        if (el['uncheck-all-btn']) {
-            el['uncheck-all-btn'].addEventListener('click', () => {
-                if (!checklistPanel) return;
-                const checkboxes = checklistPanel.querySelectorAll('input[type="checkbox"]');
-                checkboxes.forEach(cb => {
-                    cb.checked = false;
-                    styleChecklistItem(cb, false);
+            if (el['checklist-search']) {
+                el['checklist-search'].addEventListener('input', debounce((e) => {
+                    const categoryFilter = el['category-filter'] ? el['category-filter'].value : '';
+                    filterChecklistItems(e.target.value, categoryFilter);
+                }, 300));
+            }
+            if (el['category-filter']) {
+                el['category-filter'].addEventListener('change', (e) => {
+                    const searchTerm = el['checklist-search'] ? el['checklist-search'].value : '';
+                    filterChecklistItems(searchTerm, e.target.value);
                 });
-                saveChecklistData();
-            });
+            }
+            if (el['hide-completed-checkbox']) {
+                el['hide-completed-checkbox'].addEventListener('change', toggleCompletedVisibility);
+            }
+            if (el['check-all-btn']) {
+                el['check-all-btn'].addEventListener('click', () => {
+                    if (!checklistPanel) return;
+                    const checkboxes = checklistPanel.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach(cb => {
+                        cb.checked = true;
+                        styleChecklistItem(cb, true);
+                    });
+                    saveChecklistData();
+                });
+            }
+            if (el['uncheck-all-btn']) {
+                el['uncheck-all-btn'].addEventListener('click', () => {
+                    if (!checklistPanel) return;
+                    const checkboxes = checklistPanel.querySelectorAll('input[type="checkbox"]');
+                    checkboxes.forEach(cb => {
+                        cb.checked = false;
+                        styleChecklistItem(cb, false);
+                    });
+                    saveChecklistData();
+                });
+            }
+            await loadChecklistData();
         }
-        loadChecklistData();
+    })();
+
+    // Re-adding security/scroll handlers at the end
     const handleScroll = () => {
         const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
         const threshold = 20;
@@ -2531,5 +2540,30 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.add('scrolled');
         }
     }, 5000);
-    } else {}
+
+    (function() {
+        document.addEventListener('contextmenu', (e) => {
+            const target = e.target;
+            const tag = target.tagName;
+            const type = target.type;
+            const isInput = (tag === 'INPUT' && (type === 'text' || type === 'number' || type === 'password' || type === 'email'));
+            const isTextArea = tag === 'TEXTAREA';
+            if (isInput || isTextArea) {
+                return;
+            }
+            e.preventDefault();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F12') {
+                e.preventDefault();
+            }
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) {
+                e.preventDefault();
+            }
+            if (e.ctrlKey && e.key === 'u') {
+                e.preventDefault();
+            }
+        });
+    })();
 });
