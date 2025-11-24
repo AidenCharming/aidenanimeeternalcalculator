@@ -416,24 +416,41 @@ function copyResult(elementId) {
     }
 }
 
-async function toggleTheme() {
+function populateThemeDropdown() {
+    const select = document.getElementById('theme-select');
+    if (!select) return;
+    
+    select.innerHTML = '';
+    
+    themes.forEach(theme => {
+        const option = document.createElement('option');
+        option.value = theme;
+        
+        const displayName = theme.split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+            
+        option.text = displayName;
+        select.appendChild(option);
+    });
+}
+
+async function setTheme(themeName) {
     const body = document.body;
-    let currentTheme = await localforage.getItem('ae_theme') || 'blue';
-    
-    let currentIndex = themes.indexOf(currentTheme);
-    if (currentIndex === -1) currentIndex = 0;
-    
-    let nextIndex = (currentIndex + 1) % themes.length;
-    let nextTheme = themes[nextIndex];
     
     themes.forEach(t => body.classList.remove(`theme-${t}`));
     
-    if (nextTheme !== 'blue') {
-        body.classList.add(`theme-${nextTheme}`);
+    if (themeName !== 'blue') {
+        body.classList.add(`theme-${themeName}`);
     }
     
-    await localforage.setItem('ae_theme', nextTheme);
-    updateKoFiButton(nextTheme);
+    try {
+        await localforage.setItem('ae_theme', themeName);
+    } catch (e) {
+        console.error("Failed to save theme preference", e);
+    }
+    
+    updateKoFiButton(themeName);
 }
 
 function updateKoFiButton(themeName) {
@@ -2422,10 +2439,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el.starAmount) el.starAmount.addEventListener('input', debounce(calculateStarCalc, 300));
     if (el.starBaseLuck) el.starBaseLuck.addEventListener('input', debounce(calculateStarCalc, 300));
     if (el.starTimeHours) el.starTimeHours.addEventListener('input', debounce(calculateStarCalc, 300));
-    if (el['theme-toggle']) {
-        el['theme-toggle'].addEventListener('click', toggleTheme);
+    if (el['theme-select']) {
+        populateThemeDropdown();
+
+        el['theme-select'].addEventListener('change', (e) => {
+            setTheme(e.target.value);
+        });
+
         (async () => {
             const savedTheme = await localforage.getItem('ae_theme') || 'blue';
+        
+        // Set the dropdown value
+            el['theme-select'].value = savedTheme;
+
+        // Apply visual theme
             if (savedTheme !== 'blue') {
                 document.body.classList.add(`theme-${savedTheme}`);
             }
