@@ -1184,65 +1184,99 @@ function calculateTimeToEnergy() {
 
 function calculateLootDrops() {
     if (!el.lootTokensResult || !el.lootSpecialDropsResult) return;
-    const tokenDropMin = getNumberValue('lootTokenDropMin');
-    const tokenDropMax = getNumberValue('lootTokenDropMax');
-    const baseTokenRate = getNumberValue('lootBaseTokenDropRate') / 100;
-    const tokenMultiplier = getNumberValue('lootTokenMultiplier');
-    const specialDropRate = getNumberValue('lootSpecialDropRate') / 100;
+
+    const tokenDropMin = getNumberValue('lootTokenDropMin') || 1;
+    const tokenDropMax = getNumberValue('lootTokenDropMax') || 1;
+    const baseTokenRate = (getNumberValue('lootBaseTokenDropRate') || 0) / 100;
+
+    let tokenMultiplier = getNumberValue('lootTokenMultiplier');
+    if (tokenMultiplier <= 0) tokenMultiplier = 1;
+
+    const specialDropRate = (getNumberValue('lootSpecialDropRate') || 0) / 100;
+    
     const specialItemName = el.lootSpecialItemName ? el.lootSpecialItemName.value.trim() : 'Special Drops';
     if (el.specialItemLabel) {
         el.specialItemLabel.innerText = `Avg ${specialItemName} per Target Time:`;
     }
+
     const targetHours = getNumberValue('lootTimeTargetHours');
     const targetMinutes = getNumberValue('lootTimeTargetMinutes');
     const targetTimeInSeconds = (targetHours * 3600) + (targetMinutes * 60);
     const targetTokenCount = getNumberValue('lootTokenTargetCount') || 1;
-    const killTimeInput = el.lootMobKillTime ? el.lootMobKillTime.value : 'N/A';
+
+    let killTimeInput = 'instakill';
+    if (el.lootMobKillTime && el.lootMobKillTime.value) {
+        killTimeInput = el.lootMobKillTime.value;
+    }
+
     const farmingMode = el.lootFarmingMode ? el.lootFarmingMode.value : 'single';
     const spotMultiplier = farmingMode === 'four' ? 4 : 1;
-    if (tokenMultiplier <= 0 || killTimeInput === 'N/A' || targetTimeInSeconds <= 0) {
-        el.lootTokensResult.innerText = 'N/A';
-        el.lootSpecialDropsResult.innerText = 'N/A';
-        if (el.lootTokenTimeToTargetResult) el.lootTokenTimeToTargetResult.innerText = 'N/A';
-        saveLootData();
-        return;
-    }
+
     let rawTimePerKill = parseNumberInput(killTimeInput);
-    if (killTimeInput === 'instakill') {
-        rawTimePerKill = 0.001;
+    if (killTimeInput === 'instakill' || rawTimePerKill <= 0) {
+        rawTimePerKill = 0.001; 
     }
+    
+    const LOOT_KILL_OVERHEAD = 0.5;
+    const LOOT_RESPAWN_DELAY = 2.5;
+
     const timeToCompleteKill = rawTimePerKill + LOOT_KILL_OVERHEAD;
     const respawnLimitPerKill = LOOT_RESPAWN_DELAY / spotMultiplier;
     const timePerCycle = Math.max(timeToCompleteKill, respawnLimitPerKill);
     const effectiveKillsPerSecond = 1 / timePerCycle;
-    const avgTokenDropQuantity = (tokenDropMin + tokenDropMax) / 2;
-    const rawTokensPerSecond = effectiveKillsPerSecond * avgTokenDropQuantity * tokenMultiplier * baseTokenRate * spotMultiplier;
-    const rawSpecialDropsPerSecond = effectiveKillsPerSecond * 1 * specialDropRate * spotMultiplier;
-    const TOKEN_FACTOR = 3.2;
+
+    const TOKEN_FACTOR = 4.0;
     const SPECIAL_DROP_FACTOR = 1.2;
-    const effectiveTokensPerSecond = rawTokensPerSecond / TOKEN_FACTOR;
+    const VARIANCE_PERCENT = 0.3; 
+
+    const baseTokenRatePerSecond = (effectiveKillsPerSecond * tokenMultiplier * baseTokenRate * spotMultiplier) / TOKEN_FACTOR;
+    const avgTokenDropQuantity = (tokenDropMin + tokenDropMax) / 2;
+    const effectiveTokensPerSecond = baseTokenRatePerSecond * avgTokenDropQuantity;
+
+    const totalAvgTokens = effectiveTokensPerSecond * targetTimeInSeconds;
+    const totalMinTokens = totalAvgTokens * (1 - VARIANCE_PERCENT);
+    const totalMaxTokens = totalAvgTokens * (1 + VARIANCE_PERCENT);
+
+    const rawSpecialDropsPerSecond = effectiveKillsPerSecond * 1 * specialDropRate * spotMultiplier;
     const effectiveSpecialDropsPerSecond = rawSpecialDropsPerSecond / SPECIAL_DROP_FACTOR;
-    let totalTokensEstimate = effectiveTokensPerSecond * targetTimeInSeconds;
-    let totalSpecialDropsEstimate = effectiveSpecialDropsPerSecond * targetTimeInSeconds;
-    let timeToTargetTokens = 0;
-    if (effectiveTokensPerSecond > 0) {
-        timeToTargetTokens = targetTokenCount / effectiveTokensPerSecond;
-    } else if (targetTokenCount > 0) {
-        timeToTargetTokens = Infinity;
-    }
+    
+    const totalAvgSpecial = effectiveSpecialDropsPerSecond * targetTimeInSeconds;
+    const totalMinSpecial = totalAvgSpecial * (1 - VARIANCE_PERCENT);
+    const totalMaxSpecial = totalAvgSpecial * (1 + VARIANCE_PERCENT);
+
     if (el.lootTokensResult) {
-        el.lootTokensResult.innerText = formatNumber(totalTokensEstimate);
+         if (totalAvgTokens === 0) {
+             el.lootTokensResult.innerText = "0";
+         } else {
+             if (Math.abs(totalMinTokens - totalMaxTokens) < 1) {
+                 el.lootTokensResult.innerText = formatNumber(totalAvgTokens);
+             } else {
+                 el.lootTokensResult.innerText = `${formatNumber(totalMinTokens)} - ${formatNumber(totalMaxTokens)}`;
+             }
+         }
     }
+
     if (el.lootSpecialDropsResult) {
-        el.lootSpecialDropsResult.innerText = formatNumber(totalSpecialDropsEstimate);
-    }
-    if (el.lootTokenTimeToTargetResult) {
-        if (timeToTargetTokens <= 0 || !isFinite(timeToTargetTokens)) {
-            el.lootTokenTimeToTargetResult.innerText = 'N/A';
+        if (totalAvgSpecial === 0) {
+            el.lootSpecialDropsResult.innerText = "0";
         } else {
-            el.lootTokenTimeToTargetResult.innerText = formatTime(timeToTargetTokens);
+            if (Math.abs(totalMinSpecial - totalMaxSpecial) < 1) {
+                el.lootSpecialDropsResult.innerText = formatNumber(totalAvgSpecial);
+            } else {
+                el.lootSpecialDropsResult.innerText = `${formatNumber(totalMinSpecial)} - ${formatNumber(totalMaxSpecial)}`;
+            }
         }
     }
+
+    if (el.lootTokenTimeToTargetResult) {
+        if (effectiveTokensPerSecond > 0) {
+            const timeToTarget = targetTokenCount / effectiveTokensPerSecond;
+            el.lootTokenTimeToTargetResult.innerText = formatTime(timeToTarget);
+        } else {
+             el.lootTokenTimeToTargetResult.innerText = "N/A"; 
+        }
+    }
+    
     saveLootData();
 }
 
