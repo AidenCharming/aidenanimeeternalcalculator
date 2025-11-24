@@ -1,12 +1,16 @@
 const el = {};
 const tabs = ['rankup', 'eta', 'time-to-energy', 'lootcalc', 'ttk', 'raid', 'alerts', 'star', 'checklist'];
 
-const themes = ['blue', 'dark-blue', 'purple', 'dark-purple', 'green', 'dark-green', 'orange', 'dark-orange', 'red', 'dark-red'];
+const themes = ['blue', 'dark-blue', 'teal', 'dark-teal', 'purple', 'dark-purple', 'pink', 'dark-pink', 'green', 'dark-green', 'orange', 'dark-orange', 'red', 'dark-red'];
 const themeColors = {
     'blue': '#0062ff',
     'dark-blue': '#02368a',
+    'teal': '#39a78e',
+    'dark-teal': '#008566ff',
     'purple': '#5d00ff',
     'dark-purple': '#3f01ac',
+    'pink': '#ff00d4',
+    'dark-pink': '#960089',
     'green': '#00ff00',
     'dark-green': '#009600',
     'orange': '#ff4800',

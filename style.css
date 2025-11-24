@@ -34,6 +34,20 @@ body.theme-dark-blue {
   --gradient-start: #0062ff;
   --gradient-end: #0062ff;
 }
+body.theme-teal {
+  --accent-color: #39a78e;
+  --accent-glow: rgba(14, 165, 233, 0.4);
+  --accent-dim: rgba(14, 165, 233, 0.1);
+  --gradient-start: #39a78e;
+  --gradient-end: #39a78e;
+}
+body.theme-dark-teal {
+  --accent-color: #008566ff;
+  --accent-glow: rgba(14, 233, 222, 0.4);
+  --accent-dim: rgba(14, 226, 233, 0.1);
+  --gradient-start: #008566ff;
+  --gradient-end: #008566ff;
+}
 body.theme-purple {
   --accent-color: #5d00ff;
   --accent-glow: rgba(124, 58, 237, 0.4);
@@ -47,6 +61,20 @@ body.theme-dark-purple {
   --accent-dim: rgba(124, 58, 237, 0.1);
   --gradient-start: #3f01ac;
   --gradient-end: #3f01ac;
+}
+body.theme-pink {
+  --accent-color: #ff00ea;
+  --accent-glow: rgba(124, 58, 237, 0.4);
+  --accent-dim: rgba(124, 58, 237, 0.1);
+  --gradient-start: #ff00ea;
+  --gradient-end: #ff00ea;
+}
+body.theme-dark-pink {
+  --accent-color: #960089;
+  --accent-glow: rgba(231, 58, 237, 0.4);
+  --accent-dim: rgba(124, 58, 237, 0.1);
+  --gradient-start: #960089;
+  --gradient-end: #960089;
 }
 body.theme-green {
   --accent-color: #00ff00;
