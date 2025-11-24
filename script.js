@@ -2519,7 +2519,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     })();
 
-    // Re-adding security/scroll handlers at the end
     const handleScroll = () => {
         const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
         const threshold = 20;
