@@ -1,6 +1,20 @@
 const el = {};
 const tabs = ['rankup', 'eta', 'time-to-energy', 'lootcalc', 'ttk', 'raid', 'alerts', 'star', 'checklist'];
 
+const themes = ['blue', 'dark-blue', 'purple', 'dark-purple', 'green', 'dark-green', 'orange', 'dark-orange', 'red', 'dark-red'];
+const themeColors = {
+    'blue': '#0062ff',
+    'dark-blue': '#02368a',
+    'purple': '#5d00ff',
+    'dark-purple': '#3f01ac',
+    'green': '#00ff00',
+    'dark-green': '#009600',
+    'orange': '#ff4800',
+    'dark-orange': '#aa3102',
+    'red': '#ff0000',
+    'dark-red': '#8b0202'
+};
+
 const dungeonIntervals = {
     'Easy Dungeon': { startMinute: 0, id: 'easy' },
     'Medium Dungeon': { startMinute: 10, id: 'medium' },
@@ -389,10 +403,10 @@ function copyResult(elementId) {
     const element = document.getElementById(elementId);
     if (element && element.innerText !== '0s' && element.innerText !== 'N/A' && element.innerText !== '0') {
         navigator.clipboard.writeText(element.innerText).then(() => {
-            const originalBg = element.style.backgroundColor;
+            const originalBg = document.body.classList.contains('theme-green') ? '#10b981' : getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
             element.style.backgroundColor = '#10b981';
             setTimeout(() => {
-                element.style.backgroundColor = originalBg;
+                element.style.backgroundColor = '';
             }, 200);
         });
     }
@@ -400,16 +414,37 @@ function copyResult(elementId) {
 
 async function toggleTheme() {
     const body = document.body;
-    let currentTheme = await localforage.getItem('ae_theme') || 'dark';
-    if (currentTheme === 'dark') {
-        body.className = 'game-theme';
-        await localforage.setItem('ae_theme', 'game');
-    } else if (currentTheme === 'game') {
-        body.className = 'blue-theme';
-        await localforage.setItem('ae_theme', 'blue');
-    } else {
-        body.className = '';
-        await localforage.setItem('ae_theme', 'dark');
+    let currentTheme = await localforage.getItem('ae_theme') || 'blue';
+    
+    let currentIndex = themes.indexOf(currentTheme);
+    if (currentIndex === -1) currentIndex = 0;
+    
+    let nextIndex = (currentIndex + 1) % themes.length;
+    let nextTheme = themes[nextIndex];
+    
+    themes.forEach(t => body.classList.remove(`theme-${t}`));
+    
+    if (nextTheme !== 'blue') {
+        body.classList.add(`theme-${nextTheme}`);
+    }
+    
+    await localforage.setItem('ae_theme', nextTheme);
+    updateKoFiButton(nextTheme);
+}
+
+function updateKoFiButton(themeName) {
+    const existingWidget = document.querySelector('.kofi-overlay-widget-wrapper');
+    if (existingWidget) existingWidget.remove();
+
+    const colorHex = themeColors[themeName] || themeColors['blue'];
+    
+    if (typeof kofiWidgetOverlay !== 'undefined') {
+        kofiWidgetOverlay.draw('aidencharming', {
+            'type': 'floating-chat',
+            'floating-chat.donateButton.text': 'Support Me',
+            'floating-chat.donateButton.background-color': colorHex,
+            'floating-chat.donateButton.text-color': '#fff'
+        });
     }
 }
 
@@ -585,8 +620,11 @@ function formatNumber(num) {
 
 function formatTime(timeInSeconds) {
     const MAX_SECONDS_CAP = 3.154e10;
-    if (timeInSeconds > MAX_SECONDS_CAP || !isFinite(timeInSeconds)) {
+    if (timeInSeconds > MAX_SECONDS_CAP) {
         return "Over 1000 Years";
+    }
+    if (!isFinite(timeInSeconds)) {
+        return "N/A";
     }
     const days = Math.floor(timeInSeconds / 86400);
     const hours = Math.floor((timeInSeconds % 86400) / 3600);
@@ -698,7 +736,7 @@ async function loadETAData() {
         }
         const targetEnergyNum = await localforage.getItem('ae_targetEnergyETA') || '';
         if (el.targetEnergyETA) el.targetEnergyETA.value = targetEnergyNum;
-        const targetEnergyDenomText = await localforage.getItem('ae_targetEnergyETADenominationInput') || '';
+        const targetEnergyDenomText = await localforage.getItem('ae_targetEnergyETADenomInput') || '';
         if (el.targetEnergyETADenominationInput) el.targetEnergyETADenominationInput.value = targetEnergyDenomText;
         const targetDenom = denominations.find(d => d.name === targetEnergyDenomText);
         if (el.targetEnergyETADenominationValue) {
@@ -1159,9 +1197,10 @@ function calculateLootDrops() {
     const avgTokenDropQuantity = (tokenDropMin + tokenDropMax) / 2;
     const rawTokensPerSecond = effectiveKillsPerSecond * avgTokenDropQuantity * tokenMultiplier * baseTokenRate * spotMultiplier;
     const rawSpecialDropsPerSecond = effectiveKillsPerSecond * 1 * specialDropRate * spotMultiplier;
-    const REALITY_FACTOR = 1.0;
-    const effectiveTokensPerSecond = rawTokensPerSecond / REALITY_FACTOR;
-    const effectiveSpecialDropsPerSecond = rawSpecialDropsPerSecond / REALITY_FACTOR;
+    const TOKEN_FACTOR = 3.2;
+    const SPECIAL_DROP_FACTOR = 1.2;
+    const effectiveTokensPerSecond = rawTokensPerSecond / TOKEN_FACTOR;
+    const effectiveSpecialDropsPerSecond = rawSpecialDropsPerSecond / SPECIAL_DROP_FACTOR;
     let totalTokensEstimate = effectiveTokensPerSecond * targetTimeInSeconds;
     let totalSpecialDropsEstimate = effectiveSpecialDropsPerSecond * targetTimeInSeconds;
     let timeToTargetTokens = 0;
@@ -1333,6 +1372,7 @@ function populateEnemyDropdown() {
     const enemySelect = el.enemySelect;
     if (!enemySelect || !el.worldSelect || !el.enemyHealth || !el.enemyHealthDisplay) return;
     const selectedWorldName = el.worldSelect.value;
+    const selectedEnemy = el.enemySelect.value;
     const world = typeof worldData !== 'undefined' ? worldData[selectedWorldName] : null;
     enemySelect.innerHTML = '<option value="">-- Select an Enemy --</option>';
     el.enemyHealth.value = '';
@@ -2381,12 +2421,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el['theme-toggle']) {
         el['theme-toggle'].addEventListener('click', toggleTheme);
         (async () => {
-            const savedTheme = await localforage.getItem('ae_theme') || 'dark';
-            if (savedTheme === 'game') {
-                document.body.className = 'game-theme';
-            } else if (savedTheme === 'blue') {
-                document.body.className = 'blue-theme';
+            const savedTheme = await localforage.getItem('ae_theme') || 'blue';
+            if (savedTheme !== 'blue') {
+                document.body.classList.add(`theme-${savedTheme}`);
             }
+            updateKoFiButton(savedTheme);
         })();
     }
     if (el.worldSelect) {
@@ -2539,30 +2578,4 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.add('scrolled');
         }
     }, 5000);
-
-    (function() {
-        document.addEventListener('contextmenu', (e) => {
-            const target = e.target;
-            const tag = target.tagName;
-            const type = target.type;
-            const isInput = (tag === 'INPUT' && (type === 'text' || type === 'number' || type === 'password' || type === 'email'));
-            const isTextArea = tag === 'TEXTAREA';
-            if (isInput || isTextArea) {
-                return;
-            }
-            e.preventDefault();
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'F12') {
-                e.preventDefault();
-            }
-            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) {
-                e.preventDefault();
-            }
-            if (e.ctrlKey && e.key === 'u') {
-                e.preventDefault();
-            }
-        });
-    })();
 });
