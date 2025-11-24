@@ -1,5 +1,5 @@
 const el = {};
-const tabs = ['rankup', 'eta', 'time-to-energy', 'lootcalc', 'ttk', 'raid', 'alerts', 'star', 'checklist'];
+const tabs = ['rankup', 'eta', 'time-to-energy', 'coin', 'lootcalc', 'ttk', 'raid', 'alerts', 'star', 'checklist'];
 
 const themes = ['blue', 'dark-blue', 'teal', 'dark-teal', 'purple', 'dark-purple', 'pink', 'dark-pink', 'green', 'dark-green', 'orange', 'dark-orange', 'red', 'dark-red'];
 const themeColors = {
@@ -1182,6 +1182,53 @@ function calculateTimeToEnergy() {
     saveTimeToEnergyData();
 }
 
+function calculateCoinIncome() {
+    if (!el.coinPerKillResult || !el.coinPerHourResult) return;
+
+    const baseVal = getNumberValue('coinBase');
+
+    const baseDenom = currentNumberFormat === 'letters' ? 
+        (el.coinBaseDenomValue ? (parseFloat(el.coinBaseDenomValue.value) || 1) : 1) : 1;
+    const totalBase = baseVal * baseDenom;
+
+    const multiVal = getNumberValue('coinMulti');
+    const multiDenom = currentNumberFormat === 'letters' ? 
+        (el.coinMultiDenomValue ? (parseFloat(el.coinMultiDenomValue.value) || 1) : 1) : 1;
+    const totalMulti = multiVal * multiDenom;
+
+    const coinsPerKill = totalBase * totalMulti;
+
+    const LOOT_KILL_OVERHEAD = 0.5;
+    const LOOT_RESPAWN_DELAY = 2.5;
+
+    let killTimeInput = 'instakill';
+    if (el.coinMobKillTime && el.coinMobKillTime.value) {
+        killTimeInput = el.coinMobKillTime.value;
+    }
+
+    const farmingMode = el.coinFarmingMode ? el.coinFarmingMode.value : 'single';
+    const spotMultiplier = farmingMode === 'four' ? 4 : 1;
+
+    let rawTimePerKill = parseNumberInput(killTimeInput);
+    if (killTimeInput === 'instakill' || rawTimePerKill <= 0) {
+        rawTimePerKill = 0.001; 
+    }
+
+    const timeToCompleteKill = rawTimePerKill + LOOT_KILL_OVERHEAD;
+    const respawnLimitPerKill = LOOT_RESPAWN_DELAY / spotMultiplier; 
+    const timePerCycle = Math.max(timeToCompleteKill, respawnLimitPerKill);
+    
+    const effectiveKillsPerSecond = 1 / timePerCycle;
+    
+    const coinsPerSecond = coinsPerKill * effectiveKillsPerSecond * spotMultiplier;
+    const coinsPerHour = coinsPerSecond * 3600;
+
+    el.coinPerKillResult.innerText = formatNumber(coinsPerKill);
+    el.coinPerHourResult.innerText = formatNumber(coinsPerHour);
+
+    saveCoinData();
+}
+
 function calculateLootDrops() {
     if (!el.lootTokensResult || !el.lootSpecialDropsResult) return;
 
@@ -1521,6 +1568,27 @@ function populateBoostDurations() {
 
 function populateLootKillTimeDropdown() {
     const selectElement = el.lootMobKillTime;
+    if (!selectElement) return;
+    selectElement.innerHTML = '';
+    let option = document.createElement('option');
+    option.value = 'instakill';
+    option.innerText = 'Instakill (<0.5s Kill Time)';
+    selectElement.appendChild(option);
+    for (let s = 0.1; s <= 60.0; s += 0.1) {
+        const value = Math.round(s * 10) / 10;
+        if (value > 1 && value < 10 && value * 10 % 5 !== 0) continue;
+        if (value >= 10 && value % 1 !== 0) continue;
+        option = document.createElement('option');
+        option.value = value.toFixed(1);
+        option.innerText = `${value.toFixed(1)} Seconds`;
+        selectElement.appendChild(option);
+        if (s >= 1 && s < 10) s += 0.4;
+        else if (s >= 10) s += 0.9;
+    }
+}
+
+function populateKillTimeDropdownForId(elementId) {
+    const selectElement = document.getElementById(elementId);
     if (!selectElement) return;
     selectElement.innerHTML = '';
     let option = document.createElement('option');
@@ -2161,6 +2229,60 @@ async function loadAlertsData() {
     } catch (e) {}
 }
 
+async function saveCoinData() {
+    try {
+        if (el.coinBase) await localforage.setItem('ae_coin_base', el.coinBase.value);
+        if (el.coinBaseDenomInput) await localforage.setItem('ae_coin_baseDenom', el.coinBaseDenomInput.value);
+        if (el.coinBaseDenomValue) await localforage.setItem('ae_coin_baseDenomVal', el.coinBaseDenomValue.value);
+        
+        if (el.coinMulti) await localforage.setItem('ae_coin_multi', el.coinMulti.value);
+        if (el.coinMultiDenomInput) await localforage.setItem('ae_coin_multiDenom', el.coinMultiDenomInput.value);
+        if (el.coinMultiDenomValue) await localforage.setItem('ae_coin_multiDenomVal', el.coinMultiDenomValue.value);
+
+        if (el.coinMobKillTime) await localforage.setItem('ae_coin_killTime', el.coinMobKillTime.value);
+        if (el.coinFarmingMode) await localforage.setItem('ae_coin_farmingMode', el.coinFarmingMode.value);
+    } catch(e) {}
+}
+
+async function loadCoinData() {
+    try {
+        if (el.coinBase) el.coinBase.value = await localforage.getItem('ae_coin_base') || '';
+        
+        const baseDenomName = await localforage.getItem('ae_coin_baseDenom');
+        if (el.coinBaseDenomInput && baseDenomName) {
+            el.coinBaseDenomInput.value = baseDenomName;
+            const denom = denominations.find(d => d.name === baseDenomName);
+            if (denom && el.coinBaseDenomValue) el.coinBaseDenomValue.value = denom.value;
+        }
+
+        if (el.coinMulti) el.coinMulti.value = await localforage.getItem('ae_coin_multi') || '';
+
+        const multiDenomName = await localforage.getItem('ae_coin_multiDenom');
+        if (el.coinMultiDenomInput && multiDenomName) {
+            el.coinMultiDenomInput.value = multiDenomName;
+            const denom = denominations.find(d => d.name === multiDenomName);
+            if (denom && el.coinMultiDenomValue) el.coinMultiDenomValue.value = denom.value;
+        }
+
+        const savedKillTime = await localforage.getItem('ae_coin_killTime');
+        if (el.coinMobKillTime) el.coinMobKillTime.value = savedKillTime || 'instakill';
+
+        const savedMode = await localforage.getItem('ae_coin_farmingMode');
+        if (savedMode && el.coinFarmingMode) {
+            el.coinFarmingMode.value = savedMode;
+            // Update UI toggle buttons
+            const container = document.getElementById('coin-farming-mode-container');
+            if (container) {
+                container.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+                const activeBtn = container.querySelector(`[data-coin-farming-mode="${savedMode}"]`);
+                if (activeBtn) activeBtn.classList.add('active');
+            }
+        }
+
+        calculateCoinIncome();
+    } catch(e) {}
+}
+
 async function toggleCompletedVisibility() {
     const isHidden = el['hide-completed-checkbox'] ? el['hide-completed-checkbox'].checked : false;
     if (el['hide-completed-checkbox']) {
@@ -2181,7 +2303,7 @@ function populateTimeToReturnMinutesDropdown() {
     populateMinutesDropdown(el.timeToReturnSelectMinutes);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     document.querySelectorAll('[id]').forEach(element => {
         el[element.id] = element;
     });
@@ -2191,6 +2313,44 @@ document.addEventListener('DOMContentLoaded', () => {
             switchTab(e.target.value);
         });
     }
+    // ... inside DOMContentLoaded ...
+
+    // Populate the Kill Time Dropdown for Coins (Reusing the loot logic)
+    if (el.coinMobKillTime) {
+        // Clone the options from loot calculator logic or run the population logic again
+        // Since populateLootKillTimeDropdown targets 'lootMobKillTime', we need a helper:
+        populateKillTimeDropdownForId('coinMobKillTime');
+    }
+
+    // Set up Denomination Search for the new inputs
+    setupDenominationSearch('coinBaseDenomInput', 'coinBaseDenomValue', 'coinBaseDenomList', calculateCoinIncome);
+    setupDenominationSearch('coinMultiDenomInput', 'coinMultiDenomValue', 'coinMultiDenomList', calculateCoinIncome);
+
+    // Debounced Inputs
+    const coinDebounce = debounce(calculateCoinIncome, 300);
+    if (el.coinBase) el.coinBase.addEventListener('input', coinDebounce);
+    if (el.coinMulti) el.coinMulti.addEventListener('input', coinDebounce);
+    if (el.coinMobKillTime) el.coinMobKillTime.addEventListener('change', coinDebounce);
+
+    // Farming Mode Toggle Logic
+    const coinModeContainer = document.getElementById('coin-farming-mode-container');
+    if (coinModeContainer) {
+        coinModeContainer.addEventListener('click', (e) => {
+            const btn = e.target.closest('.toggle-btn');
+            if (btn) {
+                const mode = btn.dataset.coinFarmingMode;
+                el.coinFarmingMode.value = mode;
+                // Update visuals
+                coinModeContainer.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                calculateCoinIncome();
+            }
+        });
+    }
+
+    // Load Data
+    await loadCoinData();
+
     const lootFarmingModeContainer = el['loot-farming-mode-container'];
     if (lootFarmingModeContainer) {
         lootFarmingModeContainer.addEventListener('click', (e) => {
@@ -2508,6 +2668,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el.requestPermissionBtn) {
         el.requestPermissionBtn.addEventListener('click', requestNotificationPermission);
     }
+    
     Object.keys(dungeonIntervals).forEach(name => {
         const id = dungeonIntervals[name].id;
         const checkbox = el[`alert-${id}-dungeon`] || el[`alert-${id}-raid`];

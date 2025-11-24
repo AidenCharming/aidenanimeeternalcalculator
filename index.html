@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="topbar-right">
-                    <span class="version-text">Version 14.7</span>
+                    <span class="version-text">Version 15</span>
                     <div class="toggle-container">
                         <button id="format-toggle-scientific" class="toggle-btn" data-format="scientific">Scientific</button>
                         <button id="format-toggle-engineering" class="toggle-btn" data-format="engineering">Engineering</button>
@@ -88,6 +88,7 @@
                         <option value="time-to-energy">Time to Energy</option>
                         <option value="ttk">Time to Kill</option>
                         <option value="raid">Raids / Dungeons</option>
+                        <option value="coin">Coin Calc</option>
                         <option value="lootcalc">Loot Calc</option>
                         <option value="star">Star Calc</option>
                         <option value="checklist">Checklist</option>
@@ -104,6 +105,7 @@
                 <button id="tab-time-to-energy" class="tab-btn" data-tab="time-to-energy">Time to Energy</button>
                 <button id="tab-ttk" class="tab-btn" data-tab="ttk">Time to Kill</button>
                 <button id="tab-raid" class="tab-btn" data-tab="raid">Raids / Dungeons</button>
+                <button id="tab-coin" class="tab-btn" data-tab="coin">Coin Calc</button>
                 <button id="tab-lootcalc" class="tab-btn" data-tab="lootcalc">Loot Calc</button>
                 <button id="tab-star" class="tab-btn" data-tab="star">Star Calc</button> 
                 <button id="tab-checklist" class="tab-btn" data-tab="checklist">Checklist</button>
@@ -366,6 +368,72 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div id="panel-coin" class="hidden">
+                <div class="max-w-4xl ml-0 space-y-6">
+                    <div class="result-box p-6 rounded-xl border-2 border-blue-600 relative overflow-hidden" style="padding: 24px !important;">
+                       <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 to-yellow-600"></div>
+                        <h3 class="text-white font-bold text-lg mb-4 border-b pb-2 flex items-center gap-2" style="border-color: var(--border-light);">Coin Calculator</h3>
+            
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="coinBase" class="text-sm font-semibold text-gray-400">Base Coin Drop (Over Mobs Head)</label>
+                                    <div class="grid-denom">
+                                        <input type="text" id="coinBase" class="input-field w-full" placeholder="e.g., 90">
+                                        <div class="relative">
+                                            <input type="text" id="coinBaseDenomInput" class="input-field w-full" placeholder="e.g., Ud" autocomplete="off">
+                                            <input type="hidden" id="coinBaseDenomValue" value="1">
+                                            <div id="coinBaseDenomList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                 <label for="coinMulti" class="text-sm font-semibold text-gray-400">Coin Multiplier (In Stats)</label>
+                                    <div class="grid-denom">
+                                        <input type="text" id="coinMulti" class="input-field w-full" placeholder="e.g., 93.4">
+                                        <div class="relative">
+                                            <input type="text" id="coinMultiDenomInput" class="input-field w-full" placeholder="e.g., M" autocomplete="off">
+                                            <input type="hidden" id="coinMultiDenomValue" value="1">
+                                            <div id="coinMultiDenomList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label for="coinMobKillTime" class="text-sm font-semibold text-gray-400">Time Per Kill</label>
+                                    <div class="relative">
+                                        <select id="coinMobKillTime" class="select-field w-full rounded-lg"></select>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-400 mb-2 block">Farming Mode</label>
+                                    <div class="toggle-container w-full" id="coin-farming-mode-container">
+                                        <button class="toggle-btn w-1/2 active" data-coin-farming-mode="single">Single (1x)</button>
+                                        <button class="toggle-btn w-1/2" data-coin-farming-mode="four">4-Spot (4x)</button>
+                                    </div>
+                                    <input type="hidden" id="coinFarmingMode" value="single">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <div class="text-center p-4 result-box rounded-lg border">
+                                <p class="text-gray-400 text-sm uppercase tracking-wider mb-1">Coins Per Kill</p>
+                                <p id="coinPerKillResult" class="text-2xl font-bold text-yellow-500">0</p>
+                            </div>
+                            <div class="text-center p-4 result-box rounded-lg border" onclick="copyResult('coinPerHourResult')">
+                                <p class="text-blue-400 text-sm uppercase tracking-wider mb-1">Coins Per Hour</p>
+                                <p id="coinPerHourResult" class="text-3xl font-bold text-blue-400">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 </div>
 
                 <div id="panel-lootcalc" class="hidden">
