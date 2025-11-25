@@ -468,7 +468,7 @@ const worldData = {
             "Taiko": "1.38e196",
             "Kohara": "1.38e200",
 			"Kohara 20%": "27.6e198",
-            "Tsukaro": "27.6e204"
+            "Tsukaro": "1.38e204"
         }
     }
 };
