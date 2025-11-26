@@ -631,7 +631,7 @@ const checklistDataByWorld = {
       { id: 'cq65', name: 'Obelisk Quest'}
     ]
   },
-      "Asfordo Academy": {
+    "Asfordo Academy": {
       gachas: [
           { id: 'c195', name: 'Geass Potential' },
           { id: 'c196', name: 'Knightmare Frames' }
@@ -655,7 +655,7 @@ const checklistDataByWorld = {
       { id: 'cq68', name: 'Obelisk Quest'}
     ]
   },
-        "Science Village": {
+    "Science Village": {
       gachas: [
           { id: 'c202', name: 'IQ' },
           { id: 'c203', name: 'Scientific Weapons' }
@@ -674,6 +674,26 @@ const checklistDataByWorld = {
     quests: [
       { id: 'cq69', name: 'Key Quests'},
       { id: 'cq70', name: 'Obelisk Quest'}
+    ]
+  },
+  "Sand Village": {
+      gachas: [
+          { id: 'c207', name: 'Shinobi Clan' },
+          { id: 'c208', name: 'Kekkei Genkai' },
+          { id: 'c209', name: 'Power Eyes 2' }
+      ],
+      progressions: [
+      ],
+      sssRank: [
+          { id: 'c210', name: 'Sasaru' }
+      ],
+      auras: [
+      ],
+      accessories: [
+      ],
+    quests: [
+      { id: 'cq71', name: 'Key Quests'},
+      { id: 'cq72', name: 'Obelisk Quest'}
     ]
   },
 };
