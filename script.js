@@ -506,15 +506,18 @@ async function setNumberFormat(format) {
     if (format === currentNumberFormat) return;
     const previousFormat = currentNumberFormat;
     currentNumberFormat = format;
+    
     try {
         await localforage.setItem('ae_number_format', format);
     } catch (e) { }
+
     const scientificBtn = el['format-toggle-scientific'];
     const engineeringBtn = el['format-toggle-engineering'];
     const lettersBtn = el['format-toggle-letters'];
     if (scientificBtn) scientificBtn.classList.toggle('active', format === 'scientific');
     if (engineeringBtn) engineeringBtn.classList.toggle('active', format === 'engineering');
     if (lettersBtn) lettersBtn.classList.toggle('active', format === 'letters');
+
     const denomInputs = document.querySelectorAll('.grid-denom .relative');
     const isSimpleInput = format === 'scientific' || format === 'engineering';
     denomInputs.forEach(container => {
@@ -523,6 +526,7 @@ async function setNumberFormat(format) {
             container.style.display = isSimpleInput ? 'none' : 'block';
         }
     });
+
     const inputPairs = [
         { numId: 'currentEnergy', denomId: 'currentEnergyDenominationInput', valueId: 'currentEnergyDenominationValue' },
         { numId: 'energyPerClick', denomId: 'energyPerClickDenominationInput', valueId: 'energyPerClickDenominationValue' },
@@ -533,15 +537,22 @@ async function setNumberFormat(format) {
         { numId: 'energyPerClickTTE', denomId: 'energyPerClickTTEDenominationInput', valueId: 'energyPerClickTTEDenominationValue' },
         { numId: 'yourDPM', denomId: 'dpmDenominationInput', valueId: 'dpmDenominationValue' },
         { numId: 'yourDPMActivity', denomId: 'dpmActivityDenominationInput', valueId: 'dpmActivityDenominationValue' },
+        { numId: 'dmgCurrentEnergy', denomId: 'dmgCurrentEnergyDenomInput', valueId: 'dmgCurrentEnergyDenomValue' },
+        { numId: 'dmgStatDamage', denomId: 'dmgStatDamageDenomInput', valueId: 'dmgStatDamageDenomValue' },
+        { numId: 'coinBase', denomId: 'coinBaseDenomInput', valueId: 'coinBaseDenomValue' },
+        { numId: 'coinMulti', denomId: 'coinMultiDenomInput', valueId: 'coinMultiDenomValue' }
     ];
+
     if (previousFormat !== format) {
         inputPairs.forEach(pair => {
             const numEl = el[pair.numId];
             const denomInputEl = el[pair.denomId];
             const denomValueEl = el[pair.valueId];
+            
             if (numEl && denomInputEl && denomValueEl) {
                 let multiplier = previousFormat === 'letters' ? parseNumberInput(denomValueEl.value) : 1;
                 let rawNumber = parseNumberInput(numEl.value) * multiplier;
+
                 if (isFinite(rawNumber)) {
                     if (format === 'scientific') {
                         numEl.value = rawNumber.toExponential(2).replace('e+', 'e');
@@ -563,6 +574,7 @@ async function setNumberFormat(format) {
                 } else {
                     numEl.value = '0'; 
                 }
+
                 if (isSimpleInput) {
                     denomInputEl.value = '';
                     denomValueEl.value = 1;
@@ -570,6 +582,7 @@ async function setNumberFormat(format) {
             }
         });
     }
+
     displayRankRequirement();
     calculateRankUp();
     calculateEnergyETA();
@@ -578,6 +591,8 @@ async function setNumberFormat(format) {
     calculateTTK();
     if (el.enemySelect && el.enemySelect.value) displayEnemyHealth(); 
     calculateStarCalc();
+    calculateDamage(); 
+    calculateCoinIncome(); 
 }
 
 async function loadNumberFormat() {
@@ -1043,9 +1058,21 @@ async function loadStarData() {
 
 async function saveDamageData() {
     try {
-        if(el.dmgCurrentEnergy) await localforage.setItem('ae_dmg_energy', el.dmgCurrentEnergy.value);
-        if(el.dmgCurrentEnergyDenomInput) await localforage.setItem('ae_dmg_energyDenom', el.dmgCurrentEnergyDenomInput.value);
-        if(el.dmgCurrentEnergyDenomValue) await localforage.setItem('ae_dmg_energyDenomVal', el.dmgCurrentEnergyDenomValue.value);
+        if(el.dmgCurrentEnergy) {
+            await localforage.setItem('ae_dmg_energy', el.dmgCurrentEnergy.value);
+            // FORCE SYNC: Also save to the main "Rank Up" keys so it doesn't get overwritten on reload
+            await localforage.setItem('ae_currentEnergy', el.dmgCurrentEnergy.value); 
+        }
+        
+        if(el.dmgCurrentEnergyDenomInput) {
+            await localforage.setItem('ae_dmg_energyDenom', el.dmgCurrentEnergyDenomInput.value);
+            await localforage.setItem('ae_currentEnergyDenomInput', el.dmgCurrentEnergyDenomInput.value);
+        }
+        
+        if(el.dmgCurrentEnergyDenomValue) {
+            await localforage.setItem('ae_dmg_energyDenomVal', el.dmgCurrentEnergyDenomValue.value);
+            await localforage.setItem('ae_currentEnergyDenomValue', el.dmgCurrentEnergyDenomValue.value);
+        }
 
         if(el.dmgStatDamage) await localforage.setItem('ae_dmg_stat', el.dmgStatDamage.value);
         if(el.dmgStatDamageDenomInput) await localforage.setItem('ae_dmg_statDenom', el.dmgStatDamageDenomInput.value);
@@ -1064,9 +1091,6 @@ async function saveDamageData() {
 
 async function loadDamageData() {
     try {
-        // Sync Energy from other tabs if available, otherwise load specific
-        // Actually, let's load specific first, then if empty try to sync? 
-        // For simplicity, let's just load saved values. 
         if(el.dmgCurrentEnergy) el.dmgCurrentEnergy.value = await localforage.getItem('ae_dmg_energy') || '';
         
         const enDenom = await localforage.getItem('ae_dmg_energyDenom');
@@ -1464,7 +1488,6 @@ function calculateTTK() {
 function calculateDamage() {
     if (!el.dpsResult || !el.dpmResult) return;
 
-    // 1. Get Player Base Stats
     const energyVal = getNumberValue('dmgCurrentEnergy');
     const energyDenom = currentNumberFormat === 'letters' ? 
         (el.dmgCurrentEnergyDenomValue ? (parseFloat(el.dmgCurrentEnergyDenomValue.value) || 1) : 1) : 1;
@@ -1475,32 +1498,25 @@ function calculateDamage() {
         (el.dmgStatDamageDenomValue ? (parseFloat(el.dmgStatDamageDenomValue.value) || 1) : 1) : 1;
     const totalDamageStat = dmgVal * dmgDenom;
 
-    // 2. Calculate Average Click (Base * Crit Factor)
     const baseClick = totalEnergy * totalDamageStat;
     
     const critChance = (getNumberValue('dmgCritChance') || 0) / 100;
     const critDmg = (getNumberValue('dmgCritDamage') || 0) / 100;
 
-    // If chance > 0, avg = (1 * (1-chance)) + (critMult * chance)
-    // If chance is 0, factor is 1
     let avgMultiplier = 1;
     if (critChance > 0) {
         avgMultiplier = (1 * (1 - critChance)) + (critDmg * critChance);
     }
     const avgClickDamage = baseClick * avgMultiplier;
 
-    // 3. Player DPS
     const isFast = el.clickerSpeedDmg ? el.clickerSpeedDmg.checked : false;
     const clicksPerSec = isFast ? FAST_CPS : SLOW_CPS;
     const playerDPS = avgClickDamage * clicksPerSec;
 
-    // 4. Companion DPS
-    // Helper to calc minion dps: (Multiplier/100) * AvgClick * (1/Interval)
     const calcMinion = (inputId, interval) => {
-        const mult = getNumberValue(inputId); // This is in %, e.g. 166
+        const mult = getNumberValue(inputId);
         if (mult <= 0) return 0;
         const attacksPerSecond = 1 / interval;
-        // Companion damage is (Percent / 100) * PlayerAvgClick
         const dmgPerHit = (mult / 100) * avgClickDamage;
         return dmgPerHit * attacksPerSecond;
     };
@@ -1515,11 +1531,9 @@ function calculateDamage() {
     minionDPS += calcMinion('compZombie1', 2.0);
     minionDPS += calcMinion('compZombie2', 2.0);
 
-    // 5. Totals
     const totalDPS = playerDPS + minionDPS;
     const totalDPM = totalDPS * 60;
 
-    // 6. Output
     el.dpsResult.innerText = formatNumber(totalDPS);
     el.dpmResult.innerText = formatNumber(totalDPM);
 
@@ -2411,7 +2425,6 @@ async function loadCoinData() {
         const savedMode = await localforage.getItem('ae_coin_farmingMode');
         if (savedMode && el.coinFarmingMode) {
             el.coinFarmingMode.value = savedMode;
-            // Update UI toggle buttons
             const container = document.getElementById('coin-farming-mode-container');
             if (container) {
                 container.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
@@ -2485,7 +2498,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupDenominationSearch('dmgCurrentEnergyDenomInput', 'dmgCurrentEnergyDenomValue', 'dmgCurrentEnergyDenomList', calculateDamage);
     setupDenominationSearch('dmgStatDamageDenomInput', 'dmgStatDamageDenomValue', 'dmgStatDamageDenomList', calculateDamage);
 
-    // Debounce listeners
     const damageDebounce = debounce(calculateDamage, 300);
     
     const dmgInputs = [
@@ -2501,7 +2513,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if(el.clickerSpeedDmg) el.clickerSpeedDmg.addEventListener('change', damageDebounce);
 
-    // Data Loading
     await loadDamageData();
 
     const lootFarmingModeContainer = el['loot-farming-mode-container'];
@@ -2798,10 +2809,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         (async () => {
             const savedTheme = await localforage.getItem('ae_theme') || 'blue';
         
-        // Set the dropdown value
             el['theme-select'].value = savedTheme;
 
-        // Apply visual theme
             if (savedTheme !== 'blue') {
                 document.body.classList.add(`theme-${savedTheme}`);
             }
