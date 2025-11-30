@@ -701,4 +701,25 @@ const checklistDataByWorld = {
       { id: 'cq74', name: 'Obelisk Quest'}
     ]
   },
+  "Night Raid Base": {
+      gachas: [
+          { id: 'c214', name: 'Energy Taigu' },
+          { id: 'c215', name: 'Damage Taigu' },
+      ],
+      progressions: [
+          { id: 'c216', name: 'Taigu Evolve' }
+      ],
+      sssRank: [
+          { id: 'c217', name: 'Susanoe' }
+      ],
+      auras: [
+      ],
+      accessories: [
+      ],
+    quests: [
+      { id: 'cq75', name: 'Teigu Quest'},
+      { id: 'cq76', name: 'Key Quests'},
+      { id: 'cq77', name: 'Obelisk Quest'}
+    ]
+  },
 };
