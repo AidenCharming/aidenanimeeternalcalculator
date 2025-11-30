@@ -599,7 +599,7 @@ const checklistDataByWorld = {
       ],
       sssRank: [
           { id: 'c186', name: 'Tagamura' },
-          { id: 'c187', name: 'Takemoto' }
+          { id: 'c187', name: '1moto' }
       ],
       auras: [],
       accessories: [],

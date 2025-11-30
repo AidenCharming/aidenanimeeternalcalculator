@@ -58,7 +58,7 @@
                     <h1 class="topbar-title leading-none">Anime Eternal<br>Calculator</h1>
                     <div class="flex flex-col justify-center">
                         <div class="topbar-credits">
-                            Coded By: AidenCharming & Ray. | Data: AE Spreadsheet, KodakUSA, Ra.
+                            Coded By: AidenCharming | Data: AE Spreadsheet, KodakUSA, Ra, Sscrylix
                         </div>
                         <div class="text-blue-500 font-bold text-[15px] mt-0.5">
                             DM AidenCharming on Discord for bugs/features.
@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="topbar-right">
-                    <span class="version-text">Version 16.2</span>
+                    <span class="version-text">Version 17</span>
                     <div class="toggle-container">
                         <button id="format-toggle-scientific" class="toggle-btn" data-format="scientific">Scientific</button>
                         <button id="format-toggle-engineering" class="toggle-btn" data-format="engineering">Engineering</button>
@@ -87,6 +87,7 @@
                         <option value="eta">Target Energy ETA</option>
                         <option value="time-to-energy">Time to Energy</option>
                         <option value="ttk">Time to Kill</option>
+                        <option value="damage">Damage Calc</option>
                         <option value="raid">Raids / Dungeons</option>
                         <option value="coin">Coin Calc</option>
                         <option value="lootcalc">Loot Calc</option>
@@ -103,6 +104,7 @@
                 <button id="tab-rankup" class="tab-btn active" data-tab="rankup">Rank Up</button>
                 <button id="tab-eta" class="tab-btn" data-tab="eta">Target Energy ETA</button>
                 <button id="tab-time-to-energy" class="tab-btn" data-tab="time-to-energy">Time to Energy</button>
+                <button id="tab-damage" class="tab-btn" data-tab="damage">Damage Calc</button>
                 <button id="tab-ttk" class="tab-btn" data-tab="ttk">Time to Kill</button>
                 <button id="tab-raid" class="tab-btn" data-tab="raid">Raids / Dungeons</button>
                 <button id="tab-coin" class="tab-btn" data-tab="coin">Coin Calc</button>
@@ -186,6 +188,110 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="panel-damage" class="hidden">
+                    <div class="max-w-4xl ml-0 space-y-6">
+                        <div class="result-box p-6 rounded-xl border-2 border-blue-600 relative overflow-hidden" style="padding: 24px !important;">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-orange-500"></div>
+                            <h3 class="text-white font-bold text-lg mb-4 border-b pb-2 flex items-center gap-2" style="border-color: var(--border-light);">Player Stats</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="dmgCurrentEnergy">Current Energy</label>
+                                        <div class="grid-denom">
+                                            <input type="text" id="dmgCurrentEnergy" class="input-field w-full" placeholder="e.g., 44.9">
+                                            <div class="relative">
+                                                <input type="text" id="dmgCurrentEnergyDenomInput" class="input-field w-full" placeholder="e.g., sxQDR" autocomplete="off">
+                                                <input type="hidden" id="dmgCurrentEnergyDenomValue" value="1">
+                                                <div id="dmgCurrentEnergyDenomList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="dmgStatDamage">Damage (From Stats)</label>
+                                        <div class="grid-denom">
+                                            <input type="text" id="dmgStatDamage" class="input-field w-full" placeholder="e.g., 4.16">
+                                            <div class="relative">
+                                                <input type="text" id="dmgStatDamageDenomInput" class="input-field w-full" placeholder="e.g., SpD" autocomplete="off">
+                                                <input type="hidden" id="dmgStatDamageDenomValue" value="1">
+                                                <div id="dmgStatDamageDenomList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="dmgCritChance">Crit Chance (%)</label>
+                            <input type="text" id="dmgCritChance" class="input-field w-full" placeholder="e.g., 6">
+                        </div>
+                        <div>
+                            <label for="dmgCritDamage">Crit Dmg (%)</label>
+                            <input type="text" id="dmgCritDamage" class="input-field w-full" placeholder="e.g., 170">
+                        </div>
+                    </div>
+                    <div>
+                        <label>Clicker Speed</label>
+                        <div class="toggle-container w-full" data-sync-id="clicker">
+                            <button class="toggle-btn w-1/2 active" data-clickerspeed-dmg="slow">Slow</button>
+                            <button class="toggle-btn w-1/2" data-clickerspeed-dmg="fast">Fast</button>
+                        </div>
+                        <input type="checkbox" id="clickerSpeedDmg" class="hidden">
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-white font-bold text-lg mt-8 mb-4 border-b pb-2 flex items-center gap-2" style="border-color: var(--border-light);">Companions (Enter Multiplier %)</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="result-box p-4 rounded border">
+                    <label class="text-xs text-purple-400 font-bold mb-2 block">Shadows (1.0s Interval)</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="text-[10px] text-gray-500">Shadow 1 (%)</label><input type="text" id="compShadow1" class="input-field w-full text-center" placeholder="e.g. 166%"></div>
+                        <div><label class="text-[10px] text-gray-500">Shadow 2 (%)</label><input type="text" id="compShadow2" class="input-field w-full text-center" placeholder="Multiplier %"></div>
+                    </div>
+                </div>
+
+                <div class="result-box p-4 rounded border">
+                    <label class="text-xs text-red-400 font-bold mb-2 block">Titans (1.0s Interval)</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="text-[10px] text-gray-500">Titan 1 (%)</label><input type="text" id="compTitan1" class="input-field w-full text-center" placeholder="e.g. 174%"></div>
+                        <div><label class="text-[10px] text-gray-500">Titan 2 (%)</label><input type="text" id="compTitan2" class="input-field w-full text-center" placeholder="Multiplier %"></div>
+                    </div>
+                </div>
+
+                <div class="result-box p-4 rounded border">
+                    <label class="text-xs text-yellow-400 font-bold mb-2 block">Stands (0.2s Interval)</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="text-[10px] text-gray-500">Stand 1 (%)</label><input type="text" id="compStand1" class="input-field w-full text-center" placeholder="e.g. 68.7%"></div>
+                        <div><label class="text-[10px] text-gray-500">Stand 2 (%)</label><input type="text" id="compStand2" class="input-field w-full text-center" placeholder="Multiplier %"></div>
+                    </div>
+                </div>
+
+                <div class="result-box p-4 rounded border">
+                    <label class="text-xs text-green-400 font-bold mb-2 block">Zombies (2.0s Interval)</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="text-[10px] text-gray-500">Zombie 1 (%)</label><input type="text" id="compZombie1" class="input-field w-full text-center" placeholder="e.g. 1220%"></div>
+                        <div><label class="text-[10px] text-gray-500">Zombie 2 (%)</label><input type="text" id="compZombie2" class="input-field w-full text-center" placeholder="Multiplier %"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div class="text-center p-4 result-box rounded-lg border" onclick="copyResult('dpsResult')">
+                    <p class="text-gray-400 text-sm uppercase tracking-wider mb-1">Total DPS</p>
+                    <p id="dpsResult" class="text-2xl font-bold text-yellow-500">0</p>
+                </div>
+                <div class="text-center p-4 result-box rounded-lg border" onclick="copyResult('dpmResult')">
+                    <p class="text-blue-400 text-sm uppercase tracking-wider mb-1">Total DPM</p>
+                    <p id="dpmResult" class="text-3xl font-bold text-blue-400">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
                 <div id="panel-eta" class="hidden">
                     <div class="max-w-4xl ml-0 space-y-6">

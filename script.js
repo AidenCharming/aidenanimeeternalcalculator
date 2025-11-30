@@ -1,5 +1,5 @@
 const el = {};
-const tabs = ['rankup', 'eta', 'time-to-energy', 'coin', 'lootcalc', 'ttk', 'raid', 'alerts', 'star', 'checklist'];
+const tabs = ['rankup', 'eta', 'time-to-energy', 'coin', 'lootcalc', 'ttk', 'damage', 'raid', 'alerts', 'star', 'checklist'];
 
 const themes = ['blue', 'dark-blue', 'teal', 'dark-teal', 'purple', 'dark-purple', 'pink', 'dark-pink', 'green', 'dark-green', 'orange', 'dark-orange', 'red', 'dark-red'];
 const themeColors = {
@@ -394,13 +394,18 @@ function setClickerSpeed(speed, button) {
     const buttons = parent.querySelectorAll('.toggle-btn');
     buttons.forEach(btn => btn.classList.remove('active'));
     button.classList.add('active');
+    
     const isFast = (speed === 'fast');
+    
     if (el.clickerSpeed) el.clickerSpeed.checked = isFast;
     if (el.clickerSpeedETA) el.clickerSpeedETA.checked = isFast;
     if (el.clickerSpeedTTE) el.clickerSpeedTTE.checked = isFast;
+    if (el.clickerSpeedDmg) el.clickerSpeedDmg.checked = isFast;
+    
     calculateRankUp();
     calculateEnergyETA();
     calculateTimeToEnergy();
+    calculateDamage();
 }
 
 function copyResult(elementId) {
@@ -1036,6 +1041,75 @@ async function loadStarData() {
     } catch (e) {}
 }
 
+async function saveDamageData() {
+    try {
+        if(el.dmgCurrentEnergy) await localforage.setItem('ae_dmg_energy', el.dmgCurrentEnergy.value);
+        if(el.dmgCurrentEnergyDenomInput) await localforage.setItem('ae_dmg_energyDenom', el.dmgCurrentEnergyDenomInput.value);
+        if(el.dmgCurrentEnergyDenomValue) await localforage.setItem('ae_dmg_energyDenomVal', el.dmgCurrentEnergyDenomValue.value);
+
+        if(el.dmgStatDamage) await localforage.setItem('ae_dmg_stat', el.dmgStatDamage.value);
+        if(el.dmgStatDamageDenomInput) await localforage.setItem('ae_dmg_statDenom', el.dmgStatDamageDenomInput.value);
+        if(el.dmgStatDamageDenomValue) await localforage.setItem('ae_dmg_statDenomVal', el.dmgStatDamageDenomValue.value);
+
+        if(el.dmgCritChance) await localforage.setItem('ae_dmg_critChance', el.dmgCritChance.value);
+        if(el.dmgCritDamage) await localforage.setItem('ae_dmg_critDmg', el.dmgCritDamage.value);
+        if(el.clickerSpeedDmg) await localforage.setItem('ae_clickerSpeed', el.clickerSpeedDmg.checked);
+
+        const comps = ['compShadow1','compShadow2','compTitan1','compTitan2','compStand1','compStand2','compZombie1','compZombie2'];
+        for(const id of comps) {
+            if(el[id]) await localforage.setItem(`ae_dmg_${id}`, el[id].value);
+        }
+    } catch(e){}
+}
+
+async function loadDamageData() {
+    try {
+        // Sync Energy from other tabs if available, otherwise load specific
+        // Actually, let's load specific first, then if empty try to sync? 
+        // For simplicity, let's just load saved values. 
+        if(el.dmgCurrentEnergy) el.dmgCurrentEnergy.value = await localforage.getItem('ae_dmg_energy') || '';
+        
+        const enDenom = await localforage.getItem('ae_dmg_energyDenom');
+        if(el.dmgCurrentEnergyDenomInput && enDenom) {
+            el.dmgCurrentEnergyDenomInput.value = enDenom;
+            const d = denominations.find(x => x.name === enDenom);
+            if(d && el.dmgCurrentEnergyDenomValue) el.dmgCurrentEnergyDenomValue.value = d.value;
+        }
+
+        if(el.dmgStatDamage) el.dmgStatDamage.value = await localforage.getItem('ae_dmg_stat') || '';
+        const statDenom = await localforage.getItem('ae_dmg_statDenom');
+        if(el.dmgStatDamageDenomInput && statDenom) {
+            el.dmgStatDamageDenomInput.value = statDenom;
+            const d = denominations.find(x => x.name === statDenom);
+            if(d && el.dmgStatDamageDenomValue) el.dmgStatDamageDenomValue.value = d.value;
+        }
+
+        if(el.dmgCritChance) el.dmgCritChance.value = await localforage.getItem('ae_dmg_critChance') || '';
+        if(el.dmgCritDamage) el.dmgCritDamage.value = await localforage.getItem('ae_dmg_critDmg') || '';
+
+        const clickerSpeed = await localforage.getItem('ae_clickerSpeed');
+        const isFast = (clickerSpeed === true || clickerSpeed === 'true');
+        if(el.clickerSpeedDmg) {
+            el.clickerSpeedDmg.checked = isFast;
+            const parent = el.clickerSpeedDmg.parentElement;
+            if(parent) {
+                const btn = isFast ? parent.querySelector('[data-clickerspeed-dmg="fast"]') : parent.querySelector('[data-clickerspeed-dmg="slow"]');
+                if(btn) {
+                    parent.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                }
+            }
+        }
+
+        const comps = ['compShadow1','compShadow2','compTitan1','compTitan2','compStand1','compStand2','compZombie1','compZombie2'];
+        for(const id of comps) {
+            if(el[id]) el[id].value = await localforage.getItem(`ae_dmg_${id}`) || '';
+        }
+
+        calculateDamage();
+    } catch(e){}
+}
+
 function getEffectiveEnergyPerClick(baseEnergyPerClick, critChanceId, critEnergyId) {
     if (baseEnergyPerClick <= 0) return 0;
     const critChance = getNumberValue(critChanceId) / 100;
@@ -1385,6 +1459,71 @@ function calculateTTK() {
         if (questReturnEl) questReturnEl.innerText = '';
     }
     saveTTKData();
+}
+
+function calculateDamage() {
+    if (!el.dpsResult || !el.dpmResult) return;
+
+    // 1. Get Player Base Stats
+    const energyVal = getNumberValue('dmgCurrentEnergy');
+    const energyDenom = currentNumberFormat === 'letters' ? 
+        (el.dmgCurrentEnergyDenomValue ? (parseFloat(el.dmgCurrentEnergyDenomValue.value) || 1) : 1) : 1;
+    const totalEnergy = energyVal * energyDenom;
+
+    const dmgVal = getNumberValue('dmgStatDamage');
+    const dmgDenom = currentNumberFormat === 'letters' ? 
+        (el.dmgStatDamageDenomValue ? (parseFloat(el.dmgStatDamageDenomValue.value) || 1) : 1) : 1;
+    const totalDamageStat = dmgVal * dmgDenom;
+
+    // 2. Calculate Average Click (Base * Crit Factor)
+    const baseClick = totalEnergy * totalDamageStat;
+    
+    const critChance = (getNumberValue('dmgCritChance') || 0) / 100;
+    const critDmg = (getNumberValue('dmgCritDamage') || 0) / 100;
+
+    // If chance > 0, avg = (1 * (1-chance)) + (critMult * chance)
+    // If chance is 0, factor is 1
+    let avgMultiplier = 1;
+    if (critChance > 0) {
+        avgMultiplier = (1 * (1 - critChance)) + (critDmg * critChance);
+    }
+    const avgClickDamage = baseClick * avgMultiplier;
+
+    // 3. Player DPS
+    const isFast = el.clickerSpeedDmg ? el.clickerSpeedDmg.checked : false;
+    const clicksPerSec = isFast ? FAST_CPS : SLOW_CPS;
+    const playerDPS = avgClickDamage * clicksPerSec;
+
+    // 4. Companion DPS
+    // Helper to calc minion dps: (Multiplier/100) * AvgClick * (1/Interval)
+    const calcMinion = (inputId, interval) => {
+        const mult = getNumberValue(inputId); // This is in %, e.g. 166
+        if (mult <= 0) return 0;
+        const attacksPerSecond = 1 / interval;
+        // Companion damage is (Percent / 100) * PlayerAvgClick
+        const dmgPerHit = (mult / 100) * avgClickDamage;
+        return dmgPerHit * attacksPerSecond;
+    };
+
+    let minionDPS = 0;
+    minionDPS += calcMinion('compShadow1', 1.0);
+    minionDPS += calcMinion('compShadow2', 1.0);
+    minionDPS += calcMinion('compTitan1', 1.0);
+    minionDPS += calcMinion('compTitan2', 1.0);
+    minionDPS += calcMinion('compStand1', 0.2);
+    minionDPS += calcMinion('compStand2', 0.2);
+    minionDPS += calcMinion('compZombie1', 2.0);
+    minionDPS += calcMinion('compZombie2', 2.0);
+
+    // 5. Totals
+    const totalDPS = playerDPS + minionDPS;
+    const totalDPM = totalDPS * 60;
+
+    // 6. Output
+    el.dpsResult.innerText = formatNumber(totalDPS);
+    el.dpmResult.innerText = formatNumber(totalDPM);
+
+    saveDamageData();
 }
 
 function displayRankRequirement() {
@@ -1994,12 +2133,13 @@ function syncEnergyData(sourceInputId, sourceDenomInputId, sourceDenomValueId) {
     const sourceDenomInput = el[sourceDenomInputId]?.value || '';
     const sourceDenomValue = el[sourceDenomValueId]?.value || '1';
     const energyInputMap = {
-        'currentEnergy': ['currentEnergyETA', 'currentEnergyTTE'],
+        'currentEnergy': ['currentEnergyETA', 'currentEnergyTTE', 'dmgCurrentEnergy'],
         'energyPerClick': ['energyPerClickETA', 'energyPerClickTTE'],
         'currentEnergyETA': ['currentEnergy', 'currentEnergyTTE'],
         'energyPerClickETA': ['energyPerClick', 'energyPerClickTTE'],
         'currentEnergyTTE': ['currentEnergy', 'currentEnergyETA'],
-        'energyPerClickTTE': ['energyPerClick', 'energyPerClickETA']
+        'energyPerClickTTE': ['energyPerClick', 'energyPerClickETA'],
+        'dmgCurrentEnergy': ['currentEnergy', 'currentEnergyETA', 'currentEnergyTTE']
     };
     const criticalInputMap = {
         'energyCriticalChance': ['energyCriticalChanceETA', 'energyCriticalChanceTTE'],
@@ -2010,7 +2150,8 @@ function syncEnergyData(sourceInputId, sourceDenomInputId, sourceDenomValueId) {
         'criticalEnergyTTE': ['criticalEnergy', 'criticalEnergyETA']
     };
     const denomInputMap = {
-        'currentEnergyDenominationInput': ['currentEnergyETADenominationInput', 'currentEnergyTTEDenominationInput'],
+        'dmgCurrentEnergyDenomInput': ['currentEnergyDenominationInput', 'currentEnergyETADenominationInput', 'currentEnergyTTEDenominationInput'],
+        'currentEnergyDenominationInput': ['currentEnergyETADenominationInput', 'currentEnergyTTEDenominationInput', 'dmgCurrentEnergyDenomInput'],
         'currentEnergyDenominationValue': ['currentEnergyETADenominationValue', 'currentEnergyTTEDenominationValue'],
         'energyPerClickDenominationInput': ['energyPerClickETADenominationInput', 'energyPerClickTTEDenominationInput'],
         'energyPerClickDenominationValue': ['energyPerClickETADenominationValue', 'energyPerClickTTEDenominationValue'],
@@ -2313,26 +2454,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             switchTab(e.target.value);
         });
     }
-    // ... inside DOMContentLoaded ...
-
-    // Populate the Kill Time Dropdown for Coins (Reusing the loot logic)
     if (el.coinMobKillTime) {
-        // Clone the options from loot calculator logic or run the population logic again
-        // Since populateLootKillTimeDropdown targets 'lootMobKillTime', we need a helper:
         populateKillTimeDropdownForId('coinMobKillTime');
     }
 
-    // Set up Denomination Search for the new inputs
     setupDenominationSearch('coinBaseDenomInput', 'coinBaseDenomValue', 'coinBaseDenomList', calculateCoinIncome);
     setupDenominationSearch('coinMultiDenomInput', 'coinMultiDenomValue', 'coinMultiDenomList', calculateCoinIncome);
 
-    // Debounced Inputs
     const coinDebounce = debounce(calculateCoinIncome, 300);
     if (el.coinBase) el.coinBase.addEventListener('input', coinDebounce);
     if (el.coinMulti) el.coinMulti.addEventListener('input', coinDebounce);
     if (el.coinMobKillTime) el.coinMobKillTime.addEventListener('change', coinDebounce);
 
-    // Farming Mode Toggle Logic
     const coinModeContainer = document.getElementById('coin-farming-mode-container');
     if (coinModeContainer) {
         coinModeContainer.addEventListener('click', (e) => {
@@ -2340,7 +2473,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (btn) {
                 const mode = btn.dataset.coinFarmingMode;
                 el.coinFarmingMode.value = mode;
-                // Update visuals
                 coinModeContainer.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 calculateCoinIncome();
@@ -2348,8 +2480,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Load Data
     await loadCoinData();
+
+    setupDenominationSearch('dmgCurrentEnergyDenomInput', 'dmgCurrentEnergyDenomValue', 'dmgCurrentEnergyDenomList', calculateDamage);
+    setupDenominationSearch('dmgStatDamageDenomInput', 'dmgStatDamageDenomValue', 'dmgStatDamageDenomList', calculateDamage);
+
+    // Debounce listeners
+    const damageDebounce = debounce(calculateDamage, 300);
+    
+    const dmgInputs = [
+        'dmgCurrentEnergy', 'dmgStatDamage', 'dmgCritChance', 'dmgCritDamage',
+        'compShadow1', 'compShadow2', 
+        'compTitan1', 'compTitan2', 
+        'compStand1', 'compStand2', 
+        'compZombie1', 'compZombie2'
+    ];
+    dmgInputs.forEach(id => {
+        if(el[id]) el[id].addEventListener('input', damageDebounce);
+    });
+
+    if(el.clickerSpeedDmg) el.clickerSpeedDmg.addEventListener('change', damageDebounce);
+
+    // Data Loading
+    await loadDamageData();
 
     const lootFarmingModeContainer = el['loot-farming-mode-container'];
     if (lootFarmingModeContainer) {
@@ -2420,6 +2573,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                             setClickerSpeed(button.dataset.clickerspeedTte, button);
                         } else if (button.dataset.farmingMode) {
                             setFarmingMode(button.dataset.farmingMode, button);
+                        } else if (button.dataset.clickerspeedDmg) {
+                            setClickerSpeed(button.dataset.clickerspeedDmg, button);
                         } else if (button.dataset.format) {
                             setNumberFormat(button.dataset.format);
                         }
