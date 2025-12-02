@@ -596,10 +596,11 @@ const checklistDataByWorld = {
         { id: 'c183', name: 'Assassin Critical Energy (10)' },
         { id: 'c184', name: 'Assassin Critical Damage (10)' },
         { id: 'c185', name: 'Assassin Craft' },
+        { id: 'c186', name: 'Scythe Leveling' },
       ],
       sssRank: [
-          { id: 'c186', name: 'Tagamura' },
-          { id: 'c187', name: '1moto' }
+          { id: 'c187', name: 'Tagamura' },
+          { id: 'c188', name: '1moto' }
       ],
       auras: [],
       accessories: [],
@@ -612,22 +613,22 @@ const checklistDataByWorld = {
   },
     "Re:Manor": {
       gachas: [
-          { id: 'c188', name: 'Spirit Pact' },
-          { id: 'c189', name: 'Witch Factor' },
-          { id: 'c190', name: 'Re:Spirit Pact' },
-          { id: 'c191', name: 'Re: Witch Token' },
-          { id: 'c192', name: 'Artifical Spirit Blessings' },
-          { id: 'c193', name: 'Gospel Curses' },
-          { id: 'c194', name: 'Witch Authority' }
+          { id: 'c189', name: 'Spirit Pact' },
+          { id: 'c190', name: 'Witch Factor' },
+          { id: 'c191', name: 'Re:Spirit Pact' },
+          { id: 'c192', name: 'Re: Witch Token' },
+          { id: 'c193', name: 'Artifical Spirit Blessings' },
+          { id: 'c194', name: 'Gospel Curses' },
+          { id: 'c195', name: 'Witch Authority' }
       ],
       progressions: [
       ],
       sssRank: [
-          { id: 'c195', name: 'Roswald' }
+          { id: 'c196', name: 'Roswald' }
       ],
       auras: [
-          { id: 'c196', name: 'Blue Oni Aura (C)' },
-          { id: 'c197', name: 'Pink Oni Aura (D)' }
+          { id: 'c197', name: 'Blue Oni Aura (C)' },
+          { id: 'c198', name: 'Pink Oni Aura (D)' }
       ],
       accessories: [],
     quests: [
@@ -637,21 +638,21 @@ const checklistDataByWorld = {
   },
     "Asfordo Academy": {
       gachas: [
-          { id: 'c198', name: 'Geass Potential' },
-          { id: 'c199', name: 'Knightmare Frames' }
+          { id: 'c199', name: 'Geass Potential' },
+          { id: 'c200', name: 'Knightmare Frames' }
       ],
       progressions: [
-        { id: 'c200', name: 'Geass Leveling' },
-        { id: 'c201', name: 'Geass Evolver' }
+        { id: 'c201', name: 'Geass Leveling' },
+        { id: 'c202', name: 'Geass Evolver' }
       ],
       sssRank: [
-          { id: 'c202', name: 'Emperor Reloush' }
+          { id: 'c203', name: 'Emperor Reloush' }
       ],
       auras: [
       ],
       accessories: [
-        { id: 'c203', name: 'Zero Cape (SS)' },
-        { id: 'c204', name: 'Zero Mask (SS)' },
+        { id: 'c204', name: 'Zero Cape (SS)' },
+        { id: 'c205', name: 'Zero Mask (SS)' },
       ],
     quests: [
       { id: 'cq67', name: 'Black Knights Quest'},
@@ -661,15 +662,16 @@ const checklistDataByWorld = {
   },
     "Science Village": {
       gachas: [
-          { id: 'c205', name: 'IQ' },
-          { id: 'c206', name: 'Scientific Weapons' }
+          { id: 'c206', name: 'IQ' },
+          { id: 'c207', name: 'Scientific Weapons' }
       ],
       progressions: [
-        { id: 'c207', name: 'Scientific Tools Crafting' },
-        { id: 'c208', name: 'Science Material Updgrades (100)' }
+        { id: 'c208', name: 'Scientific Tools Crafting' },
+        { id: 'c209', name: 'Science Material Updgrades (100)' },
+        { id: 'c210', name: 'Science Upgrades (16)' }
       ],
       sssRank: [
-          { id: 'c209', name: 'Tsukaro' }
+          { id: 'c211', name: 'Tsukaro' }
       ],
       auras: [
       ],
@@ -682,14 +684,14 @@ const checklistDataByWorld = {
   },
   "Sand Village": {
       gachas: [
-          { id: 'c210', name: 'Shinobi Clan' },
-          { id: 'c211', name: 'Kekkei Genkai' },
-          { id: 'c212', name: 'Power Eyes 2' }
+          { id: 'c212', name: 'Shinobi Clan' },
+          { id: 'c213', name: 'Kekkei Genkai' },
+          { id: 'c214', name: 'Power Eyes 2' }
       ],
       progressions: [
       ],
       sssRank: [
-          { id: 'c213', name: 'Sasaru' }
+          { id: 'c215', name: 'Sasaru' }
       ],
       auras: [
       ],
@@ -703,14 +705,14 @@ const checklistDataByWorld = {
   },
   "Night Raid Base": {
       gachas: [
-          { id: 'c214', name: 'Energy Taigu' },
-          { id: 'c215', name: 'Damage Taigu' },
+          { id: 'c216', name: 'Energy Taigu' },
+          { id: 'c217', name: 'Damage Taigu' },
       ],
       progressions: [
-          { id: 'c216', name: 'Taigu Evolve' }
+          { id: 'c218', name: 'Taigu Evolve' }
       ],
       sssRank: [
-          { id: 'c217', name: 'Susanoe' }
+          { id: 'c219', name: 'Susanoe' }
       ],
       auras: [
       ],
