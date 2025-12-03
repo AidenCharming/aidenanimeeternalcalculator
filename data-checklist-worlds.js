@@ -686,42 +686,46 @@ const checklistDataByWorld = {
       gachas: [
           { id: 'c212', name: 'Shinobi Clan' },
           { id: 'c213', name: 'Kekkei Genkai' },
-          { id: 'c214', name: 'Power Eyes 2' }
+          { id: 'c214', name: 'Power Eyes 2' },
+          { id: 'c215', name: 'Chakra Infusion' }
       ],
       progressions: [
       ],
       sssRank: [
-          { id: 'c215', name: 'Sasaru' }
+          { id: 'c216', name: 'Sasaru' }
       ],
       auras: [
+          { id: 'c217', name: 'Sand Aura (A)' }
       ],
       accessories: [
+          { id: 'c218', name: 'One Tailed Beast (SS)' }
       ],
     quests: [
-      { id: 'cq72', name: 'Sand Kage'},
-      { id: 'cq73', name: 'Key Quests'},
-      { id: 'cq74', name: 'Obelisk Quest'}
+      { id: 'cq72', name: 'Hero License Quest'},
+      { id: 'cq73', name: 'Sand Kage'},
+      { id: 'cq74', name: 'Key Quests'},
+      { id: 'cq75', name: 'Obelisk Quest'}
     ]
   },
   "Night Raid Base": {
       gachas: [
-          { id: 'c216', name: 'Energy Taigu' },
-          { id: 'c217', name: 'Damage Taigu' },
+          { id: 'c219', name: 'Energy Taigu' },
+          { id: 'c220', name: 'Damage Taigu' },
       ],
       progressions: [
-          { id: 'c218', name: 'Taigu Evolve' }
+          { id: 'c221', name: 'Taigu Evolve' }
       ],
       sssRank: [
-          { id: 'c219', name: 'Susanoe' }
+          { id: 'c222', name: 'Susanoe' }
       ],
       auras: [
       ],
       accessories: [
       ],
     quests: [
-      { id: 'cq75', name: 'Teigu Quest'},
-      { id: 'cq76', name: 'Key Quests'},
-      { id: 'cq77', name: 'Obelisk Quest'}
+      { id: 'cq76', name: 'Teigu Quest'},
+      { id: 'cq77', name: 'Key Quests'},
+      { id: 'cq78', name: 'Obelisk Quest'}
     ]
   },
 };
