@@ -525,9 +525,11 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'c157', name: 'Galaxy Hunter' }
     ],
-    auras: [],
+    auras: [
+      { id: 'c158', name: 'Galaxy Aura (SSS)' }
+    ],
     accessories: [
-      { id: 'c158', name: 'Red Hero Boots (S)' }
+      { id: 'c159', name: 'Red Hero Boots (S)' }
     ],
     quests: [
       { id: 'cq54', name: 'Key Quests'},
@@ -536,23 +538,23 @@ const checklistDataByWorld = {
   },
   "Great Tomb": {
     gachas: [
-      { id: 'c159', name: 'Adventurer Rank' },
-      { id: 'c160', name: 'Magic Tier' }
+      { id: 'c160', name: 'Adventurer Rank' },
+      { id: 'c161', name: 'Magic Tier' }
     ],
     progressions: [
-      { id: 'c161', name: 'Mana Growth (100)' },
-      { id: 'c162', name: 'Ultimate Cast (100)' },
-      { id: 'c163', name: 'Adventurer Level (50)' },
-      { id: 'c164', name: 'Magic Tier Level (50)' }
+      { id: 'c162', name: 'Mana Growth (100)' },
+      { id: 'c163', name: 'Ultimate Cast (100)' },
+      { id: 'c164', name: 'Adventurer Level (50)' },
+      { id: 'c165', name: 'Magic Tier Level (50)' }
     ],
     sssRank: [
-      { id: 'c165', name: 'Anz Ool Gawn' }
+      { id: 'c166', name: 'Anz Ool Gawn' }
     ],
     auras: [],
     accessories: [
-      { id: 'c166', name: 'Jalbathar Tail (Tomb Arena)' },
-      { id: 'c167', name: 'Jalbathar Mask (Tomb Arena)' },
-      { id: 'c168', name: 'Jalbathar Wings (Tomb Arena)' }
+      { id: 'c167', name: 'Jalbathar Tail (Tomb Arena)' },
+      { id: 'c168', name: 'Jalbathar Mask (Tomb Arena)' },
+      { id: 'c169', name: 'Jalbathar Wings (Tomb Arena)' }
     ],
     quests: [
       { id: 'cq56', name: 'Key Quests'},
@@ -561,23 +563,23 @@ const checklistDataByWorld = {
   },
   "Thriller Park": {
     gachas: [
-        { id: 'c169', name: 'Thriller Zombie' },
-        { id: 'c170', name: 'Nightmare Evolution' },
-        { id: 'c171', name: 'Zombie Crafts' },
-        { id: 'c172', name: 'Special Zombie' },
-        { id: 'c173', name: 'Zombie Booster' }
+        { id: 'c170', name: 'Thriller Zombie' },
+        { id: 'c171', name: 'Nightmare Evolution' },
+        { id: 'c172', name: 'Zombie Crafts' },
+        { id: 'c173', name: 'Special Zombie' },
+        { id: 'c174', name: 'Zombie Booster' }
     ],
     progressions: [
-        { id: 'c174', name: 'Special Zombie Crafting (10)' },
-        { id: 'c175', name: 'Special Zombie Fusion (2)' },
-        { id: 'c176', name: 'Demon Fruit Leveling (4)' }
+        { id: 'c175', name: 'Special Zombie Crafting (10)' },
+        { id: 'c176', name: 'Special Zombie Fusion (2)' },
+        { id: 'c177', name: 'Demon Fruit Leveling (4)' }
     ],
     sssRank: [
-        { id: 'c177', name: 'Gekar Morra' }
+        { id: 'c178', name: 'Gekar Morra' }
     ],
     auras: [],
     accessories: [
-        { id: 'c178', name: 'Orrs Pants (S)' },
+        { id: 'c179', name: 'Orrs Pants (S)' },
     ],
     quests: [
       { id: 'cq58', name: 'Demon Fruit Quest'},
@@ -587,20 +589,20 @@ const checklistDataByWorld = {
   },
   "Amusement Park": {
       gachas: [
-          { id: 'c179', name: 'Assasin Grade' },
-          { id: 'c180', name: 'Assasin Skill' }
+          { id: 'c180', name: 'Assasin Grade' },
+          { id: 'c181', name: 'Assasin Skill' }
       ],
       progressions: [
-        { id: 'c181', name: 'Assassin Energy (100)' },
-        { id: 'c182', name: 'Assassin Damage (100)' },
-        { id: 'c183', name: 'Assassin Critical Energy (10)' },
-        { id: 'c184', name: 'Assassin Critical Damage (10)' },
-        { id: 'c185', name: 'Assassin Craft' },
-        { id: 'c186', name: 'Scythe Leveling' },
+        { id: 'c182', name: 'Assassin Energy (100)' },
+        { id: 'c183', name: 'Assassin Damage (100)' },
+        { id: 'c184', name: 'Assassin Critical Energy (10)' },
+        { id: 'c185', name: 'Assassin Critical Damage (10)' },
+        { id: 'c186', name: 'Assassin Craft' },
+        { id: 'c187', name: 'Scythe Leveling' },
       ],
       sssRank: [
-          { id: 'c187', name: 'Tagamura' },
-          { id: 'c188', name: '1moto' }
+          { id: 'c188', name: 'Tagamura' },
+          { id: 'c189', name: '1moto' }
       ],
       auras: [],
       accessories: [],
@@ -613,22 +615,22 @@ const checklistDataByWorld = {
   },
     "Re:Manor": {
       gachas: [
-          { id: 'c189', name: 'Spirit Pact' },
-          { id: 'c190', name: 'Witch Factor' },
-          { id: 'c191', name: 'Re:Spirit Pact' },
-          { id: 'c192', name: 'Re: Witch Token' },
-          { id: 'c193', name: 'Artifical Spirit Blessings' },
-          { id: 'c194', name: 'Gospel Curses' },
-          { id: 'c195', name: 'Witch Authority' }
+          { id: 'c190', name: 'Spirit Pact' },
+          { id: 'c191', name: 'Witch Factor' },
+          { id: 'c192', name: 'Re:Spirit Pact' },
+          { id: 'c193', name: 'Re: Witch Token' },
+          { id: 'c194', name: 'Artifical Spirit Blessings' },
+          { id: 'c195', name: 'Gospel Curses' },
+          { id: 'c196', name: 'Witch Authority' }
       ],
       progressions: [
       ],
       sssRank: [
-          { id: 'c196', name: 'Roswald' }
+          { id: 'c197', name: 'Roswald' }
       ],
       auras: [
-          { id: 'c197', name: 'Blue Oni Aura (C)' },
-          { id: 'c198', name: 'Pink Oni Aura (D)' }
+          { id: 'c198', name: 'Blue Oni Aura (C)' },
+          { id: 'c199', name: 'Pink Oni Aura (D)' }
       ],
       accessories: [],
     quests: [
@@ -638,21 +640,21 @@ const checklistDataByWorld = {
   },
     "Asfordo Academy": {
       gachas: [
-          { id: 'c199', name: 'Geass Potential' },
-          { id: 'c200', name: 'Knightmare Frames' }
+          { id: 'c200', name: 'Geass Potential' },
+          { id: 'c201', name: 'Knightmare Frames' }
       ],
       progressions: [
-        { id: 'c201', name: 'Geass Leveling' },
-        { id: 'c202', name: 'Geass Evolver' }
+        { id: 'c202', name: 'Geass Leveling' },
+        { id: 'c203', name: 'Geass Evolver' }
       ],
       sssRank: [
-          { id: 'c203', name: 'Emperor Reloush' }
+          { id: 'c204', name: 'Emperor Reloush' }
       ],
       auras: [
       ],
       accessories: [
-        { id: 'c204', name: 'Zero Cape (SS)' },
-        { id: 'c205', name: 'Zero Mask (SS)' },
+        { id: 'c205', name: 'Zero Cape (SS)' },
+        { id: 'c206', name: 'Zero Mask (SS)' },
       ],
     quests: [
       { id: 'cq67', name: 'Black Knights Quest'},
@@ -662,16 +664,16 @@ const checklistDataByWorld = {
   },
     "Science Village": {
       gachas: [
-          { id: 'c206', name: 'IQ' },
-          { id: 'c207', name: 'Scientific Weapons' }
+          { id: 'c207', name: 'IQ' },
+          { id: 'c208', name: 'Scientific Weapons' }
       ],
       progressions: [
-        { id: 'c208', name: 'Scientific Tools Crafting' },
-        { id: 'c209', name: 'Science Material Updgrades (100)' },
-        { id: 'c210', name: 'Science Upgrades (16)' }
+        { id: 'c209', name: 'Scientific Tools Crafting' },
+        { id: 'c210', name: 'Science Material Updgrades (100)' },
+        { id: 'c211', name: 'Science Upgrades (16)' }
       ],
       sssRank: [
-          { id: 'c211', name: 'Tsukaro' }
+          { id: 'c212', name: 'Tsukaro' }
       ],
       auras: [
       ],
@@ -684,21 +686,21 @@ const checklistDataByWorld = {
   },
   "Sand Village": {
       gachas: [
-          { id: 'c212', name: 'Shinobi Clan' },
-          { id: 'c213', name: 'Kekkei Genkai' },
-          { id: 'c214', name: 'Power Eyes 2' },
-          { id: 'c215', name: 'Chakra Infusion' }
+          { id: 'c213', name: 'Shinobi Clan' },
+          { id: 'c214', name: 'Kekkei Genkai' },
+          { id: 'c215', name: 'Power Eyes 2' },
+          { id: 'c216', name: 'Chakra Infusion' }
       ],
       progressions: [
       ],
       sssRank: [
-          { id: 'c216', name: 'Sasaru' }
+          { id: 'c217', name: 'Sasaru' }
       ],
       auras: [
-          { id: 'c217', name: 'Sand Aura (A)' }
+          { id: 'c218', name: 'Sand Aura (A)' }
       ],
       accessories: [
-          { id: 'c218', name: 'One Tailed Beast (SS)' }
+          { id: 'c219', name: 'One Tailed Beast (SS)' }
       ],
     quests: [
       { id: 'cq72', name: 'Hero License Quest'},
@@ -709,14 +711,14 @@ const checklistDataByWorld = {
   },
   "Night Raid Base": {
       gachas: [
-          { id: 'c219', name: 'Energy Taigu' },
-          { id: 'c220', name: 'Damage Taigu' },
+          { id: 'c220', name: 'Energy Taigu' },
+          { id: 'c221', name: 'Damage Taigu' },
       ],
       progressions: [
-          { id: 'c221', name: 'Taigu Evolve' }
+          { id: 'c222', name: 'Taigu Evolve' }
       ],
       sssRank: [
-          { id: 'c222', name: 'Susanoe' }
+          { id: 'c223', name: 'Susanoe' }
       ],
       auras: [
       ],
@@ -726,6 +728,27 @@ const checklistDataByWorld = {
       { id: 'cq76', name: 'Teigu Quest'},
       { id: 'cq77', name: 'Key Quests'},
       { id: 'cq78', name: 'Obelisk Quest'}
+    ]
+  },
+  "Salty School": {
+      gachas: [
+          { id: 'c224', name: 'Psycho Flow' },
+          { id: 'c225', name: 'Psycho Destruction' },
+      ],
+      progressions: [
+          { id: 'c226', name: 'Mob Anger' }
+      ],
+      sssRank: [
+          { id: 'c227', name: 'Dimpy' }
+      ],
+      auras: [
+      ],
+      accessories: [
+      ],
+    quests: [
+      { id: 'cq79', name: 'Exorcism Quest'},
+      { id: 'cq80', name: 'Key Quests'},
+      { id: 'cq81', name: 'Obelisk Quest'}
     ]
   },
 };
