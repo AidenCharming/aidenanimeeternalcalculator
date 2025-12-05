@@ -718,7 +718,7 @@ const checklistDataByWorld = {
           { id: 'c222', name: 'Taigu Evolve' }
       ],
       sssRank: [
-          { id: 'c223', name: 'Susanoe' }
+          { id: 'c223', name: 'Akara' }
       ],
       auras: [
       ],
