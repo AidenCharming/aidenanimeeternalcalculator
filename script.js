@@ -1,5 +1,5 @@
 const el = {};
-const tabs = ['rankup', 'eta', 'time-to-energy', 'coin', 'lootcalc', 'ttk', 'damage', 'raid', 'alerts', 'star', 'checklist'];
+const tabs = ['rankup', 'eta', 'time-to-energy', 'coin', 'lootcalc', 'ttk', 'damage', 'checklist'];
 
 const themes = ['blue', 'dark-blue', 'teal', 'dark-teal', 'purple', 'dark-purple', 'pink', 'dark-pink', 'green', 'dark-green', 'orange', 'dark-orange', 'red', 'dark-red'];
 const themeColors = {
@@ -19,30 +19,12 @@ const themeColors = {
     'dark-red': '#8b0202'
 };
 
-const dungeonIntervals = {
-    'Easy Dungeon': { startMinute: 0, id: 'easy' },
-    'Medium Dungeon': { startMinute: 10, id: 'medium' },
-    'Hard Dungeon': { startMinute: 20, id: 'hard' },
-    'Insane Dungeon': { startMinute: 30, id: 'insane' },
-    'Crazy Dungeon': { startMinute: 40, id: 'crazy' },
-    'Nightmare Dungeon': { startMinute: 50, id: 'nightmare' },
-    'Leaf Raid': { startMinute: 15, id: 'leaf' }
-};
-
-let nextAlertTimeout;
-let countdownInterval;
-let isAlertPending = false;
-let tabFlashInterval = null;
-const ORIGINAL_TITLE = document.title;
-const FLASH_TITLE = '[!!! DUNGEON READY !!!]';
-const FLASH_INTERVAL_MS = 1000;
 const CHECKLIST_SAVE_KEY = 'ae_checklist_progress';
 const LOOT_RESPAWN_DELAY = 2.5;
 const LOOT_KILL_OVERHEAD = 0.5;
 const SLOW_CPS = 1.0919;
 const FAST_CPS = 5.88505;
 let currentNumberFormat = 'letters';
-const activityData = {};
 
 function toEngineeringNotation(num) {
     if (num === 0) return "0";
@@ -350,24 +332,15 @@ function switchTab(activeTab) {
             if (tab === activeTab) {
                 panel.classList.remove('hidden');
                 button.classList.add('active');
-                if (tab === 'alerts') {
-                    startCountdownDisplay();
-                }
             } else {
                 panel.classList.add('hidden');
                 button.classList.remove('active');
-                if (tab === 'alerts') {
-                    stopCountdownDisplay();
-                }
             }
         }
     });
     const mobileNav = document.getElementById('mobile-nav-select');
     if (mobileNav && mobileNav.value !== activeTab) {
         mobileNav.value = activeTab;
-    }
-    if (activeTab === 'alerts' || document.visibilityState === 'visible') {
-        stopTabFlashing();
     }
 }
 
@@ -536,7 +509,6 @@ async function setNumberFormat(format) {
         { numId: 'currentEnergyTTE', denomId: 'currentEnergyTTEDenominationInput', valueId: 'currentEnergyTTEDenominationValue' },
         { numId: 'energyPerClickTTE', denomId: 'energyPerClickTTEDenominationInput', valueId: 'energyPerClickTTEDenominationValue' },
         { numId: 'yourDPM', denomId: 'dpmDenominationInput', valueId: 'dpmDenominationValue' },
-        { numId: 'yourDPMActivity', denomId: 'dpmActivityDenominationInput', valueId: 'dpmActivityDenominationValue' },
         { numId: 'dmgCurrentEnergy', denomId: 'dmgCurrentEnergyDenomInput', valueId: 'dmgCurrentEnergyDenomValue' },
         { numId: 'dmgStatDamage', denomId: 'dmgStatDamageDenomInput', valueId: 'dmgStatDamageDenomValue' },
         { numId: 'coinBase', denomId: 'coinBaseDenomInput', valueId: 'coinBaseDenomValue' },
@@ -590,7 +562,6 @@ async function setNumberFormat(format) {
     calculateLootDrops();
     calculateTTK();
     if (el.enemySelect && el.enemySelect.value) displayEnemyHealth(); 
-    calculateStarCalc();
     calculateDamage(); 
     calculateCoinIncome(); 
 }
@@ -855,42 +826,6 @@ async function loadTTKData() {
     } catch (e) {}
 }
 
-async function saveRaidData() {
-    try {
-        if (el.activitySelect) await localforage.setItem('ae_raid_activity', el.activitySelect.value);
-        if (el.yourDPMActivity) await localforage.setItem('ae_raid_dpm', el.yourDPMActivity.value);
-        if (el.dpmActivityDenominationInput) await localforage.setItem('ae_raid_dpmDenomInput', el.dpmActivityDenominationInput.value);
-        if (el.dpmActivityDenominationValue) await localforage.setItem('ae_raid_dpmDenomValue', el.dpmActivityDenominationValue.value);
-        if (el.activityTimeLimit) await localforage.setItem('ae_raid_timeLimit', el.activityTimeLimit.value);
-        if (el.keyRunQuantity) await localforage.setItem('ae_raid_key_quantity', el.keyRunQuantity.value);
-    } catch (e) {}
-}
-
-async function loadRaidData() {
-    try {
-        const activity = await localforage.getItem('ae_raid_activity');
-        if (activity && el.activitySelect) {
-            if (el.activitySelect.querySelector(`option[value="${activity}"]`)) {
-                el.activitySelect.value = activity;
-            }
-        }
-        const dpm = await localforage.getItem('ae_raid_dpm');
-        if (dpm && el.yourDPMActivity) el.yourDPMActivity.value = dpm;
-        const dpmDenomInput = await localforage.getItem('ae_raid_dpmDenomInput');
-        if (el.dpmActivityDenominationInput) el.dpmActivityDenominationInput.value = dpmDenomInput;
-        const dpmDenom = denominations.find(d => d.name === dpmDenomInput);
-        if (el.dpmActivityDenominationValue) {
-            el.dpmActivityDenominationValue.value = dpmDenom ? dpmDenom.value : '1';
-        }
-        const timeLimit = await localforage.getItem('ae_raid_timeLimit');
-        if (timeLimit && el.activityTimeLimit) el.activityTimeLimit.value = timeLimit;
-        const quantity = await localforage.getItem('ae_raid_key_quantity');
-        if (quantity && el.keyRunQuantity) el.keyRunQuantity.value = quantity;
-        calculateMaxStage();
-        calculateKeyRunTime();
-    } catch (e) {}
-}
-
 async function saveTimeToEnergyData() {
     try {
         if (el.currentEnergyTTE) await localforage.setItem('ae_tte_currentEnergy', el.currentEnergyTTE.value);
@@ -1023,36 +958,6 @@ async function loadLootData() {
             el.lootSpecialItemName.dispatchEvent(new Event('input'));
         }
         calculateLootDrops();
-    } catch (e) {}
-}
-
-async function saveStarData() {
-    try {
-        if (el.starLevelSelect) await localforage.setItem('ae_star_level', el.starLevelSelect.value);
-        if (el.starSpeedSelect) await localforage.setItem('ae_star_speed', el.starSpeedSelect.value);
-        if (el.starAmount) await localforage.setItem('ae_star_amount', el.starAmount.value);
-        if (el.starBaseLuck) await localforage.setItem('ae_star_baseLuck', el.starBaseLuck.value);
-        if (el.starTimeHours) await localforage.setItem('ae_star_timeHours', el.starTimeHours.value);
-    } catch (e) {}
-}
-
-async function loadStarData() {
-    if (typeof starCostData === 'undefined' || typeof starSpeedData === 'undefined' || typeof starRarityDataByLevel === 'undefined') {
-        return;
-    }
-    try {
-        const level = await localforage.getItem('ae_star_level');
-        if (level && el.starLevelSelect) el.starLevelSelect.value = level;
-        const speed = await localforage.getItem('ae_star_speed');
-        if (speed && el.starSpeedSelect) el.starSpeedSelect.value = speed;
-        const amount = await localforage.getItem('ae_star_amount');
-        if (amount && el.starAmount) el.starAmount.value = amount;
-        const baseLuck = await localforage.getItem('ae_star_baseLuck');
-        if (baseLuck && el.starBaseLuck) el.starBaseLuck.value = baseLuck;
-        const timeHours = await localforage.getItem('ae_star_timeHours');
-        if (timeHours && el.starTimeHours) el.starTimeHours.value = timeHours;
-        displayStarCost();
-        calculateStarCalc();
     } catch (e) {}
 }
 
@@ -1761,253 +1666,6 @@ function populateKillTimeDropdownForId(elementId) {
     }
 }
 
-function populateStarLevelDropdown() {
-    if (!el.starLevelSelect || typeof starCostData === 'undefined') return;
-    const select = el.starLevelSelect;
-    select.innerHTML = '<option value="">-- Select Level --</option>';
-    Object.keys(starCostData).forEach(level => {
-        const option = document.createElement('option');
-        option.value = level;
-        option.innerText = `Star ${level}`;
-        select.appendChild(option);
-    });
-}
-
-function populateStarSpeedDropdown() {
-    if (!el.starSpeedSelect || typeof starSpeedData === 'undefined') return;
-    const select = el.starSpeedSelect;
-    select.innerHTML = '<option value="">-- Select Speed --</option>';
-    Object.keys(starSpeedData).forEach(level => {
-        const option = document.createElement('option');
-        option.value = level;
-        option.innerText = `Star Speed ${level}`;
-        select.appendChild(option);
-    });
-}
-
-function displayStarCost() {
-    if (!el.starLevelSelect || !el.starCostDisplay || typeof starCostData === 'undefined') return;
-    const selectedLevel = el.starLevelSelect.value;
-    const cost = starCostData[selectedLevel];
-    if (cost) {
-        el.starCostDisplay.innerText = formatNumber(cost);
-    } else {
-        el.starCostDisplay.innerText = 'Select a level';
-    }
-    calculateStarCalc();
-}
-
-function calculateStarCalc() {
-    if (typeof starCostData === 'undefined' || typeof starSpeedData === 'undefined' || 
-        typeof starRarityDataByLevel === 'undefined') {
-        return;
-    }
-    const level = el.starLevelSelect ? el.starLevelSelect.value : '1';
-    const speedLevel = el.starSpeedSelect ? el.starSpeedSelect.value : '';
-    const starAmount = getNumberValue('starAmount');
-    const luck = getNumberValue('starBaseLuck') || 1;
-    const timeHours = getNumberValue('starTimeHours');
-    const timeInSeconds = timeHours * 3600;
-    const costPerStar = starCostData[level] || 0;
-    const timePerBatch = starSpeedData[speedLevel] || 0;
-    let totalBatches = 0;
-    if (timePerBatch > 0) {
-        totalBatches = Math.floor(timeInSeconds / timePerBatch);
-    }
-    const totalStarsOpened = totalBatches * starAmount;
-    const totalCost = totalStarsOpened * costPerStar;
-    if (el.starTotalPulls) el.starTotalPulls.innerText = formatNumber(totalStarsOpened);
-    if (el.starTotalCost) el.starTotalCost.innerText = formatNumber(totalCost);
-    const baseRarities = starRarityDataByLevel[level] || starRarityDataByLevel["1"];
-    const cap = 1/8;
-    let boostedSum = 0;
-    let unchangedCount = 0;
-    const finalRarities = [];
-    baseRarities.forEach(rarity => {
-        const basePercent = rarity.percent;
-        if (basePercent <= cap && basePercent > 0) {
-            const newRate = Math.min(basePercent * luck, cap);
-            boostedSum += newRate;
-            finalRarities.push({ name: rarity.name, percent: newRate, isUnchanged: false });
-        } else {
-            if (basePercent > 0) {
-                unchangedCount++;
-            }
-            finalRarities.push({ name: rarity.name, percent: 0, isUnchanged: true, basePercent: basePercent });
-        }
-    });
-    const leftover = 1 - boostedSum;
-    const sharePerUnchanged = (leftover > 0 && unchangedCount > 0) ? leftover / unchangedCount : 0;
-    finalRarities.forEach(rarity => {
-        if (rarity.isUnchanged) {
-            rarity.percent = (rarity.basePercent > 0) ? sharePerUnchanged : 0;
-        }
-    });
-    const tableBody = el.starRarityTableBody;
-    if (tableBody) {
-        tableBody.innerHTML = '';
-        finalRarities.forEach((rarity, index) => {
-            const estimatedHatches = totalStarsOpened * rarity.percent;
-            const row = document.createElement('tr');
-            if (index < finalRarities.length - 1) {
-                row.className = 'border-b border-gray-700';
-            }
-            row.innerHTML = `
-                <td class="py-2 px-1 text-sm text-gray-300">${rarity.name}</td>
-                <td class="py-2 px-1 text-sm text-gray-400 text-right">${(rarity.percent * 100).toFixed(4)}%</td>
-                <td class="py-2 px-1 text-lg text-white font-semibold text-right">${formatNumber(Math.floor(estimatedHatches))}</td>
-            `;
-            tableBody.appendChild(row);
-        });
-    }
-    saveStarData();
-}
-
-async function loadAllData() {
-    try {
-        const response = await fetch('activity-bundle.json?v=6.0');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const bundle = await response.json();
-        Object.assign(activityData, bundle.activities || {});
-    } catch (error) {}
-}
-
-function populateActivityDropdown() {
-    const select = el.activitySelect;
-    if (!select) return;
-    select.innerHTML = '<option value="">-- Select an Activity --</option>';
-    const sortedActivityNames = Object.keys(activityData).sort((a, b) => a.localeCompare(b));
-    sortedActivityNames.forEach(name => {
-        const option = document.createElement('option');
-        option.value = name;
-        option.innerText = name;
-        select.appendChild(option);
-    });
-}
-
-function handleActivityChange() {
-    if (!el.activitySelect || !el.activityResult || !el.activityTimeLimit || !el.activityResultLabel) return;
-    const selection = el.activitySelect.value;
-    const activity = activityData[selection];
-    const resultLabel = el.activityResultLabel;
-    if (!activity) {
-        el.activityResult.innerText = '0 / 0';
-        el.activityTimeLimit.value = ''; 
-        saveRaidData();
-        return;
-    }
-    el.activityTimeLimit.value = activity.timeLimit;
-    if (activity.type === 'raid') {
-        resultLabel.innerText = 'Estimated Max Wave:';
-    } else {
-        resultLabel.innerText = 'Estimated Max Room:';
-    }
-    calculateMaxStage();
-    calculateKeyRunTime();
-    saveRaidData();
-}
-
-function calculateMaxStage() {
-    if (!el.activitySelect || !el.yourDPMActivity || !el.dpmActivityDenominationValue || 
-        !el.activityTimeLimit || !el.activityResult) {
-        return 0; 
-    }
-    const selection = el.activitySelect.value;
-    if (!selection) {
-        el.activityResult.innerText = '0 / 0';
-        return 0;
-    }
-    const activity = activityData[selection];
-    const dpmValue = (getNumberValue('yourDPMActivity') || 0) * (currentNumberFormat === 'letters' ? (parseFloat(el.dpmActivityDenominationValue.value) || 1) : 1);
-    const yourDPS = dpmValue / 60;
-    const timeLimit = getNumberValue('activityTimeLimit');
-    const resultEl = el.activityResult;
-    const maxStages = activity ? activity.maxStages : 0;
-    if (!activity || yourDPS <= 0 || timeLimit <= 0) {
-        resultEl.innerText = `0 / ${maxStages}`;
-        return 0;
-    }
-    const maxDamageInTime = yourDPS * timeLimit;
-    let completedStage = 0;
-    if (activity.enemies) {
-        const singleEnemyRaids = ["Mundo Raid", "Gleam Raid", "Tournament Raid"];
-        for (let i = 1; i <= maxStages; i++) {
-            const stageKey = `Room ${i}`;
-            let stageHealth = parseNumberInput(String(activity.enemies[stageKey]));
-            if (!stageHealth) {
-                break;
-            }
-            let enemyMultiplier = 1;
-            if (activity.type === 'raid' && !singleEnemyRaids.includes(selection)) {
-                enemyMultiplier = 5;
-            } else if (activity.type === 'dungeon' && !singleEnemyRaids.includes(selection)) {
-                 enemyMultiplier = 1;
-            }
-            const totalStageHealth = stageHealth * enemyMultiplier;
-            if (maxDamageInTime < totalStageHealth) {
-                break;
-            }
-            completedStage = i;
-        }
-    } else {}
-    resultEl.innerText = `${completedStage} / ${maxStages}`;
-    return completedStage;
-}
-
-function calculateKeyRunTime() {
-    if (!el.keyRunTimeResult || !el.activitySelect) return;
-    const activityName = el.activitySelect.value;
-    const activity = activityData[activityName];
-    const keyQuantity = Math.floor(getNumberValue('keyRunQuantity')) || 0;
-    const resultEl = el.keyRunTimeResult;
-    const returnTimeEl = el.keyRunReturnTime;
-    const dpmValue = (getNumberValue('yourDPMActivity') || 0) * (currentNumberFormat === 'letters' ? (parseFloat(el.dpmActivityDenominationValue.value) || 1) : 1);
-    const yourDPS = dpmValue / 60;
-    const completedStage = calculateMaxStage();
-    if (!activity || keyQuantity <= 0 || yourDPS <= 0 || completedStage <= 0) {
-        resultEl.innerText = '0s';
-        if (returnTimeEl) returnTimeEl.innerText = '';
-        return;
-    }
-    let timeInSecondsPerRun = 0;
-    const singleEnemyRaids = ["Mundo Raid", "Gleam Raid", "Tournament Raid"];
-    const RESPawn_TIME = 0.1;
-    for (let i = 1; i <= completedStage; i++) {
-        const stageKey = `Room ${i}`;
-        let stageHealth = parseNumberInput(String(activity.enemies[stageKey]));
-        let enemyMultiplier = 1;
-        if (activity.type === 'raid' && !singleEnemyRaids.includes(activityName)) {
-            enemyMultiplier = 5;
-        }
-        const totalStageHealth = stageHealth * enemyMultiplier;
-        const killTime = totalStageHealth / yourDPS;
-        const timePerStage = Math.max(killTime + LOOT_KILL_OVERHEAD, 1.0) + RESPawn_TIME;
-        timeInSecondsPerRun += timePerStage; 
-    }
-    const totalTimeInSeconds = timeInSecondsPerRun * keyQuantity;
-    if (totalTimeInSeconds === Infinity) {
-        resultEl.innerText = "Over 1000 Years";
-        if (returnTimeEl) returnTimeEl.innerText = 'ETA: Eternity';
-        return;
-    }
-    let resultString = formatTime(totalTimeInSeconds);
-    resultEl.innerText = resultString.trim() || '0s';
-    if (returnTimeEl) {
-        const now = new Date();
-        const returnTime = new Date(now.getTime() + totalTimeInSeconds * 1000);
-        const returnString = returnTime.toLocaleString('en-US', { 
-            month: 'short', 
-            day: 'numeric', 
-            hour: 'numeric', 
-            minute: '2-digit', 
-            hour12: true 
-        });
-        returnTimeEl.innerText = `Finish Time: ${returnString}`;
-    }
-}
-
 function setupRankSearch(inputId, valueId, listId) {
     const inputEl = el[inputId];
     const valueEl = el[valueId];
@@ -2199,191 +1857,6 @@ function syncEnergyData(sourceInputId, sourceDenomInputId, sourceDenomValueId) {
     calculateTimeToEnergy();
 }
 
-function startTabFlashing() {
-    if (tabFlashInterval === null) {
-        let isFlashing = false;
-        tabFlashInterval = setInterval(() => {
-            document.title = isFlashing ? ORIGINAL_TITLE : FLASH_TITLE;
-            isFlashing = !isFlashing;
-        }, FLASH_INTERVAL_MS);
-    }
-}
-
-function stopTabFlashing() {
-    if (tabFlashInterval !== null) {
-        clearInterval(tabFlashInterval);
-        tabFlashInterval = null;
-        document.title = ORIGINAL_TITLE;
-        isAlertPending = false;
-    }
-}
-
-function checkNotificationPermission() {
-    if (!el.alertPermissionStatus || !el.requestPermissionBtn) return;
-    if (!("Notification" in window)) {
-        el.alertPermissionStatus.innerText = "Permissions: Not Supported";
-        el.requestPermissionBtn.disabled = true;
-        el.requestPermissionBtn.classList.remove('active');
-        return;
-    }
-    const status = Notification.permission;
-    el.alertPermissionStatus.innerText = `Permissions: ${status.charAt(0).toUpperCase() + status.slice(1)}`;
-    el.requestPermissionBtn.disabled = status === 'granted';
-    if (status === 'granted') {
-        el.alertPermissionStatus.classList.remove('text-red-400');
-        el.alertPermissionStatus.classList.add('text-green-400');
-        el.requestPermissionBtn.classList.remove('active');
-        el.requestPermissionBtn.innerText = "Permissions Granted";
-    } else {
-        el.alertPermissionStatus.classList.add('text-red-400');
-        el.alertPermissionStatus.classList.remove('text-green-400');
-        el.requestPermissionBtn.classList.add('active');
-        el.requestPermissionBtn.innerText = "Request Notifications";
-    }
-}
-
-function requestNotificationPermission() {
-    if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
-        Notification.requestPermission().then(permission => {
-            checkNotificationPermission();
-            if (permission === 'granted') {
-                scheduleNextAlert();
-            }
-        });
-    }
-}
-
-function calculateNextAlert() {
-    const now = new Date();
-    const currentMinute = now.getMinutes();
-    const currentSecond = now.getSeconds();
-    let earliestNextTime = Infinity;
-    let nextDungeon = null;
-    let selectedAlerts = [];
-    Object.keys(dungeonIntervals).forEach(name => {
-        const item = dungeonIntervals[name];
-        const checkbox = el[`alert-${item.id}-dungeon`] || el[`alert-${item.id}-raid`];
-        if (checkbox && checkbox.checked) {
-            selectedAlerts.push(name);
-            const startMinute = item.startMinute;
-            let minutesUntilStart;
-            if (startMinute >= currentMinute) {
-                minutesUntilStart = startMinute - currentMinute;
-            } else {
-                minutesUntilStart = (60 - currentMinute) + startMinute;
-            }
-            let timeInSeconds = (minutesUntilStart * 60) - currentSecond;
-            if (timeInSeconds <= 0) {
-                timeInSeconds += 3600; 
-            }
-            if (timeInSeconds < earliestNextTime) {
-                earliestNextTime = timeInSeconds;
-                nextDungeon = name;
-            }
-        }
-    });
-    if (nextDungeon) {
-        return {
-            name: nextDungeon,
-            timeInSeconds: earliestNextTime
-        };
-    }
-    return null;
-}
-
-function fireAlert(dungeonName) {
-    if (Notification.permission === 'granted') {
-        const notification = new Notification("Dungeon Alert: Dungeon Ready!", {
-            body: `${dungeonName} is now ready! You have a 2-minute window to join.`,
-            icon: 'icon.webp'
-        });
-        if (el.alertSound) {
-            el.alertSound.currentTime = 0;
-            el.alertSound.play().catch(e => console.log("Audio playback blocked or failed:", e));
-        }
-    }
-    isAlertPending = true;
-    if (document.visibilityState !== 'visible') {
-        startTabFlashing();
-    }
-    scheduleNextAlert();
-}
-
-function scheduleNextAlert() {
-    if (nextAlertTimeout) {
-        clearTimeout(nextAlertTimeout);
-    }
-    if (!calculateNextAlert()) {
-        stopTabFlashing();
-    }
-    const nextAlert = calculateNextAlert();
-    if (nextAlert && Notification.permission === 'granted') {
-        const timeUntilAlertMs = Math.max(2000, nextAlert.timeInSeconds * 1000); 
-        nextAlertTimeout = setTimeout(() => {
-            fireAlert(nextAlert.name);
-        }, timeUntilAlertMs);
-    }
-    startCountdownDisplay();
-}
-
-function updateCountdownDisplay() {
-    const nextAlert = calculateNextAlert();
-    if (el.nextDungeonTimer && el.nextDungeonName) {
-        if (nextAlert) {
-            el.nextDungeonTimer.innerText = formatTime(nextAlert.timeInSeconds);
-            el.nextDungeonName.innerText = `Next: ${nextAlert.name} (${dungeonIntervals[nextAlert.name].startMinute}m mark)`;
-        } else {
-            el.nextDungeonTimer.innerText = "N/A";
-            el.nextDungeonName.innerText = "Select dungeons to track.";
-        }
-    }
-}
-
-function startCountdownDisplay() {
-    if (countdownInterval) return;
-    updateCountdownDisplay();
-    countdownInterval = setInterval(() => {
-        updateCountdownDisplay();
-    }, 1000);
-}
-
-function stopCountdownDisplay() {
-    if (countdownInterval) {
-        clearInterval(countdownInterval);
-        countdownInterval = null;
-    }
-}
-
-async function saveAlertsData() {
-    try {
-        const savedAlerts = {};
-        Object.keys(dungeonIntervals).forEach(name => {
-            const id = dungeonIntervals[name].id;
-            const checkbox = el[`alert-${id}-dungeon`] || el[`alert-${id}-raid`];
-            if (checkbox) {
-                savedAlerts[name] = checkbox.checked;
-            }
-        });
-        await localforage.setItem('ae_alerts_selected', JSON.stringify(savedAlerts));
-    } catch (e) {}
-}
-
-async function loadAlertsData() {
-    try {
-        const alertsRaw = await localforage.getItem('ae_alerts_selected');
-        const savedAlerts = JSON.parse(alertsRaw) || {};
-        Object.keys(dungeonIntervals).forEach(name => {
-            const id = dungeonIntervals[name].id;
-            const checkbox = el[`alert-${id}-dungeon`] || el[`alert-${id}-raid`];
-            if (checkbox) {
-                checkbox.checked = savedAlerts[name] || false;
-            }
-        });
-        checkNotificationPermission();
-        scheduleNextAlert();
-    } catch (e) {}
-}
-
 async function saveCoinData() {
     try {
         if (el.coinBase) await localforage.setItem('ae_coin_base', el.coinBase.value);
@@ -2524,13 +1997,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
     }
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
-            stopTabFlashing();
-        } else if (isAlertPending) {
-            startTabFlashing();
-        }
-    });
     const BACKGROUND_KEY = 'ae_image_background';
     function applyBackgroundPreference(isImage) {
         if (isImage) {
@@ -2611,13 +2077,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     populateTimeToReturnDropdown();
     populateTimeToReturnMinutesDropdown();
     populateBoostDurations();
-    populateStarLevelDropdown();
-    populateStarSpeedDropdown();
     populateLootKillTimeDropdown();
-    loadAllData().then(async () => {
-        populateActivityDropdown();
-        await loadRaidData();
-    });
     setupRankSearch('rankInput', 'rankSelect', 'rankList');
     function onRankUpCEDenomChange() {
         syncEnergyData('currentEnergy', 'currentEnergyDenominationInput', 'currentEnergyDenominationValue');
@@ -2637,42 +2097,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     function onTTEEPCDenomChange() {
         syncEnergyData('energyPerClickTTE', 'energyPerClickTTEDenominationInput', 'energyPerClickTTEDenominationValue');
     }
-    const syncDPS_TTKToRaid = () => {
-        if(el.yourDPMActivity && el.yourDPM) {
-            const dpm = getNumberValue('yourDPM');
-            const denom = el.dpmDenominationValue ? parseFloat(el.dpmDenominationValue.value) : 1;
-            const split = splitNumberToDenom(dpm * denom);
-            el.yourDPMActivity.value = split.value;
-            if (el.dpmActivityDenominationInput) el.dpmActivityDenominationInput.value = split.name;
-            if (el.dpmActivityDenominationValue) el.dpmActivityDenominationValue.value = split.multiplier;
-        }
-        calculateMaxStage();
-        calculateKeyRunTime();
-        saveRaidData();
-    };
     function onTTKDenomChange() {
         calculateTTK();
-        syncDPS_TTKToRaid();
-    }
-    const syncDPS_RaidToTTK = () => {
-        if(el.yourDPM && el.yourDPMActivity) {
-            const dpm = getNumberValue('yourDPMActivity');
-            const denom = el.dpmActivityDenominationValue ? parseFloat(el.dpmActivityDenominationValue.value) : 1;
-            const split = splitNumberToDenom(dpm * denom);
-            el.yourDPM.value = split.value;
-            if (el.dpmDenominationInput) el.dpmDenominationInput.value = split.name;
-            if (el.dpmDenominationValue) el.dpmDenominationValue.value = split.multiplier;
-        }
-        calculateTTK();
-    };
-    function onRaidDenomChange() {
-        calculateMaxStage();
-        calculateKeyRunTime();
-        saveRaidData();
-        syncDPS_RaidToTTK();
     }
     setupDenominationSearch('dpmDenominationInput', 'dpmDenominationValue', 'dpmDenominationList', onTTKDenomChange);
-    setupDenominationSearch('dpmActivityDenominationInput', 'dpmActivityDenominationValue', 'dpmActivityDenominationList', onRaidDenomChange);
     setupDenominationSearch('currentEnergyDenominationInput', 'currentEnergyDenominationValue', 'currentEnergyDenominationList', onRankUpCEDenomChange);
     setupDenominationSearch('energyPerClickDenominationInput', 'energyPerClickDenominationValue', 'energyPerClickDenominationList', onRankUpEPCDenomChange);
     setupDenominationSearch('currentEnergyETADenominationInput', 'currentEnergyETADenominationValue', 'currentEnergyETADenominationList', onETACEDenomChange);
@@ -2769,36 +2197,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (el.yourDPM) {
         el.yourDPM.addEventListener('input', debounce(() => {
             calculateTTK();
-            syncDPS_TTKToRaid();
             saveTTKData();
         }, 300));
     }
     if (el.enemyQuantity) el.enemyQuantity.addEventListener('input', debounce(calculateTTK, 300));
     if (el.fourSpotFarming) el.fourSpotFarming.addEventListener('change', calculateTTK);
-    const raidDebounce = debounce(() => {
-        calculateMaxStage();
-        calculateKeyRunTime();
-        saveRaidData();
-    }, 300);
-    if (el.activitySelect) {
-        el.activitySelect.addEventListener('change', () => {
-            handleActivityChange();
-            saveRaidData();
-        });
-    }
-    if (el.yourDPMActivity) {
-        el.yourDPMActivity.addEventListener('input', () => {
-            raidDebounce();
-            syncDPS_RaidToTTK();
-        });
-    }
-    if (el.activityTimeLimit) el.activityTimeLimit.addEventListener('input', raidDebounce);
-    if (el.keyRunQuantity) el.keyRunQuantity.addEventListener('input', raidDebounce);
-    if (el.starLevelSelect) el.starLevelSelect.addEventListener('change', displayStarCost);
-    if (el.starSpeedSelect) el.starSpeedSelect.addEventListener('change', calculateStarCalc);
-    if (el.starAmount) el.starAmount.addEventListener('input', debounce(calculateStarCalc, 300));
-    if (el.starBaseLuck) el.starBaseLuck.addEventListener('input', debounce(calculateStarCalc, 300));
-    if (el.starTimeHours) el.starTimeHours.addEventListener('input', debounce(calculateStarCalc, 300));
     if (el['theme-select']) {
         populateThemeDropdown();
 
@@ -2833,16 +2236,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         el.requestPermissionBtn.addEventListener('click', requestNotificationPermission);
     }
     
-    Object.keys(dungeonIntervals).forEach(name => {
-        const id = dungeonIntervals[name].id;
-        const checkbox = el[`alert-${id}-dungeon`] || el[`alert-${id}-raid`];
-        if (checkbox) {
-            checkbox.addEventListener('change', () => {
-                saveAlertsData();
-                scheduleNextAlert();
-            });
-        }
-    });
     (async () => {
         await loadNumberFormat();
         await loadRankUpData();
@@ -2850,8 +2243,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadTimeToEnergyData(); 
         await loadLootData();
         await loadTTKData();
-        await loadStarData();
-        await loadAlertsData(); 
         if (el.worldSelect) {
             populateEnemyDropdown(); 
         } else {
@@ -2867,7 +2258,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         calculateLootDrops();
         calculateMaxStage();
         calculateKeyRunTime();
-        calculateStarCalc();
         if (typeof checklistDataByWorld !== 'undefined' && typeof worldData !== 'undefined') {
             const checklistPanel = el['panel-checklist']; 
             if (!checklistPanel) {
