@@ -2256,8 +2256,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             el.currentEnergyTTE.dispatchEvent(new Event('input'));
         }
         calculateLootDrops();
-        calculateMaxStage();
-        calculateKeyRunTime();
         if (typeof checklistDataByWorld !== 'undefined' && typeof worldData !== 'undefined') {
             const checklistPanel = el['panel-checklist']; 
             if (!checklistPanel) {
