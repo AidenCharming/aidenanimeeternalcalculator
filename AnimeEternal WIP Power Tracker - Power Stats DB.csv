@@ -1,0 +1,310 @@
+Power Name,Tier,Energy,Damage,Coins,Star Luck,Drops,Energy Crit
+Dragon Race,Common,2,0,0,0,0,0
+Dragon Race,Uncommon,3,0,0,0,0,0
+Dragon Race,Rare,4,0,0,0,0,0
+Dragon Race,Epic,5,0,0,0,0,0
+Dragon Race,Legendary,8,0,0,0,0,0
+Dragon Race,Mythical,10,0,0,0,0,0
+Dragon Race,Phantom,12,0,0,0,0,0
+Saiyan Evolution,Common,2,0,0,0,0,0
+Saiyan Evolution,Uncommon,3,0,0,0,0,0
+Saiyan Evolution,Rare,4,0,0,0,0,0
+Saiyan Evolution,Epic,5,0,0,0,0,0
+Saiyan Evolution,Legendary,8,0,0,0,0,0
+Saiyan Evolution,Mythical,10,0,0,0,0,0
+Saiyan Evolution,Phantom,12,0,0,0,0,0
+Pirate Crew,Common,2,0,0,0,0,0
+Pirate Crew,Uncommon,3,0,0,0,0,0
+Pirate Crew,Rare,4,0,0,0,0,0
+Pirate Crew,Epic,5,0,0,0,0,0
+Pirate Crew,Legendary,8,0,0,0,0,0
+Pirate Crew,Mythical,10,0,0,0,0,0
+Pirate Crew,Phantom,12,0,0,0,0,0
+Chef Power,Common,0,1,0,0,0,0
+Chef Power,Uncommon,0,1.5,0,0,0,0
+Chef Power,Rare,0,2,0,0,0,0
+Chef Power,Epic,0,3,0,0,0,0
+Chef Power,Legendary,0,5,0,0,0,0
+Chef Power,Mythical,0,7,0,0,0,0
+Chef Power,Phantom,0,10,0,0,0,0
+Demon Fruit,Common,3,0,0,0,0,0
+Demon Fruit,Uncommon,5,0,0,0,0,0
+Demon Fruit,Rare,7,0,0,0,0,0
+Demon Fruit,Epic,9,0,0,0,0,0
+Demon Fruit,Legendary,11,0,0,0,0,0
+Demon Fruit,Mythical,15,0,0,0,0,0
+Demon Fruit,Phantom,0,10,0,0,0,0
+Reiatsu Color,Common,2,0,0,0,0,0
+Reiatsu Color,Uncommon,3,0,0,0,0,0
+Reiatsu Color,Rare,4,0,0,0,0,0
+Reiatsu Color,Epic,5,0,0,0,0,0
+Reiatsu Color,Legendary,8,0,0,0,0,0
+Reiatsu Color,Mythical,10,0,0,0,0,0
+Reiatsu Color,Phantom,12,0,0,0,0,0
+Zanpakuto,Common,0,2,0,0,0,0
+Zanpakuto,Uncommon,0,3,0,0,0,0
+Zanpakuto,Rare,0,4,0,0,0,0
+Zanpakuto,Epic,0,5,0,0,0,0
+Zanpakuto,Legendary,0,6,0,0,0,0
+Zanpakuto,Mythical,0,7.5,0,0,0,0
+Zanpakuto,Phantom,0,10,0,0,0,0
+Curses,Common,2,0,0,0,0,0
+Curses,Uncommon,3,0,0,0,0,0
+Curses,Rare,4,0,0,0,0,0
+Curses,Epic,5,0,0,0,0,0
+Curses,Legendary,8,0,0,0,0,0
+Curses,Mythical,10,0,0,0,0,0
+Curses,Phantom,12,0,0,0,0,0
+Cursed Power,Common,0,0.6,0,0,0,0
+Cursed Power,Uncommon,0,0.8,0,0,0,0
+Cursed Power,Rare,0,1,0,0,0,1
+Cursed Power,Epic,0,2,0,0,0,2
+Cursed Power,Legendary,0,3,0,0,0,3
+Cursed Power,Mythical,0,4,0,0,0,4
+Cursed Power,Phantom,0,5,0,0,0,5
+Demon Arts,Common,2,0,0,0,0,0
+Demon Arts,Uncommon,3,0,0,0,0,0
+Demon Arts,Rare,4,0,0,0,0,0
+Demon Arts,Epic,5,0,0,0,0,0
+Demon Arts,Legendary,8,0,0,0,0,0
+Demon Arts,Mythical,10,0,0,0,0,0
+Demon Arts,Phantom,12,0,0,0,0,0
+Solo Hunter Rank,Common,2,0,0,0,0,0
+Solo Hunter Rank,Uncommon,3,0,0,0,0,0
+Solo Hunter Rank,Rare,4,0,0,0,0,0
+Solo Hunter Rank,Epic,5,0,0,0,0,0
+Solo Hunter Rank,Legendary,8,0,0,0,0,0
+Solo Hunter Rank,Mythical,10,0,0,0,0,0
+Solo Hunter Rank,Phantom,12,0,0,0,0,0
+Grimoire 1,Common,2,0,0,0,0,0
+Grimoire 1,Uncommon,3,0,0,0,0,0
+Grimoire 1,Rare,4,0,0,0,0,0
+Grimoire 1,Epic,5,0,0,0,0,0
+Grimoire 1,Legendary,8,0,0,0,0,0
+Grimoire 1,Mythical,10,0,0,0,0,0
+Grimoire 1,Phantom,12,0,0,0,0,0
+Power Eye,Common,2,0,0,0,0,0
+Power Eye,Uncommon,3,0,0,0,0,0
+Power Eye,Rare,4,0,0,0,0,0
+Power Eye,Epic,5,0,0,0,0,0
+Power Eye,Legendary,6,0,0,0,0,0
+Power Eye,Mythical,8,0,0,0,0,0
+Power Eye,Phantom,12,3,0,0,0,0
+Power Eye,Supreme,15,5,1.1,0,0,0
+Psychic Mayhem,Common,2,0,0,0,0,0
+Psychic Mayhem,Uncommon,3,0,0,0,0,0
+Psychic Mayhem,Rare,4,0,0,0,0,0
+Psychic Mayhem,Epic,5,0,0,0,0,0
+Psychic Mayhem,Legendary,8,0,0,0,0,0
+Psychic Mayhem,Mythical,10,0,0,0,0,0
+Psychic Mayhem,Phantom,12,0,0,0,0,0
+Energy Spell Card,Common,2,0,0,0,0,0
+Energy Spell Card,Uncommon,3,0,0,0,0,0
+Energy Spell Card,Rare,4,0,0,0,0,0
+Energy Spell Card,Epic,5,0,0,0,0,0
+Energy Spell Card,Legendary,8,0,0,0,0,0
+Energy Spell Card,Mythical,10,0,0,0,0,0
+Energy Spell Card,Phantom,12,0,0,0,0,0
+Damage Spell Card,Common,0,1,0,0,0,0
+Damage Spell Card,Uncommon,0,1.5,0,0,0,0
+Damage Spell Card,Rare,0,2,0,0,0,0
+Damage Spell Card,Epic,0,4,0,0,0,0
+Damage Spell Card,Legendary,0,6,0,0,0,0
+Damage Spell Card,Mythical,0,8,0,0,0,0
+Damage Spell Card,Phantom,0,10,0,0,0,0
+Damage Spell Card,Supreme,0,12,0,0,0,0
+Titan Families,Common,2,0,0,0,0,0
+Titan Families,Uncommon,3,0,0,0,0,0
+Titan Families,Rare,4,0,0,0,0,0
+Titan Families,Epic,6,0,0,0,0,0
+Titan Families,Legendary,8,0,0,0,0,0
+Titan Families,Mythical,12,0,0,0,0,0
+Titan Families,Phantom,15,0,0,0,0,0
+Sins,Common,2,0,0,0,0,0
+Sins,Uncommon,3,0,0,0,0,0
+Sins,Rare,4,0,0,0,0,0
+Sins,Epic,6,0,0,0,0,0
+Sins,Legendary,8,0,0,0,0,0
+Sins,Mythical,12,0,0,0,0,0
+Sins,Phantom,15,0,0,0,0,0
+Commandments,Common,2,0,0,0,0,0
+Commandments,Uncommon,3,0,0,0,0,0
+Commandments,Rare,0,0,0.5,0,0,0
+Commandments,Epic,6,0,0,0,0,0
+Commandments,Legendary,8,0,0,0,0,0
+Commandments,Mythical,0,2,0,0,0,0
+Commandments,Phantom,10,3,0,0,0,0
+Commandments,Supreme,15,5,1.1,0,0,0
+Kaiju Powers,Common,2,0,0,0,0,0
+Kaiju Powers,Uncommon,3,0,0,0,0,0
+Kaiju Powers,Rare,4.5,0,0,0,0,0
+Kaiju Powers,Epic,6,0,0,0,0,0
+Kaiju Powers,Legendary,8,0,0,0,0,0
+Kaiju Powers,Mythical,10,0,0,0,0,0
+Kaiju Powers,Phantom,12,0,0,0,0,0
+Kaiju Powers,Supreme,15,0,0,0,0,0
+Species,Common,2,0,0,0,0,0
+Species,Uncommon,3,0,0,0,0,0
+Species,Rare,4.5,0,0,0,0,0
+Species,Epic,6,0,0,0,0,0
+Species,Legendary,8,0,0,0,0,0
+Species,Mythical,10,0,0,0,0,0
+Species,Phantom,12,0,0,0,0,0
+Species,Supreme,15,0,0,0,0,0
+Ultimate Skills,Common,0,1,0,0,0,0
+Ultimate Skills,Uncommon,0,1.5,0,0,0,0
+Ultimate Skills,Rare,0,2,0,0,0,0
+Ultimate Skills,Epic,0,4,0,0,0,0
+Ultimate Skills,Legendary,0,6,0,0,0,0
+Ultimate Skills,Mythical,0,8,0,0,0,0
+Ultimate Skills,Phantom,0,10,0,0,0,0
+Ultimate Skills,Supreme,0,12,0,0,0,0
+Power Energy Runes,Common,2,0,0,0,0,0
+Power Energy Runes,Uncommon,3,0,0,0,0,0
+Power Energy Runes,Rare,4.5,0,0,0,0,0
+Power Energy Runes,Epic,6,0,0,0,0,0
+Power Energy Runes,Legendary,8,0,0,0,0,0
+Power Energy Runes,Mythical,10,0,0,0,0,0
+Power Energy Runes,Phantom,12,0,0,0,0,0
+Power Energy Runes,Supreme,15,0,0,0,0,0
+Gleam Raid Power,Common,0,1,0,0,0,0
+Gleam Raid Power,Uncommon,0,1.5,0,0,0,0
+Gleam Raid Power,Rare,0,2,0,0,0,0
+Gleam Raid Power,Epic,0,4,0,0,0,0
+Gleam Raid Power,Legendary,0,6,0,0,0,0
+Gleam Raid Power,Mythical,0,8,0,0,0,0
+Gleam Raid Power,Phantom,0,10,0,0,0,0
+Gleam Raid Power,Supreme,0,12,0,0,0,0
+Onomatopoeia,Common,2,0,0,0,0,0
+Onomatopoeia,Uncommon,3,0,0,0,0,0
+Onomatopoeia,Rare,4.5,0,0,0,0,0
+Onomatopoeia,Epic,6,0,0,0,0,0
+Onomatopoeia,Legendary,8,0,0,0,0,0
+Onomatopoeia,Mythical,10,0,0,0,0,0
+Onomatopoeia,Phantom,12,0,0,0,0,0
+Onomatopoeia,Supreme,15,0,0,0,0,0
+Investigators,Common,2,0,0,0,0,0
+Investigators,Uncommon,3,0,0,0,0,0
+Investigators,Rare,4.5,0,0,0,0,0
+Investigators,Epic,6,0,0,0,0,0
+Investigators,Legendary,8,0,0,0,0,0
+Investigators,Mythical,10,0,0,0,0,0
+Investigators,Phantom,12,0,0,0,0,0
+Investigators,Supreme,15,0,0,0,0,0
+Kagune,Common,0,1,0,0,0,0
+Kagune,Uncommon,0,1.5,0,0,0,0
+Kagune,Rare,0,2,0,0,0,0
+Kagune,Epic,0,3,0,0,0,0
+Kagune,Legendary,0,5,0,0,0,0
+Kagune,Mythical,0,7,0,0,0,0
+Kagune,Phantom,0,9,0,0,0,0
+Kagune,Supreme,0,12,0,0,0,0
+Ghoul Mask,Common,1,1,1,0,0,0
+Ghoul Mask,Uncommon,1.2,1.2,1.2,0,0,0
+Ghoul Mask,Rare,1.4,1.4,1.4,0,0,0
+Ghoul Mask,Epic,1.6,1.6,1.6,0,0,0
+Ghoul Mask,Legendary,1.8,1.8,1.8,0,0,0
+Ghoul Mask,Mythical,2,2,2,0,0,0
+Ghoul Mask,Phantom,2.4,2.4,2.4,0,0,0
+Ghoul Mask,Supreme,3,3,3,0,0,0
+Akuma Powers,Common,0,1,0,0,0,0
+Akuma Powers,Uncommon,0,1.5,0,0,0,0
+Akuma Powers,Rare,0,2,0,0,0,0
+Akuma Powers,Epic,0,3,0,0,0,0
+Akuma Powers,Legendary,0,5,0,0,0,0
+Akuma Powers,Mythical,0,7,0,0,0,0
+Akuma Powers,Phantom,0,9,0,0,0,0
+Akuma Powers,Supreme,0,12,0,0,0,0
+Debiru Hunter,Common,2,0,0,0,0,0
+Debiru Hunter,Uncommon,3,0,0,0,0,0
+Debiru Hunter,Rare,4.5,0,0,0,0,0
+Debiru Hunter,Epic,6,0,0,0,0,0
+Debiru Hunter,Legendary,8,0,0,0,0,0
+Debiru Hunter,Mythical,10,0,0,0,0,0
+Debiru Hunter,Phantom,12,0,0,0,0,0
+Debiru Hunter,Supreme,15,0,0,0,0,0
+Pokita Pet,Common,0,1,0,0,0,0
+Pokita Pet,Uncommon,0,1.2,0,0,0,0
+Pokita Pet,Rare,0,1.4,0,0,0,0
+Pokita Pet,Epic,0,1.6,0,0,0,0
+Pokita Pet,Legendary,0,1.8,0,0,0,0
+Pokita Pet,Mythical,0,2,0,0,0,0
+Pokita Pet,Phantom,0,2.4,0,0,0,0
+Pokita Pet,Supreme,0,3,0,0,0,0
+Special Fire Force,Common,2,0,0,0,0,0
+Special Fire Force,Uncommon,3,0,0,0,0,0
+Special Fire Force,Rare,4.5,0,0,0,0,0
+Special Fire Force,Epic,6,0,0,0,0,0
+Special Fire Force,Legendary,8,0,0,0,0,0
+Special Fire Force,Mythical,10,0,0,0,0,0
+Special Fire Force,Phantom,12,0,0,0,0,0
+Special Fire Force,Supreme,15,0,0,0,0,0
+Pyrokinetics,Epic,1.2,0,0,0,0,0
+Pyrokinetics,Legendary,2.8,0.28,0,0,0,0
+Pyrokinetics,Mythical,4.8,0.64,0,0,0,0
+Pyrokinetics,Phantom,7.2,1.8,0,0,0,0
+Pyrokinetics,Supreme,10,3,0,0,0,0
+Grand Elder Power,Common,2,0,0,0,0,0
+Grand Elder Power,Uncommon,3,0,0,0,0,0
+Grand Elder Power,Rare,4.5,0,0,0,0,0
+Grand Elder Power,Epic,6,0,0,0,0,0
+Grand Elder Power,Legendary,8,0,0,0,0,0
+Grand Elder Power,Mythical,10,0,0,0,0,0
+Grand Elder Power,Phantom,12,0,0,0,0,0
+Grand Elder Power,Supreme,15,0,0,0,0,0
+Frost Demon Evolution,Common,0,1,0,0,0,0
+Frost Demon Evolution,Uncommon,0,1.5,0,0,0,0
+Frost Demon Evolution,Rare,0,2,0,0,0,0
+Frost Demon Evolution,Epic,0,3,0,0,0,0
+Frost Demon Evolution,Legendary,0,5,0,0,0,0
+Frost Demon Evolution,Mythical,0,7,0,0,0,0
+Frost Demon Evolution,Phantom,0,9,0,0,0,0
+Frost Demon Evolution,Supreme,0,12,0,0,0,0
+Espada,Common,1,0,0,0,0,0
+Espada,Uncommon,3,0,0,0,0,0
+Espada,Rare,4,0,0,0,0,0
+Espada,Epic,6,0,0,0,0,0
+Espada,Legendary,7.5,0,0,0,0,0
+Espada,Mythical,10,0,0,0,0,0
+Espada,Phantom,12,0,0,0,0,0
+Espada,Supreme,15,0,0,0,0,0
+Mundo Raid,Common,0,1,0,0,0,0
+Mundo Raid,Uncommon,0,1.5,0,0,0,0
+Mundo Raid,Rare,0,2,0,0,0,0
+Mundo Raid,Epic,0,3,0,0,0,0
+Mundo Raid,Legendary,0,5,0,0,0,0
+Mundo Raid,Mythical,0,7,0,0,0,0
+Mundo Raid,Phantom,0,10,0,0,0,0
+Mundo Raid,Supreme,0,12,0,0,0,0
+Shadow Garden,Common,1,0,0,0,0,0
+Shadow Garden,Uncommon,2,0,0,0,0,0
+Shadow Garden,Rare,3,0,0,0,0,0
+Shadow Garden,Epic,4,0,0,0,0,0
+Shadow Garden,Legendary,5,0,0,0,0,0
+Shadow Garden,Mythical,6,0,0,0,0,0
+Shadow Garden,Phantom,8,0,0,0,0,0
+Shadow Garden,Supreme,10,0,0,0,0,0
+Shadow Arts,Common,0,1,0,0,0,0
+Shadow Arts,Uncommon,0,1.5,0,0,0,0
+Shadow Arts,Rare,0,2,0,0,0,0
+Shadow Arts,Epic,0,2.5,0,0,0,0
+Shadow Arts,Legendary,0,3,0,0,0,0
+Shadow Arts,Mythical,0,3.5,0,0,0,0
+Shadow Arts,Phantom,0,4,0,0,0,0
+Shadow Arts,Supreme,0,5,0,0,0,0
+Energy Threat Level,Common,1,0,0,0,0,0
+Energy Threat Level,Uncommon,2,0,0,0,0,0
+Energy Threat Level,Rare,3,0,0,0,0,0
+Energy Threat Level,Epic,4,0,0,0,0,0
+Energy Threat Level,Legendary,5,0,0,0,0,0
+Energy Threat Level,Mythical,6,0,0,0,0,0
+Energy Threat Level,Phantom,8,0,0,0,0,0
+Energy Threat Level,Supreme,10,0,0,0,0,0
+Punch Power,Common,0,1,0,0,0,0
+Punch Power,Uncommon,0,1.5,0,0,0,0
+Punch Power,Rare,0,2,0,0,0,0
+Punch Power,Epic,0,2.5,0,0,0,0
+Punch Power,Legendary,0,3,0,0,0,0
+Punch Power,Mythical,0,3.5,0,0,0,0
+Punch Power,Phantom,0,4,0,0,0,0
+Punch Power,Supreme,0,5,0,0,0,0

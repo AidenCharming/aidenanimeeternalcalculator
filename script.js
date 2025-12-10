@@ -1342,6 +1342,10 @@ function calculateTTK() {
     const singleResultEl = el.ttkResult;
     const questResultEl = el.questTTKResult;
     const questReturnEl = el.questReturnTime;
+    const selectedEnemyName = el.enemySelect ? el.enemySelect.value : '';
+    const isSecretBoss = SS_SSS_MOBS.includes(selectedEnemyName);
+    const BASE_RESPAWN_TIME = isSecretBoss ? 2 : 3; 
+
     if (enemyHealth <= 0 || yourDPS <= 0) {
         singleResultEl.innerText = 'N/A';
         if (questResultEl) questResultEl.innerText = '';
@@ -1357,12 +1361,13 @@ function calculateTTK() {
         singleResultEl.innerText = resultString.trim();
     }
     if (quantity > 0) {
-        const ENEMY_RESPAWN_TIME = 3;
         const ENEMY_GROUP_SIZE = isFourSpot ? 4 : 1;
-        const respawnLimitPerKill = ENEMY_RESPAWN_TIME / ENEMY_GROUP_SIZE;
+        const respawnLimitPerKill = BASE_RESPAWN_TIME / ENEMY_GROUP_SIZE;
+        
         const yourTimePerKill = timeInSeconds + LOOT_KILL_OVERHEAD;
         const effectiveTimePerKill = Math.max(yourTimePerKill, respawnLimitPerKill);
         const totalTimeInSeconds = effectiveTimePerKill * quantity;
+        
         if (totalTimeInSeconds === Infinity) {
             if (questResultEl) questResultEl.innerText = `Time for ${quantity} kills: Over 1000 Years`;
             if (questReturnEl) questReturnEl.innerText = 'ETA: Eternity';
@@ -1436,7 +1441,8 @@ function calculateDamage() {
     minionDPS += calcMinion('compZombie1', 2.0);
     minionDPS += calcMinion('compZombie2', 2.0);
 
-    const totalDPS = playerDPS + minionDPS;
+    const preDPS = playerDPS + minionDPS;
+    const totalDPS = preDPS * .94;
     const totalDPM = totalDPS * 60;
 
     el.dpsResult.innerText = formatNumber(totalDPS);

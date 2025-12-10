@@ -572,7 +572,8 @@ const checklistDataByWorld = {
     progressions: [
         { id: 'c175', name: 'Special Zombie Crafting (10)' },
         { id: 'c176', name: 'Special Zombie Fusion (2)' },
-        { id: 'c177', name: 'Demon Fruit Leveling (4)' }
+        { id: 'c177', name: 'Demon Fruit Leveling (4)' },
+        { id: 'c177', name: 'Coin Obelisk (15)' }
     ],
     sssRank: [
         { id: 'c178', name: 'Gekar Morra' }
@@ -678,8 +679,10 @@ const checklistDataByWorld = {
       auras: [
       ],
       accessories: [
+        { id: 'c212', name: 'Wooden Quiver (A)' }
       ],
     quests: [
+      { id: 'cq70', name: 'Primitive Quest'},
       { id: 'cq70', name: 'Key Quests'},
       { id: 'cq71', name: 'Obelisk Quest'}
     ]
@@ -721,6 +724,7 @@ const checklistDataByWorld = {
           { id: 'c223', name: 'Akara' }
       ],
       auras: [
+        { id: 'c212', name: 'Ice Queen Aura (A)' }
       ],
       accessories: [
       ],
@@ -742,6 +746,7 @@ const checklistDataByWorld = {
           { id: 'c227', name: 'Dimpy' }
       ],
       auras: [
+        { id: 'c228', name: 'Psycho Aura (B)' }
       ],
       accessories: [
       ],

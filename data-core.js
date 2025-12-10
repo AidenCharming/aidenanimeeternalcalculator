@@ -125,6 +125,46 @@ const rankRequirements = {
     "156": 2.00E+148, "157": 1.00E+149, "158": 1.50E+150, "159": 2.50E+151, "160": 7.50E+151
 };
 
+const SS_SSS_MOBS = [
+    // World 1-10
+    "Koku", "Kid Kohan", 
+    "Loffy", "Shanks", 
+    "Kahara", "Eizen", 
+    "Gajo", "Sakuni", 
+    "Shinabe", "Rangoki", 
+    "Solo Sung", "Statue of God", 
+    "Yemi", "Novi Chroni", 
+    "Itechi", "Madera", 
+    "Saiko", "Ken Turbo", 
+
+    // World 11-20
+    "Illumio", "Killas Godspeed", 
+    "Lavi", "Eran", 
+    "Melyon", "Esanor", 
+    "Meena", "Number 8", 
+    "Rimaru", "Valzora", 
+    "Beater", "The Paladin", 
+    "Jokaro", "Dino", 
+    "Kanny", "Arama", 
+    "Mr Chainsaw", "Hero of Hell", 
+    "Leonardo", "Bansho", 
+
+    // World 21+
+    "Koku SSJ", "Frizzi Final Form", 
+    "Cifer", "Vasto Ichige", 
+    "Shadow", "Blood Queen", 
+    "Lord Boro", "Galaxy Hunter", 
+    "Albedia", "Anz Ool Gawn", 
+    "Riuma", "Riuma 20%", "Gekar Morra", 
+    "Hayo", "Hayo 20%", "Takemoto", 
+    "Bellatrice", "Bellatrice 20%", "Roswald", 
+    "Zero", "Zero 20%", "Emperor Reloush", 
+    "Kohara", "Kohara 20%", "Tsukaro", 
+    "Gaari", "Gaari 20%", "Sasaru", 
+    "Susanoe", "Susanoe 20%", "Akara", 
+    "Mob 100%", "Mob 100% 20%", "Dimpy"
+];
+
 const worldData = {
     "Halloween World": {
         "enemies": {
