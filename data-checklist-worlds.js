@@ -573,14 +573,14 @@ const checklistDataByWorld = {
         { id: 'c175', name: 'Special Zombie Crafting (10)' },
         { id: 'c176', name: 'Special Zombie Fusion (2)' },
         { id: 'c177', name: 'Demon Fruit Leveling (4)' },
-        { id: 'c177', name: 'Coin Obelisk (15)' }
+        { id: 'c178', name: 'Coin Obelisk (15)' }
     ],
     sssRank: [
-        { id: 'c178', name: 'Gekar Morra' }
+        { id: 'c179', name: 'Gekar Morra' }
     ],
     auras: [],
     accessories: [
-        { id: 'c179', name: 'Orrs Pants (S)' },
+        { id: 'c180', name: 'Orrs Pants (S)' },
     ],
     quests: [
       { id: 'cq58', name: 'Demon Fruit Quest'},
@@ -590,20 +590,20 @@ const checklistDataByWorld = {
   },
   "Amusement Park": {
       gachas: [
-          { id: 'c180', name: 'Assasin Grade' },
-          { id: 'c181', name: 'Assasin Skill' }
+          { id: 'c181', name: 'Assasin Grade' },
+          { id: 'c182', name: 'Assasin Skill' }
       ],
       progressions: [
-        { id: 'c182', name: 'Assassin Energy (100)' },
-        { id: 'c183', name: 'Assassin Damage (100)' },
-        { id: 'c184', name: 'Assassin Critical Energy (10)' },
-        { id: 'c185', name: 'Assassin Critical Damage (10)' },
-        { id: 'c186', name: 'Assassin Craft' },
-        { id: 'c187', name: 'Scythe Leveling' },
+        { id: 'c183', name: 'Assassin Energy (100)' },
+        { id: 'c184', name: 'Assassin Damage (100)' },
+        { id: 'c185', name: 'Assassin Critical Energy (10)' },
+        { id: 'c186', name: 'Assassin Critical Damage (10)' },
+        { id: 'c187', name: 'Assassin Craft' },
+        { id: 'c188', name: 'Scythe Leveling' },
       ],
       sssRank: [
-          { id: 'c188', name: 'Tagamura' },
-          { id: 'c189', name: '1moto' }
+          { id: 'c189', name: 'Tagamura' },
+          { id: 'c190', name: '1moto' }
       ],
       auras: [],
       accessories: [],
@@ -616,22 +616,22 @@ const checklistDataByWorld = {
   },
     "Re:Manor": {
       gachas: [
-          { id: 'c190', name: 'Spirit Pact' },
-          { id: 'c191', name: 'Witch Factor' },
-          { id: 'c192', name: 'Re:Spirit Pact' },
-          { id: 'c193', name: 'Re: Witch Token' },
-          { id: 'c194', name: 'Artifical Spirit Blessings' },
-          { id: 'c195', name: 'Gospel Curses' },
-          { id: 'c196', name: 'Witch Authority' }
+          { id: 'c191', name: 'Spirit Pact' },
+          { id: 'c192', name: 'Witch Factor' },
+          { id: 'c193', name: 'Re:Spirit Pact' },
+          { id: 'c194', name: 'Re: Witch Token' },
+          { id: 'c195', name: 'Artifical Spirit Blessings' },
+          { id: 'c196', name: 'Gospel Curses' },
+          { id: 'c197', name: 'Witch Authority' }
       ],
       progressions: [
       ],
       sssRank: [
-          { id: 'c197', name: 'Roswald' }
+          { id: 'c198', name: 'Roswald' }
       ],
       auras: [
-          { id: 'c198', name: 'Blue Oni Aura (C)' },
-          { id: 'c199', name: 'Pink Oni Aura (D)' }
+          { id: 'c199', name: 'Blue Oni Aura (C)' },
+          { id: 'c200', name: 'Pink Oni Aura (D)' }
       ],
       accessories: [],
     quests: [
@@ -641,21 +641,21 @@ const checklistDataByWorld = {
   },
     "Asfordo Academy": {
       gachas: [
-          { id: 'c200', name: 'Geass Potential' },
-          { id: 'c201', name: 'Knightmare Frames' }
+          { id: 'c201', name: 'Geass Potential' },
+          { id: 'c202', name: 'Knightmare Frames' }
       ],
       progressions: [
-        { id: 'c202', name: 'Geass Leveling' },
-        { id: 'c203', name: 'Geass Evolver' }
+        { id: 'c203', name: 'Geass Leveling' },
+        { id: 'c204', name: 'Geass Evolver' }
       ],
       sssRank: [
-          { id: 'c204', name: 'Emperor Reloush' }
+          { id: 'c205', name: 'Emperor Reloush' }
       ],
       auras: [
       ],
       accessories: [
-        { id: 'c205', name: 'Zero Cape (SS)' },
-        { id: 'c206', name: 'Zero Mask (SS)' },
+        { id: 'c206', name: 'Zero Cape (SS)' },
+        { id: 'c207', name: 'Zero Mask (SS)' },
       ],
     quests: [
       { id: 'cq67', name: 'Black Knights Quest'},
@@ -665,95 +665,95 @@ const checklistDataByWorld = {
   },
     "Science Village": {
       gachas: [
-          { id: 'c207', name: 'IQ' },
-          { id: 'c208', name: 'Scientific Weapons' }
+          { id: 'c208', name: 'IQ' },
+          { id: 'c209', name: 'Scientific Weapons' }
       ],
       progressions: [
-        { id: 'c209', name: 'Scientific Tools Crafting' },
-        { id: 'c210', name: 'Science Material Updgrades (100)' },
-        { id: 'c211', name: 'Science Upgrades (16)' }
+        { id: 'c210', name: 'Scientific Tools Crafting' },
+        { id: 'c211', name: 'Science Material Updgrades (100)' },
+        { id: 'c212', name: 'Science Upgrades (16)' }
       ],
       sssRank: [
-          { id: 'c212', name: 'Tsukaro' }
+          { id: 'c213', name: 'Tsukaro' }
       ],
       auras: [
       ],
       accessories: [
-        { id: 'c212', name: 'Wooden Quiver (A)' }
+        { id: 'c214', name: 'Wooden Quiver (A)' }
       ],
     quests: [
       { id: 'cq70', name: 'Primitive Quest'},
-      { id: 'cq70', name: 'Key Quests'},
-      { id: 'cq71', name: 'Obelisk Quest'}
+      { id: 'cq71', name: 'Key Quests'},
+      { id: 'cq72', name: 'Obelisk Quest'}
     ]
   },
   "Sand Village": {
       gachas: [
-          { id: 'c213', name: 'Shinobi Clan' },
-          { id: 'c214', name: 'Kekkei Genkai' },
-          { id: 'c215', name: 'Power Eyes 2' },
-          { id: 'c216', name: 'Chakra Infusion' }
+          { id: 'c215', name: 'Shinobi Clan' },
+          { id: 'c216', name: 'Kekkei Genkai' },
+          { id: 'c217', name: 'Power Eyes 2' },
+          { id: 'c218', name: 'Chakra Infusion' }
       ],
       progressions: [
       ],
       sssRank: [
-          { id: 'c217', name: 'Sasaru' }
+          { id: 'c219', name: 'Sasaru' }
       ],
       auras: [
-          { id: 'c218', name: 'Sand Aura (A)' }
+          { id: 'c220', name: 'Sand Aura (A)' }
       ],
       accessories: [
-          { id: 'c219', name: 'One Tailed Beast (SS)' }
+          { id: 'c221', name: 'One Tailed Beast (SS)' }
       ],
     quests: [
-      { id: 'cq72', name: 'Hero License Quest'},
-      { id: 'cq73', name: 'Sand Kage'},
-      { id: 'cq74', name: 'Key Quests'},
-      { id: 'cq75', name: 'Obelisk Quest'}
+      { id: 'cq73', name: 'Hero License Quest'},
+      { id: 'cq74', name: 'Sand Kage'},
+      { id: 'cq75', name: 'Key Quests'},
+      { id: 'cq76', name: 'Obelisk Quest'}
     ]
   },
   "Night Raid Base": {
       gachas: [
-          { id: 'c220', name: 'Energy Taigu' },
-          { id: 'c221', name: 'Damage Taigu' },
+          { id: 'c222', name: 'Energy Taigu' },
+          { id: 'c223', name: 'Damage Taigu' },
       ],
       progressions: [
-          { id: 'c222', name: 'Taigu Evolve' }
+          { id: 'c224', name: 'Taigu Evolve' }
       ],
       sssRank: [
-          { id: 'c223', name: 'Akara' }
+          { id: 'c225', name: 'Akara' }
       ],
       auras: [
-        { id: 'c212', name: 'Ice Queen Aura (A)' }
+        { id: 'c226', name: 'Ice Queen Aura (A)' }
       ],
       accessories: [
       ],
     quests: [
-      { id: 'cq76', name: 'Teigu Quest'},
-      { id: 'cq77', name: 'Key Quests'},
-      { id: 'cq78', name: 'Obelisk Quest'}
+      { id: 'cq77', name: 'Teigu Quest'},
+      { id: 'cq78', name: 'Key Quests'},
+      { id: 'cq79', name: 'Obelisk Quest'}
     ]
   },
   "Salty School": {
       gachas: [
-          { id: 'c224', name: 'Psycho Flow' },
-          { id: 'c225', name: 'Psycho Destruction' },
+          { id: 'c227', name: 'Psycho Flow' },
+          { id: 'c228', name: 'Psycho Destruction' },
       ],
       progressions: [
-          { id: 'c226', name: 'Mob Anger' }
+          { id: 'c229', name: 'Mob Anger' }
       ],
       sssRank: [
-          { id: 'c227', name: 'Dimpy' }
+          { id: 'c230', name: 'Dimpy' }
       ],
       auras: [
-        { id: 'c228', name: 'Psycho Aura (B)' }
+        { id: 'c231', name: 'Psycho Aura (B)' }
       ],
       accessories: [
       ],
     quests: [
-      { id: 'cq79', name: 'Exorcism Quest'},
-      { id: 'cq80', name: 'Key Quests'},
-      { id: 'cq81', name: 'Obelisk Quest'}
+      { id: 'cq80', name: 'Exorcism Quest'},
+      { id: 'cq81', name: 'Key Quests'},
+      { id: 'cq82', name: 'Obelisk Quest'}
     ]
   },
 };
