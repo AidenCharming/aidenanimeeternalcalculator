@@ -1,759 +1,751 @@
 const checklistDataByWorld = {
   "Halloween World": {
     gachas: [
-      { id: 'h1', name: 'Halloween Gacha' }
+      { id: 'halloween-gacha', name: 'Halloween Gacha' }
     ],
     progressions: [
-      {id: 'h2', name: 'Halloween Bag Leveling' },
-      { id: 'h3', name: 'Ghost Leveling' },
-      { id: 'h4', name: 'Overdrive Saw' },
-	    { id: 'h5', name: 'Energy Zombies' }
+      { id: 'halloween-bag-level', name: 'Halloween Bag Leveling' },
+      { id: 'halloween-ghost-level', name: 'Ghost Leveling' },
+      { id: 'halloween-overdrive-saw', name: 'Overdrive Saw' },
+      { id: 'halloween-energy-zombies', name: 'Energy Zombies' }
     ],
     sssRank: [],
     auras: [
-      { id: 'h6', name: 'Candy Aura (Carotto)' },
-      { id: 'h7', name: 'Pumpkin Aura (Evil Bald Man)' },
-      { id: 'h8', name: 'Plague Aura (Pumpkinado)' },
-      { id: 'h9', name: 'Spookweb Aura (Bald Warlock)' },
-      { id: 'h10', name: 'Demonflame Aura (Spook-Suke)' }
+      { id: 'halloween-candy-aura', name: 'Candy Aura (Carotto)' },
+      { id: 'halloween-pumpkin-aura', name: 'Pumpkin Aura (Evil Bald Man)' },
+      { id: 'halloween-plague-aura', name: 'Plague Aura (Pumpkinado)' },
+      { id: 'halloween-spookweb-aura', name: 'Spookweb Aura (Bald Warlock)' },
+      { id: 'halloween-demonflame-aura', name: 'Demonflame Aura (Spook-Suke)' }
     ],
     accessories: [],
     quests: []
   },
   "Earth City": {
     gachas: [
-      { id: 'c1', name: 'Dragon Race' },
-      { id: 'c2', name: 'Saiyan' }
+      { id: 'earth-dragon-race', name: 'Dragon Race' },
+      { id: 'earth-saiyan', name: 'Saiyan' }
     ],
     progressions: [],
     sssRank: [
-      { id: 'c3', name: 'Kid Kohan' }
+      { id: 'earth-kid-kohan', name: 'Kid Kohan' }
     ],
     auras: [
-      { id: 'c4', name: 'Luck Aura (SS)' }
+      { id: 'earth-luck-aura', name: 'Luck Aura (SS)' }
     ],
     accessories: [
-      { id: 'c5', name: '4 Star Hat (SS)' },
-      { id: 'c6', name: 'Imp Tail (Halloween)' }
+      { id: 'earth-4star-hat', name: '4 Star Hat (SS)' },
+      { id: 'earth-imp-tail', name: 'Imp Tail (Halloween)' }
     ],
     quests: [
-      { id: 'cq1', name: 'Hero License'},
-      { id: 'cq2', name: 'Key Quests'},
-      { id: 'cq3', name: 'Obelisk Quest'}
+      { id: 'earth-hero-license', name: 'Hero License'},
+      { id: 'earth-key-quests', name: 'Key Quests'},
+      { id: 'earth-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Windmill Island": {
     gachas: [
-      { id: 'c7', name: 'Pirate Crew' },
-      { id: 'c8', name: 'Swords' }
+      { id: 'windmill-pirate-crew', name: 'Pirate Crew' },
+      { id: 'windmill-swords', name: 'Swords' }
     ],
     progressions: [
-      { id: 'c9', name: 'Haki (60)' }
+      { id: 'windmill-haki-60', name: 'Haki (60)' }
     ],
     sssRank: [
-      { id: 'c10', name: 'Shanks' }
+      { id: 'windmill-shanks', name: 'Shanks' }
     ],
     auras: [
-      { id: 'c11', name: 'Red Emperor Aura (SS)' }
+      { id: 'windmill-red-emperor-aura', name: 'Red Emperor Aura (SS)' }
     ],
     accessories: [
-      { id: 'c12', name: 'Armless Cloak (SS)' }
+      { id: 'windmill-armless-cloak', name: 'Armless Cloak (SS)' }
     ],
     quests: [
-      { id: 'cq4', name: 'Key Quests'},
-      { id: 'cq5', name: 'Obelisk Quest'}
+      { id: 'windmill-key-quests', name: 'Key Quests'},
+      { id: 'windmill-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Soul Society": {
     gachas: [
-      { id: 'c13', name: 'Reiatsu Color' },
-      { id: 'c14', name: 'Zanpakuto' }
+      { id: 'soul-reiatsu-color', name: 'Reiatsu Color' },
+      { id: 'soul-zanpakuto', name: 'Zanpakuto' }
     ],
     progressions: [
-      { id: 'c15', name: 'Pressure (210)' }
+      { id: 'soul-pressure-210', name: 'Pressure (210)' }
     ],
     sssRank: [
-      { id: 'c16', name: 'Eizen' }
+      { id: 'soul-eizen', name: 'Eizen' }
     ],
     auras: [
-      { id: 'c17', name: 'Purple Traitor Aura(SS)' }
+      { id: 'soul-purple-traitor-aura', name: 'Purple Traitor Aura(SS)' }
     ],
     accessories: [],
     quests: [
-      { id: 'cq6', name: 'Key Quests'},
-      { id: 'cq7', name: 'Obelisk Quest'}
+      { id: 'soul-key-quests', name: 'Key Quests'},
+      { id: 'soul-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Cursed School": {
     gachas: [
-      { id: 'c18', name: 'Curses' }
+      { id: 'cursed-curses', name: 'Curses' }
     ],
     progressions: [
-      { id: 'c19', name: 'Cursed Progression (410)' }
+      { id: 'cursed-progression-410', name: 'Cursed Progression (410)' }
     ],
     sssRank: [
-      { id: 'c20', name: 'Sakuni' }
+      { id: 'cursed-sakuni', name: 'Sakuni' }
     ],
     auras: [
-      { id: 'c21', name: 'Fire King Aura (SS)' }
+      { id: 'cursed-fire-king-aura', name: 'Fire King Aura (SS)' }
     ],
     accessories: [],
     quests: [
-      { id: 'cq8', name: 'Key Quests'},
-      { id: 'cq9', name: 'Obelisk Quest'}
+      { id: 'cursed-key-quests', name: 'Key Quests'},
+      { id: 'cursed-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Slayer Village": {
     gachas: [
-	  { id: 'c22', name: 'Breathings'},
-      { id: 'c23', name: 'Demon Arts' }
+      { id: 'slayer-breathings', name: 'Breathings'},
+      { id: 'slayer-demon-arts', name: 'Demon Arts' }
     ],
-    progressions: [
-    ],
+    progressions: [],
     sssRank: [
-      { id: 'c24', name: 'Rangaki' }
+      { id: 'slayer-rangaki', name: 'Rangaki' }
     ],
     auras: [
-      { id: 'c25', name: 'Flaming Aura (SS)' }
+      { id: 'slayer-flaming-aura', name: 'Flaming Aura (SS)' }
     ],
     accessories: [],
     quests: [
-      { id: 'cq10', name: 'Key Quests'},
-      { id: 'cq11', name: 'Obelisk Quest'}
+      { id: 'slayer-key-quests', name: 'Key Quests'},
+      { id: 'slayer-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Solo Island": {
     gachas: [
-	  { id: 'c26', name: 'Solo Hunter Rank' }
+      { id: 'solo-hunter-rank', name: 'Solo Hunter Rank' }
     ],
     progressions: [
-	  { id: 'c27', name: 'Reawakening (210)' },
-      { id: 'c28', name: 'Monarch (200)' },
-	  { id: 'c29', name: 'Shadow Upgrades' }
+      { id: 'solo-reawakening-210', name: 'Reawakening (210)' },
+      { id: 'solo-monarch-200', name: 'Monarch (200)' },
+      { id: 'solo-shadow-upgrades', name: 'Shadow Upgrades' }
     ],
     sssRank: [
-      { id: 'c30', name: 'Statue of God' }
+      { id: 'solo-statue-of-god', name: 'Statue of God' }
     ],
     auras: [
-      { id: 'c31', name: 'Statue Aura (SS)' }
+      { id: 'solo-statue-aura', name: 'Statue Aura (SS)' }
     ],
     accessories: [],
     quests: [
-      { id: 'cq12', name: 'Hero License Quest'},
-      { id: 'cq13', name: 'Key Quests'},
-      { id: 'cq14', name: 'Obelisk Quest'}
+      { id: 'solo-hero-license', name: 'Hero License Quest'},
+      { id: 'solo-key-quests', name: 'Key Quests'},
+      { id: 'solo-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Clover Village": {
     gachas: [
-      { id: 'c32', name: 'Grimoire' }
+      { id: 'clover-grimoire', name: 'Grimoire' }
     ],
     progressions: [
-      { id: 'c33', name: 'Water Spirit (100)' },
-      { id: 'c34', name: 'Fire Spirit (100)' },
-      { id: 'c35', name: 'Wind Spirit (10)' }
+      { id: 'clover-water-spirit-100', name: 'Water Spirit (100)' },
+      { id: 'clover-fire-spirit-100', name: 'Fire Spirit (100)' },
+      { id: 'clover-wind-spirit-10', name: 'Wind Spirit (10)' }
     ],
     sssRank: [
-      { id: 'c36', name: 'Novi Chroni' }
+      { id: 'clover-novi-chroni', name: 'Novi Chroni' }
     ],
     auras: [],
     accessories: [],
     quests: [
-      { id: 'cq15', name: 'Key Quests'},
-      { id: 'cq16', name: 'Obelisk Quest'}
+      { id: 'clover-key-quests', name: 'Key Quests'},
+      { id: 'clover-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Leaf Village": {
     gachas: [
-      { id: 'c37', name: 'Power Eyes' }
-	],
+      { id: 'leaf-power-eyes', name: 'Power Eyes' }
+    ],
     progressions: [
-      { id: 'c38', name: 'Chakra (210)' },
-	  { id: 'c39', name: 'Attack Range 2 (4)' }
+      { id: 'leaf-chakra-210', name: 'Chakra (210)' },
+      { id: 'leaf-attack-range-2-4', name: 'Attack Range 2 (4)' }
     ],
     sssRank: [
-      { id: 'c40', name: 'Madera/Itachi' }
+      { id: 'leaf-madera-itachi', name: 'Madera/Itachi' }
     ],
     auras: [
-      { id: 'c41', name: 'Leafy Aura (SS)' }
+      { id: 'leaf-leafy-aura', name: 'Leafy Aura (SS)' }
     ],
     accessories: [
-      { id: 'c42', name: 'Shinobi Flops (SS)' }
+      { id: 'leaf-shinobi-flops', name: 'Shinobi Flops (SS)' }
     ],
     quests: [
-      { id: 'cq17', name: 'Leaf Kage'},
-      { id: 'cq18', name: 'Key Quests'},
-      { id: 'cq19', name: 'Obelisk Quest'}
+      { id: 'leaf-leaf-kage', name: 'Leaf Kage'},
+      { id: 'leaf-key-quests', name: 'Key Quests'},
+      { id: 'leaf-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Spirit Residence": {
     gachas: [
-      { id: 'c43', name: 'Psychic Mayhem' }
-	],
+      { id: 'spirit-psychic-mayhem', name: 'Psychic Mayhem' }
+    ],
     progressions: [
-	  { id: 'c44', name: 'Spiritual Upgrade (60)' },
-      { id: 'c45', name: 'Lucky Spirit (50)' },
-	],
+      { id: 'spirit-spiritual-upgrade-60', name: 'Spiritual Upgrade (60)' },
+      { id: 'spirit-lucky-spirit-50', name: 'Lucky Spirit (50)' },
+    ],
     sssRank: [
-      { id: 'c46', name: 'Ken Turbo' }
+      { id: 'spirit-ken-turbo', name: 'Ken Turbo' }
     ],
     auras: [],
     accessories: [],
     quests: [
-      { id: 'cq20', name: 'Key Quests'},
-      { id: 'cq21', name: 'Obelisk Quest'}
+      { id: 'spirit-key-quests', name: 'Key Quests'},
+      { id: 'spirit-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Magic Hunter City": {
     gachas: [
-	  { id: 'c47', name: 'Energy Card Shop' },
-      { id: 'c48', name: 'Damage Card Shop' },
+      { id: 'magic-energy-card-shop', name: 'Energy Card Shop' },
+      { id: 'magic-damage-card-shop', name: 'Damage Card Shop' },
     ],
     progressions: [
-      { id: 'c49', name: 'Ten (110)' },
-	  { id: 'c50', name: 'Contract of Greed (100)' },
-	  { id: 'c51', name: 'Energy Obelisk (100)' }
+      { id: 'magic-ten-110', name: 'Ten (110)' },
+      { id: 'magic-contract-of-greed-100', name: 'Contract of Greed (100)' },
+      { id: 'magic-energy-obelisk-100', name: 'Energy Obelisk (100)' }
     ],
     sssRank: [
-      { id: 'c52', name: 'Killas Godspeed' }
+      { id: 'magic-killas-godspeed', name: 'Killas Godspeed' }
     ],
     auras: [
-      { id: 'c53', name: 'Energetic Aura (SS)' }
+      { id: 'magic-energetic-aura', name: 'Energetic Aura (SS)' }
     ],
     accessories: [],
     quests: [
-      { id: 'cq22', name: 'Hero License Quests'},
-      { id: 'cq23', name: 'Key Quests'},
-      { id: 'cq24', name: 'Obelisk Quest'}
+      { id: 'magic-hero-license', name: 'Hero License Quests'},
+      { id: 'magic-key-quests', name: 'Key Quests'},
+      { id: 'magic-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Titan City": {
     gachas: [
-      { id: 'c54', name: 'Families' },
-	  { id: 'c55', name: 'Titans' },
-	  { id: 'c56', name: 'Titan Injection' }
+      { id: 'titan-families', name: 'Families' },
+      { id: 'titan-titans', name: 'Titans' },
+      { id: 'titan-injection', name: 'Titan Injection' }
     ],
-    progressions: [
-    ],
+    progressions: [],
     sssRank: [
-      { id: 'c57', name: 'Eran' }
+      { id: 'titan-eran', name: 'Eran' }
     ],
     auras: [
-      { id: 'c58', name: 'Titanic Aura (SS)' }
+      { id: 'titan-titanic-aura', name: 'Titanic Aura (SS)' }
     ],
     accessories: [
-      { id: 'c59', name: 'Red Scarf (C)' },
-      { id: 'c60', name: 'Clean Hat (S)' },
-      { id: 'c61', name: 'Scout Cloak (SS)' }
+      { id: 'titan-red-scarf', name: 'Red Scarf (C)' },
+      { id: 'titan-clean-hat', name: 'Clean Hat (S)' },
+      { id: 'titan-scout-cloak', name: 'Scout Cloak (SS)' }
     ],
     quests: [
-      { id: 'cq25', name: 'Key Quests'},
-      { id: 'cq26', name: 'Obelisk Quest'}
+      { id: 'titan-key-quests', name: 'Key Quests'},
+      { id: 'titan-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Village of Sins": {
     gachas: [
-      { id: 'c62', name: 'Sins' },
-      { id: 'c63', name: 'Commandments' }
+      { id: 'sins-sins', name: 'Sins' },
+      { id: 'sins-commandments', name: 'Commandments' }
     ],
     progressions: [
-	  { id: 'c64', name: 'Energy (50)' },
-	  { id: 'c65', name: 'Sin Upgrades' }
+      { id: 'sins-energy-50', name: 'Energy (50)' },
+      { id: 'sins-sin-upgrades', name: 'Sin Upgrades' }
     ],
     sssRank: [
-      { id: 'c66', name: 'Esanor' }
+      { id: 'sins-esanor', name: 'Esanor' }
     ],
     auras: [],
     accessories: [],
     quests: [
-      { id: 'cq27', name: 'Key Quests'},
-      { id: 'cq28', name: 'Obelisk Quest'}
+      { id: 'sins-key-quests', name: 'Key Quests'},
+      { id: 'sins-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Kaiju Base": {
     gachas: [
-      { id: 'c67', name: 'Kaiju Powers' },
-      { id: 'c68', name: 'Power Of Exchange' }
+      { id: 'kaiju-powers', name: 'Kaiju Powers' },
+      { id: 'kaiju-power-of-exchange', name: 'Power Of Exchange' }
     ],
     progressions: [
-	  { id: 'c69', name: 'Fortitude (210)' },
-      { id: 'c70', name: 'Kaiju Energy (110)' }
+      { id: 'kaiju-fortitude-210', name: 'Fortitude (210)' },
+      { id: 'kaiju-energy-110', name: 'Kaiju Energy (110)' }
     ],
     sssRank: [
-      { id: 'c71', name: 'Number 8' }
+      { id: 'kaiju-number-8', name: 'Number 8' }
     ],
     auras: [
-      { id: 'c72', name: 'Monster Aura (SS)' }
+      { id: 'kaiju-monster-aura', name: 'Monster Aura (SS)' }
     ],
     accessories: [],
     quests: [
-      { id: 'cq29', name: 'Key Quests'},
-      { id: 'cq30', name: 'Obelisk Quest'}
+      { id: 'kaiju-key-quests', name: 'Key Quests'},
+      { id: 'kaiju-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Tempest Capital": {
     gachas: [
-      { id: 'c73', name: 'Ultimate Skill' },
-      { id: 'c74', name: 'Species' }
+      { id: 'tempest-ultimate-skill', name: 'Ultimate Skill' },
+      { id: 'tempest-species', name: 'Species' }
     ],
     progressions: [
-	  { id: 'c75', name: 'Demon Lord Energy (210)' },
-      { id: 'c76', name: 'Demon Lord Damage (210)' },
-      { id: 'c77', name: 'Demon Lord Coins (100)' },
-      { id: 'c78', name: 'Demon Lord Luck (50)' }
-	  ],
+      { id: 'tempest-demon-lord-energy-210', name: 'Demon Lord Energy (210)' },
+      { id: 'tempest-demon-lord-damage-210', name: 'Demon Lord Damage (210)' },
+      { id: 'tempest-demon-lord-coins-100', name: 'Demon Lord Coins (100)' },
+      { id: 'tempest-demon-lord-luck-50', name: 'Demon Lord Luck (50)' }
+    ],
     sssRank: [
-      { id: 'c79', name: 'Valzora' }
+      { id: 'tempest-valzora', name: 'Valzora' }
     ],
     auras: [],
     accessories: [
-      { id: 'c80', name: 'Slime Mask (S)' }
+      { id: 'tempest-slime-mask', name: 'Slime Mask (S)' }
     ],
     quests: [
-      { id: 'cq31', name: 'Key Quests'},
-      { id: 'cq32', name: 'Obelisk Quest'}
+      { id: 'tempest-key-quests', name: 'Key Quests'},
+      { id: 'tempest-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Virtual City": {
     gachas: [
-	  { id: 'c81', name: 'Power Energy Runes' },
-      { id: 'c82', name: 'Damage Runes' }
-	],
+      { id: 'virtual-power-energy-runes', name: 'Power Energy Runes' },
+      { id: 'virtual-damage-runes', name: 'Damage Runes' }
+    ],
     progressions: [
-	  { id: 'c83', name: 'Swordsman Energy (210)' },
-      { id: 'c84', name: 'Swordsman Damage (110)' },
-	  { id: 'c85', name: 'Damage Obelisk (100)' }
-	],
+      { id: 'virtual-swordsman-energy-210', name: 'Swordsman Energy (210)' },
+      { id: 'virtual-swordsman-damage-110', name: 'Swordsman Damage (110)' },
+      { id: 'virtual-damage-obelisk-100', name: 'Damage Obelisk (100)' }
+    ],
     sssRank: [
-      { id: 'c86', name: 'The Paladin' }
+      { id: 'virtual-the-paladin', name: 'The Paladin' }
     ],
     auras: [
-      { id: 'c87', name: 'Virtual Aura (SS)' }
+      { id: 'virtual-virtual-aura', name: 'Virtual Aura (SS)' }
     ],
     accessories: [],
     quests: [
-      { id: 'cq33', name: 'Hero License Quest'},
-      { id: 'cq34', name: 'Key Quests'},
-      { id: 'cq35', name: 'Obelisk Quest'}
+      { id: 'virtual-hero-license', name: 'Hero License Quest'},
+      { id: 'virtual-key-quests', name: 'Key Quests'},
+      { id: 'virtual-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Cairo": {
     gachas: [
-	  { id: 'c88', name: 'Stands' },
-      { id: 'c89', name: 'Onomatopoeia' },
-      { id: 'c90', name: 'Requium Injection'}
+      { id: 'cairo-stands', name: 'Stands' },
+      { id: 'cairo-onomatopoeia', name: 'Onomatopoeia' },
+      { id: 'cairo-requium-injection', name: 'Requium Injection'}
     ],
     progressions: [
-      { id: 'c91', name: 'Ripple Energy (110)' }
+      { id: 'cairo-ripple-energy-110', name: 'Ripple Energy (110)' }
     ],
     sssRank: [
-      { id: 'c92', name: 'Dino' }
+      { id: 'cairo-dino', name: 'Dino' }
     ],
     auras: [
-      { id: 'c93', name: 'Hamon Aura (SS)' }
+      { id: 'cairo-hamon-aura', name: 'Hamon Aura (SS)' }
     ],
     accessories: [
-      { id: 'c94', name: 'Greenello Scarf (C)' }
+      { id: 'cairo-greenello-scarf', name: 'Greenello Scarf (C)' }
     ],
     quests: [
-      { id: 'cq36', name: 'Key Quests'},
-      { id: 'cq37', name: 'Obelisk Quest'}
+      { id: 'cairo-key-quests', name: 'Key Quests'},
+      { id: 'cairo-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Ghoul City": {
     gachas: [
-      { id: 'c95', name: 'Investigators' },
-      { id: 'c96', name: 'Kagune' }
+      { id: 'ghoul-investigators', name: 'Investigators' },
+      { id: 'ghoul-kagune', name: 'Kagune' }
     ],
     progressions: [
-      { id: 'c97', name: 'Damage Cells (110)' },
-      { id: 'c98', name: 'Kagune Leveling (50)' }
+      { id: 'ghoul-damage-cells-110', name: 'Damage Cells (110)' },
+      { id: 'ghoul-kagune-leveling-50', name: 'Kagune Leveling (50)' }
     ],
     sssRank: [
-      { id: 'c99', name: 'Arama' }
+      { id: 'ghoul-arama', name: 'Arama' }
     ],
     auras: [
-      { id: 'c100', name: 'Ghoul Aura (SS)' }
+      { id: 'ghoul-ghoul-aura', name: 'Ghoul Aura (SS)' }
     ],
     accessories: [],
     quests: [
-      { id: 'cq38', name: 'CCG Quests'},
-      { id: 'cq39', name: 'Key Quests'},
-      { id: 'cq40', name: 'Obelisk Quest'}
+      { id: 'ghoul-ccg-quests', name: 'CCG Quests'},
+      { id: 'ghoul-key-quests', name: 'Key Quests'},
+      { id: 'ghoul-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Chainsaw City": {
     gachas: [
-      { id: 'c101', name: 'Debiru Hunter' },
-      { id: 'c102', name: 'Akuma Powers' }
+      { id: 'chainsaw-debiru-hunter', name: 'Debiru Hunter' },
+      { id: 'chainsaw-akuma-powers', name: 'Akuma Powers' }
     ],
     progressions: [
-	  { id: 'c103', name: 'Akuma Damage (110)' },
-	  { id: 'c104', name: 'Akuma Energy (160)' },
-      { id: 'c105', name: 'Pokita (50)' }
+      { id: 'chainsaw-akuma-damage-110', name: 'Akuma Damage (110)' },
+      { id: 'chainsaw-akuma-energy-160', name: 'Akuma Energy (160)' },
+      { id: 'chainsaw-pokita-50', name: 'Pokita (50)' }
     ],
     sssRank: [
-      { id: 'c106', name: 'Hero Of Hell' }
+      { id: 'chainsaw-hero-of-hell', name: 'Hero Of Hell' }
     ],
     auras: [],
     accessories: [
-      { id: 'c107', name: 'Pokita Slides (D)' }
+      { id: 'chainsaw-pokita-slides', name: 'Pokita Slides (D)' }
     ],
     quests: [
-      { id: 'cq41', name: 'Hero License Quests'},
-      { id: 'cq42', name: 'Key Quests'},
-      { id: 'cq43', name: 'Obelisk Quest'}
+      { id: 'chainsaw-hero-license', name: 'Hero License Quests'},
+      { id: 'chainsaw-key-quests', name: 'Key Quests'},
+      { id: 'chainsaw-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Tokyo Empire": {
     gachas: [
-      { id: 'c108', name: 'Special Fire Force' },
-      { id: 'c109', name: 'Mushi Bite' },
-	  { id: 'c110', name: 'Adolla Blessing' }
+      { id: 'tokyo-special-fire-force', name: 'Special Fire Force' },
+      { id: 'tokyo-mushi-bite', name: 'Mushi Bite' },
+      { id: 'tokyo-adolla-blessing', name: 'Adolla Blessing' }
     ],
     progressions: [
-      { id: 'c111', name: '1st Gen Leveling (20)' },
-      { id: 'c112', name: '2nd Gen Leveling (40)' },
-      { id: 'c113', name: '3rd Gen Leveling (60)' },
-      { id: 'c114', name: '4th Gen Leveling (80)' },
-      { id: 'c115', name: 'Adolla Leveling (100)' }
+      { id: 'tokyo-1st-gen-leveling-20', name: '1st Gen Leveling (20)' },
+      { id: 'tokyo-2nd-gen-leveling-40', name: '2nd Gen Leveling (40)' },
+      { id: 'tokyo-3rd-gen-leveling-60', name: '3rd Gen Leveling (60)' },
+      { id: 'tokyo-4th-gen-leveling-80', name: '4th Gen Leveling (80)' },
+      { id: 'tokyo-adolla-leveling-100', name: 'Adolla Leveling (100)' }
     ],
     sssRank: [
-      { id: 'c116', name: 'Bansho' }
+      { id: 'tokyo-bansho', name: 'Bansho' }
     ],
     auras: [
-      { id: 'c117', name: 'Fire Captain Aura (SS)' }
+      { id: 'tokyo-fire-captain-aura', name: 'Fire Captain Aura (SS)' }
     ],
     accessories: [
-      { id: 'c118', name: 'Fire Force Pants (C)' },
-      { id: 'c119', name: 'Fire Force Cape (S)' },
-      { id: 'c120', name: 'Fire Witch Hat (S)' },
-      { id: 'c121', name: 'Fire Eye Patch (SS)' }
+      { id: 'tokyo-fire-force-pants', name: 'Fire Force Pants (C)' },
+      { id: 'tokyo-fire-force-cape', name: 'Fire Force Cape (S)' },
+      { id: 'tokyo-fire-witch-hat', name: 'Fire Witch Hat (S)' },
+      { id: 'tokyo-fire-eye-patch', name: 'Fire Eye Patch (SS)' }
     ],
     quests: [
-      { id: 'cq44', name: 'Key Quests'},
-      { id: 'cq45', name: 'Obelisk Quest'}
+      { id: 'tokyo-key-quests', name: 'Key Quests'},
+      { id: 'tokyo-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Green Planet": {
     gachas: [
-      { id: 'c122', name: 'Grand Elder Power' },
-      { id: 'c123', name: 'Frost Demon Evolution' },
-      { id: 'c124', name: 'Power Of Friendship' }
+      { id: 'green-grand-elder-power', name: 'Grand Elder Power' },
+      { id: 'green-frost-demon-evolution', name: 'Frost Demon Evolution' },
+      { id: 'green-power-of-friendship', name: 'Power Of Friendship' }
     ],
     progressions: [
-	  { id: 'c125', name: 'Dragon Race Leveling (25)' },
-	  { id: 'c126', name: 'Saiyan Evolution Leveling (25)' },
-	  { id: 'c127', name: 'Eternal Dragon (50)' },
-    { id: 'c128', name: 'Dragon Energy (50)' },
-    { id: 'c129', name: 'Dragon Damage (500)' },
-	{ id: 'c130', name: 'Luck Obelisk (15)' }
-	],
+      { id: 'green-dragon-race-leveling-25', name: 'Dragon Race Leveling (25)' },
+      { id: 'green-saiyan-evolution-leveling-25', name: 'Saiyan Evolution Leveling (25)' },
+      { id: 'green-eternal-dragon-50', name: 'Eternal Dragon (50)' },
+      { id: 'green-dragon-energy-50', name: 'Dragon Energy (50)' },
+      { id: 'green-dragon-damage-500', name: 'Dragon Damage (500)' },
+      { id: 'green-luck-obelisk-15', name: 'Luck Obelisk (15)' }
+    ],
     sssRank: [
-      { id: 'c131', name: 'Frezi Final Form' }
+      { id: 'green-frezi-final-form', name: 'Frezi Final Form' }
     ],
     auras: [],
     accessories: [
-      { id: 'c132', name: 'Scarffy (D)' }
+      { id: 'green-scarffy', name: 'Scarffy (D)' }
     ],
     quests: [
-      { id: 'cq46', name: 'Green Planet Quests'},
-      { id: 'cq47', name: 'Key Quests'},
-      { id: 'cq48', name: 'Obelisk Quest'}
+      { id: 'green-planet-quests', name: 'Green Planet Quests'},
+      { id: 'green-key-quests', name: 'Key Quests'},
+      { id: 'green-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Hollow World": {
     gachas: [
-	{ id: 'c133', name: 'Scythes' },
-	{ id: 'c134', name: 'Bankai' },
-	{ id: 'c135', name: 'Espada' }
-	],
+      { id: 'hollow-scythes', name: 'Scythes' },
+      { id: 'hollow-bankai', name: 'Bankai' },
+      { id: 'hollow-espada', name: 'Espada' }
+    ],
     progressions: [
-	{ id: 'c136', name: 'Reiatsu Leveling' },
-	{ id: 'c137', name: 'Zanpakuto Leveling' }
-	],
-    sssRank: [      
-	{ id: 'c138', name: 'Vasto Ichige' }
-	],
+      { id: 'hollow-reiatsu-leveling', name: 'Reiatsu Leveling' },
+      { id: 'hollow-zanpakuto-leveling', name: 'Zanpakuto Leveling' }
+    ],
+    sssRank: [
+      { id: 'hollow-vasto-ichige', name: 'Vasto Ichige' }
+    ],
     auras: [],
     accessories: [],
     quests: [
-      { id: 'cq49', name: 'Key Quests'},
-      { id: 'cq50', name: 'Obelisk Quest'}
+      { id: 'hollow-key-quests', name: 'Key Quests'},
+      { id: 'hollow-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Shadow Academy": {
     gachas: [
-      { id: 'c139', name: 'Shadow Garden' },
-      { id: 'c140', name: 'Shadow Arts' }
+      { id: 'shadow-garden', name: 'Shadow Garden' },
+      { id: 'shadow-arts', name: 'Shadow Arts' }
     ],
     progressions: [
-      { id: 'c141', name: 'Eminence Energy (100)' },
-      { id: 'c142', name: 'Eminence Damage (100)' },
-      { id: 'c143', name: 'Eminence Luck (100)' },
-      { id: 'c144', name: 'Eminence Coins (100)' },
-      { id: 'c145', name: 'Shadow Garden Leveling (50)' },
-      { id: 'c146', name: 'Shadow Arts Leveling (50)' }
+      { id: 'shadow-eminence-energy-100', name: 'Eminence Energy (100)' },
+      { id: 'shadow-eminence-damage-100', name: 'Eminence Damage (100)' },
+      { id: 'shadow-eminence-luck-100', name: 'Eminence Luck (100)' },
+      { id: 'shadow-eminence-coins-100', name: 'Eminence Coins (100)' },
+      { id: 'shadow-garden-leveling-50', name: 'Shadow Garden Leveling (50)' },
+      { id: 'shadow-arts-leveling-50', name: 'Shadow Arts Leveling (50)' }
     ],
     sssRank: [
-      { id: 'c147', name: 'Shadow' }
+      { id: 'shadow-shadow', name: 'Shadow' }
     ],
     auras: [
-      { id: 'c148', name: 'Bloody Aura (SS)' }
+      { id: 'shadow-bloody-aura', name: 'Bloody Aura (SS)' }
     ],
     accessories: [
-      { id: 'c149', name: 'Neck Fur (D)' },
-      { id: 'c150', name: 'Crested Wingbands (B)' }
+      { id: 'shadow-neck-fur', name: 'Neck Fur (D)' },
+      { id: 'shadow-crested-wingbands', name: 'Crested Wingbands (B)' }
     ],
     quests: [
-      { id: 'cq51', name: 'Hero License Quests'},
-      { id: 'cq52', name: 'Key Quests'},
-      { id: 'cq53', name: 'Obelisk Quest'}
+      { id: 'shadow-hero-license', name: 'Hero License Quests'},
+      { id: 'shadow-key-quests', name: 'Key Quests'},
+      { id: 'shadow-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Z City": {
     gachas: [
-      { id: 'c151', name: 'Energy Threat Level' },
-      { id: 'c152', name: 'Punch Power' },
-      { id: 'c153', name: 'Exchange Of Power' }
+      { id: 'zcity-energy-threat-level', name: 'Energy Threat Level' },
+      { id: 'zcity-punch-power', name: 'Punch Power' },
+      { id: 'zcity-exchange-of-power', name: 'Exchange Of Power' }
     ],
     progressions: [
-      { id: 'c154', name: 'Energy Threat Leveling (50)' },
-      { id: 'c155', name: 'Punch Power Leveling (50)' },
-	  { id: 'c156', name: 'Hide N Punch (10)' },
+      { id: 'zcity-energy-threat-leveling-50', name: 'Energy Threat Leveling (50)' },
+      { id: 'zcity-punch-power-leveling-50', name: 'Punch Power Leveling (50)' },
+      { id: 'zcity-hide-n-punch-10', name: 'Hide N Punch (10)' },
     ],
     sssRank: [
-      { id: 'c157', name: 'Galaxy Hunter' }
+      { id: 'zcity-galaxy-hunter', name: 'Galaxy Hunter' }
     ],
     auras: [
-      { id: 'c158', name: 'Galaxy Aura (SSS)' }
+      { id: 'zcity-galaxy-aura', name: 'Galaxy Aura (SSS)' }
     ],
     accessories: [
-      { id: 'c159', name: 'Red Hero Boots (S)' }
+      { id: 'zcity-red-hero-boots', name: 'Red Hero Boots (S)' }
     ],
     quests: [
-      { id: 'cq54', name: 'Key Quests'},
-      { id: 'cq55', name: 'Obelisk Quest'}
+      { id: 'zcity-key-quests', name: 'Key Quests'},
+      { id: 'zcity-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Great Tomb": {
     gachas: [
-      { id: 'c160', name: 'Adventurer Rank' },
-      { id: 'c161', name: 'Magic Tier' }
+      { id: 'tomb-adventurer-rank', name: 'Adventurer Rank' },
+      { id: 'tomb-magic-tier', name: 'Magic Tier' }
     ],
     progressions: [
-      { id: 'c162', name: 'Mana Growth (100)' },
-      { id: 'c163', name: 'Ultimate Cast (100)' },
-      { id: 'c164', name: 'Adventurer Level (50)' },
-      { id: 'c165', name: 'Magic Tier Level (50)' }
+      { id: 'tomb-mana-growth-100', name: 'Mana Growth (100)' },
+      { id: 'tomb-ultimate-cast-100', name: 'Ultimate Cast (100)' },
+      { id: 'tomb-adventurer-level-50', name: 'Adventurer Level (50)' },
+      { id: 'tomb-magic-tier-level-50', name: 'Magic Tier Level (50)' }
     ],
     sssRank: [
-      { id: 'c166', name: 'Anz Ool Gawn' }
+      { id: 'tomb-anz-ool-gawn', name: 'Anz Ool Gawn' }
     ],
     auras: [],
     accessories: [
-      { id: 'c167', name: 'Jalbathar Tail (Tomb Arena)' },
-      { id: 'c168', name: 'Jalbathar Mask (Tomb Arena)' },
-      { id: 'c169', name: 'Jalbathar Wings (Tomb Arena)' }
+      { id: 'tomb-jalbathar-tail', name: 'Jalbathar Tail (Tomb Arena)' },
+      { id: 'tomb-jalbathar-mask', name: 'Jalbathar Mask (Tomb Arena)' },
+      { id: 'tomb-jalbathar-wings', name: 'Jalbathar Wings (Tomb Arena)' }
     ],
     quests: [
-      { id: 'cq56', name: 'Key Quests'},
-      { id: 'cq57', name: 'Obelisk Quest'}
+      { id: 'tomb-key-quests', name: 'Key Quests'},
+      { id: 'tomb-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Thriller Park": {
     gachas: [
-        { id: 'c170', name: 'Thriller Zombie' },
-        { id: 'c171', name: 'Nightmare Evolution' },
-        { id: 'c172', name: 'Zombie Crafts' },
-        { id: 'c173', name: 'Special Zombie' },
-        { id: 'c174', name: 'Zombie Booster' }
+        { id: 'thriller-zombie', name: 'Thriller Zombie' },
+        { id: 'thriller-nightmare-evolution', name: 'Nightmare Evolution' },
+        { id: 'thriller-zombie-crafts', name: 'Zombie Crafts' },
+        { id: 'thriller-special-zombie', name: 'Special Zombie' },
+        { id: 'thriller-zombie-booster', name: 'Zombie Booster' }
     ],
     progressions: [
-        { id: 'c175', name: 'Special Zombie Crafting (10)' },
-        { id: 'c176', name: 'Special Zombie Fusion (2)' },
-        { id: 'c177', name: 'Demon Fruit Leveling (4)' },
-        { id: 'c178', name: 'Coin Obelisk (15)' }
+        { id: 'thriller-special-zombie-crafting-10', name: 'Special Zombie Crafting (10)' },
+        { id: 'thriller-special-zombie-fusion-2', name: 'Special Zombie Fusion (2)' },
+        { id: 'thriller-demon-fruit-leveling-4', name: 'Demon Fruit Leveling (4)' },
+        { id: 'thriller-coin-obelisk-15', name: 'Coin Obelisk (15)' }
     ],
     sssRank: [
-        { id: 'c179', name: 'Gekar Morra' }
+        { id: 'thriller-gekar-morra', name: 'Gekar Morra' }
     ],
     auras: [],
     accessories: [
-        { id: 'c180', name: 'Orrs Pants (S)' },
+        { id: 'thriller-orrs-pants', name: 'Orrs Pants (S)' },
     ],
     quests: [
-      { id: 'cq58', name: 'Demon Fruit Quest'},
-      { id: 'cq59', name: 'Key Quests'},
-      { id: 'cq60', name: 'Obelisk Quest'}
+      { id: 'thriller-demon-fruit-quest', name: 'Demon Fruit Quest'},
+      { id: 'thriller-key-quests', name: 'Key Quests'},
+      { id: 'thriller-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Amusement Park": {
       gachas: [
-          { id: 'c181', name: 'Assasin Grade' },
-          { id: 'c182', name: 'Assasin Skill' }
+          { id: 'amusement-assasin-grade', name: 'Assasin Grade' },
+          { id: 'amusement-assasin-skill', name: 'Assasin Skill' }
       ],
       progressions: [
-        { id: 'c183', name: 'Assassin Energy (100)' },
-        { id: 'c184', name: 'Assassin Damage (100)' },
-        { id: 'c185', name: 'Assassin Critical Energy (10)' },
-        { id: 'c186', name: 'Assassin Critical Damage (10)' },
-        { id: 'c187', name: 'Assassin Craft' },
-        { id: 'c188', name: 'Scythe Leveling' },
+        { id: 'amusement-assassin-energy-100', name: 'Assassin Energy (100)' },
+        { id: 'amusement-assassin-damage-100', name: 'Assassin Damage (100)' },
+        { id: 'amusement-assassin-critical-energy-10', name: 'Assassin Critical Energy (10)' },
+        { id: 'amusement-assassin-critical-damage-10', name: 'Assassin Critical Damage (10)' },
+        { id: 'amusement-assassin-craft', name: 'Assassin Craft' },
+        { id: 'amusement-scythe-leveling', name: 'Scythe Leveling' },
       ],
       sssRank: [
-          { id: 'c189', name: 'Tagamura' },
-          { id: 'c190', name: '1moto' }
+          { id: 'amusement-tagamura', name: 'Tagamura' },
+          { id: 'amusement-1moto', name: '1moto' }
       ],
       auras: [],
       accessories: [],
     quests: [
-      { id: 'cq61', name: 'Assassin Quest'},
-      { id: 'cq62', name: 'Key Quests'},
-      { id: 'cq63', name: 'Obelisk Quest'},
-      { id: 'cq64', name: 'The Order Quest'}
+      { id: 'amusement-assassin-quest', name: 'Assassin Quest'},
+      { id: 'amusement-key-quests', name: 'Key Quests'},
+      { id: 'amusement-obelisk-quest', name: 'Obelisk Quest'},
+      { id: 'amusement-the-order-quest', name: 'The Order Quest'}
     ]
   },
     "Re:Manor": {
       gachas: [
-          { id: 'c191', name: 'Spirit Pact' },
-          { id: 'c192', name: 'Witch Factor' },
-          { id: 'c193', name: 'Re:Spirit Pact' },
-          { id: 'c194', name: 'Re: Witch Token' },
-          { id: 'c195', name: 'Artifical Spirit Blessings' },
-          { id: 'c196', name: 'Gospel Curses' },
-          { id: 'c197', name: 'Witch Authority' }
+          { id: 'manor-spirit-pact', name: 'Spirit Pact' },
+          { id: 'manor-witch-factor', name: 'Witch Factor' },
+          { id: 'manor-re-spirit-pact', name: 'Re:Spirit Pact' },
+          { id: 'manor-re-witch-token', name: 'Re: Witch Token' },
+          { id: 'manor-artifical-spirit-blessings', name: 'Artifical Spirit Blessings' },
+          { id: 'manor-gospel-curses', name: 'Gospel Curses' },
+          { id: 'manor-witch-authority', name: 'Witch Authority' }
       ],
-      progressions: [
-      ],
+      progressions: [],
       sssRank: [
-          { id: 'c198', name: 'Roswald' }
+          { id: 'manor-roswald', name: 'Roswald' }
       ],
       auras: [
-          { id: 'c199', name: 'Blue Oni Aura (C)' },
-          { id: 'c200', name: 'Pink Oni Aura (D)' }
+          { id: 'manor-blue-oni-aura', name: 'Blue Oni Aura (C)' },
+          { id: 'manor-pink-oni-aura', name: 'Pink Oni Aura (D)' }
       ],
       accessories: [],
     quests: [
-      { id: 'cq65', name: 'Key Quests'},
-      { id: 'cq66', name: 'Obelisk Quest'}
+      { id: 'manor-key-quests', name: 'Key Quests'},
+      { id: 'manor-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
     "Asfordo Academy": {
       gachas: [
-          { id: 'c201', name: 'Geass Potential' },
-          { id: 'c202', name: 'Knightmare Frames' }
+          { id: 'asfordo-geass-potential', name: 'Geass Potential' },
+          { id: 'asfordo-knightmare-frames', name: 'Knightmare Frames' }
       ],
       progressions: [
-        { id: 'c203', name: 'Geass Leveling' },
-        { id: 'c204', name: 'Geass Evolver' }
+        { id: 'asfordo-geass-leveling', name: 'Geass Leveling' },
+        { id: 'asfordo-geass-evolver', name: 'Geass Evolver' }
       ],
       sssRank: [
-          { id: 'c205', name: 'Emperor Reloush' }
+          { id: 'asfordo-emperor-reloush', name: 'Emperor Reloush' }
       ],
-      auras: [
-      ],
+      auras: [],
       accessories: [
-        { id: 'c206', name: 'Zero Cape (SS)' },
-        { id: 'c207', name: 'Zero Mask (SS)' },
+        { id: 'asfordo-zero-cape', name: 'Zero Cape (SS)' },
+        { id: 'asfordo-zero-mask', name: 'Zero Mask (SS)' },
       ],
     quests: [
-      { id: 'cq67', name: 'Black Knights Quest'},
-      { id: 'cq68', name: 'Key Quests'},
-      { id: 'cq69', name: 'Obelisk Quest'}
+      { id: 'asfordo-black-knights-quest', name: 'Black Knights Quest'},
+      { id: 'asfordo-key-quests', name: 'Key Quests'},
+      { id: 'asfordo-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
     "Science Village": {
       gachas: [
-          { id: 'c208', name: 'IQ' },
-          { id: 'c209', name: 'Scientific Weapons' }
+          { id: 'science-iq', name: 'IQ' },
+          { id: 'science-scientific-weapons', name: 'Scientific Weapons' }
       ],
       progressions: [
-        { id: 'c210', name: 'Scientific Tools Crafting' },
-        { id: 'c211', name: 'Science Material Updgrades (100)' },
-        { id: 'c212', name: 'Science Upgrades (16)' }
+        { id: 'science-scientific-tools-crafting', name: 'Scientific Tools Crafting' },
+        { id: 'science-science-material-updgrades-100', name: 'Science Material Updgrades (100)' },
+        { id: 'science-science-upgrades-16', name: 'Science Upgrades (16)' }
       ],
       sssRank: [
-          { id: 'c213', name: 'Tsukaro' }
+          { id: 'science-tsukaro', name: 'Tsukaro' }
       ],
-      auras: [
-      ],
+      auras: [],
       accessories: [
-        { id: 'c214', name: 'Wooden Quiver (A)' }
+        { id: 'science-wooden-quiver', name: 'Wooden Quiver (A)' }
       ],
     quests: [
-      { id: 'cq70', name: 'Primitive Quest'},
-      { id: 'cq71', name: 'Key Quests'},
-      { id: 'cq72', name: 'Obelisk Quest'}
+      { id: 'science-primitive-quest', name: 'Primitive Quest'},
+      { id: 'science-key-quests', name: 'Key Quests'},
+      { id: 'science-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Sand Village": {
       gachas: [
-          { id: 'c215', name: 'Shinobi Clan' },
-          { id: 'c216', name: 'Kekkei Genkai' },
-          { id: 'c217', name: 'Power Eyes 2' },
-          { id: 'c218', name: 'Chakra Infusion' }
+          { id: 'sand-shinobi-clan', name: 'Shinobi Clan' },
+          { id: 'sand-kekkei-genkai', name: 'Kekkei Genkai' },
+          { id: 'sand-power-eyes-2', name: 'Power Eyes 2' },
+          { id: 'sand-chakra-infusion', name: 'Chakra Infusion' }
       ],
-      progressions: [
-      ],
+      progressions: [],
       sssRank: [
-          { id: 'c219', name: 'Sasaru' }
+          { id: 'sand-sasaru', name: 'Sasaru' }
       ],
       auras: [
-          { id: 'c220', name: 'Sand Aura (A)' }
+          { id: 'sand-sand-aura', name: 'Sand Aura (A)' }
       ],
       accessories: [
-          { id: 'c221', name: 'One Tailed Beast (SS)' }
+          { id: 'sand-one-tailed-beast', name: 'One Tailed Beast (SS)' }
       ],
     quests: [
-      { id: 'cq73', name: 'Hero License Quest'},
-      { id: 'cq74', name: 'Sand Kage'},
-      { id: 'cq75', name: 'Key Quests'},
-      { id: 'cq76', name: 'Obelisk Quest'}
+      { id: 'sand-hero-license', name: 'Hero License Quest'},
+      { id: 'sand-sand-kage', name: 'Sand Kage'},
+      { id: 'sand-key-quests', name: 'Key Quests'},
+      { id: 'sand-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Night Raid Base": {
       gachas: [
-          { id: 'c222', name: 'Energy Taigu' },
-          { id: 'c223', name: 'Damage Taigu' },
+          { id: 'raid-energy-taigu', name: 'Energy Taigu' },
+          { id: 'raid-damage-taigu', name: 'Damage Taigu' },
       ],
       progressions: [
-          { id: 'c224', name: 'Taigu Evolve' }
+          { id: 'raid-taigu-evolve', name: 'Taigu Evolve' }
       ],
       sssRank: [
-          { id: 'c225', name: 'Akara' }
+          { id: 'raid-akara', name: 'Akara' }
       ],
       auras: [
-        { id: 'c226', name: 'Ice Queen Aura (A)' }
+        { id: 'raid-ice-queen-aura', name: 'Ice Queen Aura (A)' }
       ],
-      accessories: [
-      ],
+      accessories: [],
     quests: [
-      { id: 'cq77', name: 'Teigu Quest'},
-      { id: 'cq78', name: 'Key Quests'},
-      { id: 'cq79', name: 'Obelisk Quest'}
+      { id: 'raid-teigu-quest', name: 'Teigu Quest'},
+      { id: 'raid-key-quests', name: 'Key Quests'},
+      { id: 'raid-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
   "Salty School": {
       gachas: [
-          { id: 'c227', name: 'Psycho Flow' },
-          { id: 'c228', name: 'Psycho Destruction' },
+          { id: 'salty-psycho-flow', name: 'Psycho Flow' },
+          { id: 'salty-psycho-destruction', name: 'Psycho Destruction' },
       ],
       progressions: [
-          { id: 'c229', name: 'Mob Anger' }
+          { id: 'salty-mob-anger', name: 'Mob Anger' }
       ],
       sssRank: [
-          { id: 'c230', name: 'Dimpy' }
+          { id: 'salty-dimpy', name: 'Dimpy' }
       ],
       auras: [
-        { id: 'c231', name: 'Psycho Aura (B)' }
+        { id: 'salty-psycho-aura', name: 'Psycho Aura (B)' }
       ],
-      accessories: [
-      ],
+      accessories: [],
     quests: [
-      { id: 'cq80', name: 'Exorcism Quest'},
-      { id: 'cq81', name: 'Key Quests'},
-      { id: 'cq82', name: 'Obelisk Quest'}
+      { id: 'salty-exorcism-quest', name: 'Exorcism Quest'},
+      { id: 'salty-key-quests', name: 'Key Quests'},
+      { id: 'salty-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
 };

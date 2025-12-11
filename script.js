@@ -19,6 +19,149 @@ const themeColors = {
     'dark-red': '#8b0202'
 };
 
+const MIGRATION_MAP = {
+  // Halloween
+  'h1': 'halloween-gacha', 'h2': 'halloween-bag-level', 'h3': 'halloween-ghost-level',
+  'h4': 'halloween-overdrive-saw', 'h5': 'halloween-energy-zombies', 'h6': 'halloween-candy-aura',
+  'h7': 'halloween-pumpkin-aura', 'h8': 'halloween-plague-aura', 'h9': 'halloween-spookweb-aura',
+  'h10': 'halloween-demonflame-aura',
+  // Earth
+  'c1': 'earth-dragon-race', 'c2': 'earth-saiyan', 'c3': 'earth-kid-kohan', 'c4': 'earth-luck-aura',
+  'c5': 'earth-4star-hat', 'c6': 'earth-imp-tail', 'cq1': 'earth-hero-license', 'cq2': 'earth-key-quests', 'cq3': 'earth-obelisk-quest',
+  // Windmill
+  'c7': 'windmill-pirate-crew', 'c8': 'windmill-swords', 'c9': 'windmill-haki-60', 'c10': 'windmill-shanks',
+  'c11': 'windmill-red-emperor-aura', 'c12': 'windmill-armless-cloak', 'cq4': 'windmill-key-quests', 'cq5': 'windmill-obelisk-quest',
+  // Soul
+  'c13': 'soul-reiatsu-color', 'c14': 'soul-zanpakuto', 'c15': 'soul-pressure-210', 'c16': 'soul-eizen',
+  'c17': 'soul-purple-traitor-aura', 'cq6': 'soul-key-quests', 'cq7': 'soul-obelisk-quest',
+  // Cursed
+  'c18': 'cursed-curses', 'c19': 'cursed-progression-410', 'c20': 'cursed-sakuni', 'c21': 'cursed-fire-king-aura',
+  'cq8': 'cursed-key-quests', 'cq9': 'cursed-obelisk-quest',
+  // Slayer
+  'c22': 'slayer-breathings', 'c23': 'slayer-demon-arts', 'c24': 'slayer-rangaki', 'c25': 'slayer-flaming-aura',
+  'cq10': 'slayer-key-quests', 'cq11': 'slayer-obelisk-quest',
+  // Solo
+  'c26': 'solo-hunter-rank', 'c27': 'solo-reawakening-210', 'c28': 'solo-monarch-200', 'c29': 'solo-shadow-upgrades',
+  'c30': 'solo-statue-of-god', 'c31': 'solo-statue-aura', 'cq12': 'solo-hero-license', 'cq13': 'solo-key-quests', 'cq14': 'solo-obelisk-quest',
+  // Clover
+  'c32': 'clover-grimoire', 'c33': 'clover-water-spirit-100', 'c34': 'clover-fire-spirit-100', 'c35': 'clover-wind-spirit-10',
+  'c36': 'clover-novi-chroni', 'cq15': 'clover-key-quests', 'cq16': 'clover-obelisk-quest',
+  // Leaf
+  'c37': 'leaf-power-eyes', 'c38': 'leaf-chakra-210', 'c39': 'leaf-attack-range-2-4', 'c40': 'leaf-madera-itachi',
+  'c41': 'leaf-leafy-aura', 'c42': 'leaf-shinobi-flops', 'cq17': 'leaf-leaf-kage', 'cq18': 'leaf-key-quests', 'cq19': 'leaf-obelisk-quest',
+  // Spirit
+  'c43': 'spirit-psychic-mayhem', 'c44': 'spirit-spiritual-upgrade-60', 'c45': 'spirit-lucky-spirit-50', 'c46': 'spirit-ken-turbo',
+  'cq20': 'spirit-key-quests', 'cq21': 'spirit-obelisk-quest',
+  // Magic
+  'c47': 'magic-energy-card-shop', 'c48': 'magic-damage-card-shop', 'c49': 'magic-ten-110', 'c50': 'magic-contract-of-greed-100',
+  'c51': 'magic-energy-obelisk-100', 'c52': 'magic-killas-godspeed', 'c53': 'magic-energetic-aura', 'cq22': 'magic-hero-license',
+  'cq23': 'magic-key-quests', 'cq24': 'magic-obelisk-quest',
+  // Titan
+  'c54': 'titan-families', 'c55': 'titan-titans', 'c56': 'titan-injection', 'c57': 'titan-eran', 'c58': 'titan-titanic-aura',
+  'c59': 'titan-red-scarf', 'c60': 'titan-clean-hat', 'c61': 'titan-scout-cloak', 'cq25': 'titan-key-quests', 'cq26': 'titan-obelisk-quest',
+  // Sins
+  'c62': 'sins-sins', 'c63': 'sins-commandments', 'c64': 'sins-energy-50', 'c65': 'sins-sin-upgrades', 'c66': 'sins-esanor',
+  'cq27': 'sins-key-quests', 'cq28': 'sins-obelisk-quest',
+  // Kaiju
+  'c67': 'kaiju-powers', 'c68': 'kaiju-power-of-exchange', 'c69': 'kaiju-fortitude-210', 'c70': 'kaiju-energy-110',
+  'c71': 'kaiju-number-8', 'c72': 'kaiju-monster-aura', 'cq29': 'kaiju-key-quests', 'cq30': 'kaiju-obelisk-quest',
+  // Tempest
+  'c73': 'tempest-ultimate-skill', 'c74': 'tempest-species', 'c75': 'tempest-demon-lord-energy-210', 'c76': 'tempest-demon-lord-damage-210',
+  'c77': 'tempest-demon-lord-coins-100', 'c78': 'tempest-demon-lord-luck-50', 'c79': 'tempest-valzora', 'c80': 'tempest-slime-mask',
+  'cq31': 'tempest-key-quests', 'cq32': 'tempest-obelisk-quest',
+  // Virtual
+  'c81': 'virtual-power-energy-runes', 'c82': 'virtual-damage-runes', 'c83': 'virtual-swordsman-energy-210',
+  'c84': 'virtual-swordsman-damage-110', 'c85': 'virtual-damage-obelisk-100', 'c86': 'virtual-the-paladin', 'c87': 'virtual-virtual-aura',
+  'cq33': 'virtual-hero-license', 'cq34': 'virtual-key-quests', 'cq35': 'virtual-obelisk-quest',
+  // Cairo
+  'c88': 'cairo-stands', 'c89': 'cairo-onomatopoeia', 'c90': 'cairo-requium-injection', 'c91': 'cairo-ripple-energy-110',
+  'c92': 'cairo-dino', 'c93': 'cairo-hamon-aura', 'c94': 'cairo-greenello-scarf', 'cq36': 'cairo-key-quests', 'cq37': 'cairo-obelisk-quest',
+  // Ghoul
+  'c95': 'ghoul-investigators', 'c96': 'ghoul-kagune', 'c97': 'ghoul-damage-cells-110', 'c98': 'ghoul-kagune-leveling-50',
+  'c99': 'ghoul-arama', 'c100': 'ghoul-ghoul-aura', 'cq38': 'ghoul-ccg-quests', 'cq39': 'ghoul-key-quests', 'cq40': 'ghoul-obelisk-quest',
+  // Chainsaw
+  'c101': 'chainsaw-debiru-hunter', 'c102': 'chainsaw-akuma-powers', 'c103': 'chainsaw-akuma-damage-110',
+  'c104': 'chainsaw-akuma-energy-160', 'c105': 'chainsaw-pokita-50', 'c106': 'chainsaw-hero-of-hell', 'c107': 'chainsaw-pokita-slides',
+  'cq41': 'chainsaw-hero-license', 'cq42': 'chainsaw-key-quests', 'cq43': 'chainsaw-obelisk-quest',
+  // Tokyo
+  'c108': 'tokyo-special-fire-force', 'c109': 'tokyo-mushi-bite', 'c110': 'tokyo-adolla-blessing', 'c111': 'tokyo-1st-gen-leveling-20',
+  'c112': 'tokyo-2nd-gen-leveling-40', 'c113': 'tokyo-3rd-gen-leveling-60', 'c114': 'tokyo-4th-gen-leveling-80',
+  'c115': 'tokyo-adolla-leveling-100', 'c116': 'tokyo-bansho', 'c117': 'tokyo-fire-captain-aura', 'c118': 'tokyo-fire-force-pants',
+  'c119': 'tokyo-fire-force-cape', 'c120': 'tokyo-fire-witch-hat', 'c121': 'tokyo-fire-eye-patch',
+  'cq44': 'tokyo-key-quests', 'cq45': 'tokyo-obelisk-quest',
+  // Green
+  'c122': 'green-grand-elder-power', 'c123': 'green-frost-demon-evolution', 'c124': 'green-power-of-friendship',
+  'c125': 'green-dragon-race-leveling-25', 'c126': 'green-saiyan-evolution-leveling-25', 'c127': 'green-eternal-dragon-50',
+  'c128': 'green-dragon-energy-50', 'c129': 'green-dragon-damage-500', 'c130': 'green-luck-obelisk-15', 'c131': 'green-frezi-final-form',
+  'c132': 'green-scarffy', 'cq46': 'green-planet-quests', 'cq47': 'green-key-quests', 'cq48': 'green-obelisk-quest',
+  // Hollow
+  'c133': 'hollow-scythes', 'c134': 'hollow-bankai', 'c135': 'hollow-espada', 'c136': 'hollow-reiatsu-leveling',
+  'c137': 'hollow-zanpakuto-leveling', 'c138': 'hollow-vasto-ichige', 'cq49': 'hollow-key-quests', 'cq50': 'hollow-obelisk-quest',
+  // Shadow Academy
+  'c139': 'shadow-garden', 'c140': 'shadow-arts', 'c141': 'shadow-eminence-energy-100', 'c142': 'shadow-eminence-damage-100',
+  'c143': 'shadow-eminence-luck-100', 'c144': 'shadow-eminence-coins-100', 'c145': 'shadow-garden-leveling-50',
+  'c146': 'shadow-arts-leveling-50', 'c147': 'shadow-shadow', 'c148': 'shadow-bloody-aura', 'c149': 'shadow-neck-fur',
+  'c150': 'shadow-crested-wingbands', 'cq51': 'shadow-hero-license', 'cq52': 'shadow-key-quests', 'cq53': 'shadow-obelisk-quest',
+  // Z City
+  'c151': 'zcity-energy-threat-level', 'c152': 'zcity-punch-power', 'c153': 'zcity-exchange-of-power',
+  'c154': 'zcity-energy-threat-leveling-50', 'c155': 'zcity-punch-power-leveling-50', 'c156': 'zcity-hide-n-punch-10',
+  'c157': 'zcity-galaxy-hunter', 'c158': 'zcity-galaxy-aura', 'c159': 'zcity-red-hero-boots', 'cq54': 'zcity-key-quests',
+  'cq55': 'zcity-obelisk-quest',
+  // Tomb
+  'c160': 'tomb-adventurer-rank', 'c161': 'tomb-magic-tier', 'c162': 'tomb-mana-growth-100', 'c163': 'tomb-ultimate-cast-100',
+  'c164': 'tomb-adventurer-level-50', 'c165': 'tomb-magic-tier-level-50', 'c166': 'tomb-anz-ool-gawn', 'c167': 'tomb-jalbathar-tail',
+  'c168': 'tomb-jalbathar-mask', 'c169': 'tomb-jalbathar-wings', 'cq56': 'tomb-key-quests', 'cq57': 'tomb-obelisk-quest',
+  // Thriller
+  'c170': 'thriller-zombie', 'c171': 'thriller-nightmare-evolution', 'c172': 'thriller-zombie-crafts', 'c173': 'thriller-special-zombie',
+  'c174': 'thriller-zombie-booster', 'c175': 'thriller-special-zombie-crafting-10', 'c176': 'thriller-special-zombie-fusion-2',
+  'c177': 'thriller-demon-fruit-leveling-4', 'c178': 'thriller-coin-obelisk-15', 'c179': 'thriller-gekar-morra', 'c180': 'thriller-orrs-pants',
+  'cq58': 'thriller-demon-fruit-quest', 'cq59': 'thriller-key-quests', 'cq60': 'thriller-obelisk-quest',
+  // Amusement
+  'c181': 'amusement-assasin-grade', 'c182': 'amusement-assasin-skill', 'c183': 'amusement-assassin-energy-100',
+  'c184': 'amusement-assassin-damage-100', 'c185': 'amusement-assassin-critical-energy-10', 'c186': 'amusement-assassin-critical-damage-10',
+  'c187': 'amusement-assassin-craft', 'c188': 'amusement-scythe-leveling', 'c189': 'amusement-tagamura', 'c190': 'amusement-1moto',
+  'cq61': 'amusement-assassin-quest', 'cq62': 'amusement-key-quests', 'cq63': 'amusement-obelisk-quest', 'cq64': 'amusement-the-order-quest',
+  // Manor
+  'c191': 'manor-spirit-pact', 'c192': 'manor-witch-factor', 'c193': 'manor-re-spirit-pact', 'c194': 'manor-re-witch-token',
+  'c195': 'manor-artifical-spirit-blessings', 'c196': 'manor-gospel-curses', 'c197': 'manor-witch-authority', 'c198': 'manor-roswald',
+  'c199': 'manor-blue-oni-aura', 'c200': 'manor-pink-oni-aura', 'cq65': 'manor-key-quests', 'cq66': 'manor-obelisk-quest',
+  // Asfordo
+  'c201': 'asfordo-geass-potential', 'c202': 'asfordo-knightmare-frames', 'c203': 'asfordo-geass-leveling', 'c204': 'asfordo-geass-evolver',
+  'c205': 'asfordo-emperor-reloush', 'c206': 'asfordo-zero-cape', 'c207': 'asfordo-zero-mask', 'cq67': 'asfordo-black-knights-quest',
+  'cq68': 'asfordo-key-quests', 'cq69': 'asfordo-obelisk-quest',
+  // Science
+  'c208': 'science-iq', 'c209': 'science-scientific-weapons', 'c210': 'science-scientific-tools-crafting',
+  'c211': 'science-science-material-updgrades-100', 'c212': 'science-science-upgrades-16', 'c213': 'science-tsukaro',
+  'c214': 'science-wooden-quiver', 'cq70': 'science-primitive-quest', 'cq71': 'science-key-quests', 'cq72': 'science-obelisk-quest',
+  // Sand
+  'c215': 'sand-shinobi-clan', 'c216': 'sand-kekkei-genkai', 'c217': 'sand-power-eyes-2', 'c218': 'sand-chakra-infusion',
+  'c219': 'sand-sasaru', 'c220': 'sand-sand-aura', 'c221': 'sand-one-tailed-beast', 'cq73': 'sand-hero-license', 'cq74': 'sand-sand-kage',
+  'cq75': 'sand-key-quests', 'cq76': 'sand-obelisk-quest',
+  // Raid
+  'c222': 'raid-energy-taigu', 'c223': 'raid-damage-taigu', 'c224': 'raid-taigu-evolve', 'c225': 'raid-akara', 'c226': 'raid-ice-queen-aura',
+  'cq77': 'raid-teigu-quest', 'cq78': 'raid-key-quests', 'cq79': 'raid-obelisk-quest',
+  // Salty
+  'c227': 'salty-psycho-flow', 'c228': 'salty-psycho-destruction', 'c229': 'salty-mob-anger', 'c230': 'salty-dimpy',
+  'c231': 'salty-psycho-aura', 'cq80': 'salty-exorcism-quest', 'cq81': 'salty-key-quests', 'cq82': 'salty-obelisk-quest'
+};
+
+async function migrateSaveData(savedData) {
+    let hasMigrated = false;
+    Object.keys(MIGRATION_MAP).forEach(oldId => {
+        if (savedData[oldId]) {
+            const newId = MIGRATION_MAP[oldId];
+            savedData[newId] = true; // Transfer progress
+            delete savedData[oldId]; // Remove broken ID
+            hasMigrated = true;
+        }
+    });
+    if (hasMigrated) {
+        console.log("Migration: User data updated to Stable IDs.");
+        await localforage.setItem(CHECKLIST_SAVE_KEY, savedData);
+    }
+    return savedData;
+}
+
 const CHECKLIST_SAVE_KEY = 'ae_checklist_progress';
 const LOOT_RESPAWN_DELAY = 2.5;
 const LOOT_KILL_OVERHEAD = 0.5;
@@ -261,6 +404,7 @@ async function loadChecklistData() {
     if (typeof checklistDataByWorld === 'undefined') return;
     try {
         const savedData = await localforage.getItem(CHECKLIST_SAVE_KEY) || {};
+        savedData = await migrateSaveData(savedData);
         populateWorldChecklists(savedData);
         updateAllWorldTitles(savedData);
         const hideCompleted = await localforage.getItem('ae_checklist_hide_completed');
