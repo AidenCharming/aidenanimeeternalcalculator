@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="topbar-right">
-                    <span class="version-text">Version 18.5 - Salty School P3</span>
+                    <span class="version-text">Version 18.6 - Salty School P3</span>
                     <div class="toggle-container">
                         <button id="format-toggle-scientific" class="toggle-btn" data-format="scientific">Scientific</button>
                         <button id="format-toggle-engineering" class="toggle-btn" data-format="engineering">Engineering</button>
@@ -91,6 +91,7 @@
                         <option value="coin">Coin Calc</option>
                         <option value="lootcalc">Loot Calc</option>
                         <option value="checklist">Checklist</option>
+                        <option value="raid">Raids / Dungeons</option>
                     </select>
                 </div>
             </div>
@@ -106,6 +107,7 @@
                 <button id="tab-coin" class="tab-btn" data-tab="coin">Coin Calc</button>
                 <button id="tab-lootcalc" class="tab-btn" data-tab="lootcalc">Loot Calc</button>
                 <button id="tab-checklist" class="tab-btn" data-tab="checklist">Checklist</button>
+                <button id="tab-raid" class="tab-btn" data-tab="raid">Raids / Dungeons</button>
             </div>
 
             <div class="content-wrapper">
@@ -592,6 +594,13 @@
                             <h3 class="text-white font-bold text-lg mb-4 border-b pb-2 flex items-center gap-2" style="border-color: var(--border-light);">Progression Checklist</h3>
                             <div class="result-box p-4 mb-6 text-center"><div class="text-sm text-gray-400 mb-2">Overall Progress</div><div id="overall-progress-text" class="text-2xl font-bold text-blue-400">0 / 0 (0%)</div><div class="progress-bar mt-2"><div id="overall-progress-fill" class="progress-fill" style="width: 0%"></div></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"><input type="text" id="checklist-search" class="search-filter" placeholder="Search items..."><select id="category-filter" class="search-filter"><option value="">All Categories</option><option value="gachas">Gachas</option><option value="progressions">Progressions</option><option value="sssrank">SSS Rank</option><option value="auras">Auras</option><option value="accessories">Accessories</option><option value="quests">Quests</option></select></div><div class="flex items-center mb-6"><label for="hide-completed-checkbox" class="inline-flex items-center space-x-2 cursor-pointer text-sm text-gray-400 font-medium"><input type="checkbox" id="hide-completed-checkbox" class="form-checkbox h-4 w-4 text-blue-500 bg-[#0f172a] border-[#334155] rounded"><span>Hide Completed Items</span></label></div><div class="grid grid-cols-3 md:grid-cols-2 gap-4 text-center mb-8"><div class="result-box p-3"><div class="text-orange-400 font-bold" id="gachas-count">0/0</div><div class="text-xs text-gray-400">Gachas</div></div><div class="result-box p-3"><div class="text-green-400 font-bold" id="progressions-count">0/0</div><div class="text-xs text-gray-400">Progressions</div></div><div class="result-box p-3"><div class="text-red-400 font-bold" id="sssrank-count">0/0</div><div class="text-xs text-gray-400">SSS Rank</div></div><div class="result-box p-3"><div class="text-purple-400 font-bold" id="auras-count">0/0</div><div class="text-xs text-gray-400">Auras</div></div><div class="result-box p-3"><div class="text-cyan-400 font-bold" id="accessories-count">0/0</div><div class="text-xs text-gray-400">Accessories</div></div><div class="result-box p-3"><div class="text-yellow-300 font-bold" id="quests-count">0/0</div><div class="text-xs text-gray-400">Quests</div></div></div><div id="checklist-worlds-container" class="space-y-8"></div><div class="toggle-container w-full mt-6"><button id="check-all-btn" class="toggle-btn w-1/2">Check All</button><button id="uncheck-all-btn" class="toggle-btn w-1/2">Uncheck All</button></div>
                         </div>
+                    </div>
+                </div>
+
+
+                <div id="panel-raid" class="hidden">
+                     <div class="max-w-4xl ml-0 space-y-6">
+                         <div class="result-box p-6 rounded-xl border-2 border-blue-600 relative overflow-hidden" style="padding: 24px !important;"><div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-cyan-400"></div><h3 class="text-white font-bold text-lg mb-4 border-b pb-2 flex items-center gap-2" style="border-color: var(--border-light);">Raids & Dungeons</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="space-y-4"><div><label for="activitySelect">Select Activity</label><div class="relative"><select id="activitySelect" class="select-field w-full rounded-lg"></select></div></div><div><label for="activityTimeLimit">Time Limit (Seconds)</label><input type="text" id="activityTimeLimit" class="input-field w-full"></div></div><div class="space-y-4"><div><label for="yourDPMActivity">Your DPM</label><div class="grid-denom"><input type="text" id="yourDPMActivity" class="input-field w-full" placeholder="e.g., 30000"><div class="relative"><input type="text" id="dpmActivityDenominationInput" class="input-field w-full" placeholder="e.g., Sx" autocomplete="off"><input type="hidden" id="dpmActivityDenominationValue" value="1"><div id="dpmActivityDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div></div></div></div><div><label for="keyRunQuantity">Key Runs (Quantity)</label><input type="text" id="keyRunQuantity" class="input-field w-full" placeholder="e.g., 5"></div></div></div><div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4"><div class="p-4 result-box text-center"><p id="activityResultLabel" class="text-gray-400 text-sm uppercase tracking-wider mb-1">Estimated Max Stage</p><p id="activityResult" class="text-2xl font-bold text-blue-400">0 / 0</p></div><div class="p-4 result-box text-center" onclick="copyResult('keyRunTimeResult')"><p class="text-gray-400 text-sm uppercase tracking-wider mb-1">Total Run Time</p><p id="keyRunTimeResult" class="text-2xl font-bold text-blue-400">0s</p><p id="keyRunReturnTime" class="text-xs text-gray-500 mt-1"></p></div></div></div>
                     </div>
                 </div>
 

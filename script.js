@@ -1,5 +1,5 @@
 const el = {};
-const tabs = ['rankup', 'eta', 'time-to-energy', 'coin', 'lootcalc', 'ttk', 'damage', 'checklist'];
+const tabs = ['rankup', 'eta', 'time-to-energy', 'coin', 'lootcalc', 'ttk', 'damage', 'raid', 'checklist'];
 
 const themes = ['blue', 'dark-blue', 'teal', 'dark-teal', 'purple', 'dark-purple', 'pink', 'dark-pink', 'green', 'dark-green', 'orange', 'dark-orange', 'red', 'dark-red'];
 const themeColors = {
@@ -25,6 +25,7 @@ const LOOT_KILL_OVERHEAD = 0.5;
 const SLOW_CPS = 1.0919;
 const FAST_CPS = 5.88505;
 let currentNumberFormat = 'letters';
+const activityData = {};
 
 function toEngineeringNotation(num) {
     if (num === 0) return "0";
@@ -509,6 +510,7 @@ async function setNumberFormat(format) {
         { numId: 'currentEnergyTTE', denomId: 'currentEnergyTTEDenominationInput', valueId: 'currentEnergyTTEDenominationValue' },
         { numId: 'energyPerClickTTE', denomId: 'energyPerClickTTEDenominationInput', valueId: 'energyPerClickTTEDenominationValue' },
         { numId: 'yourDPM', denomId: 'dpmDenominationInput', valueId: 'dpmDenominationValue' },
+        { numId: 'yourDPMActivity', denomId: 'dpmActivityDenominationInput', valueId: 'dpmActivityDenominationValue' },
         { numId: 'dmgCurrentEnergy', denomId: 'dmgCurrentEnergyDenomInput', valueId: 'dmgCurrentEnergyDenomValue' },
         { numId: 'dmgStatDamage', denomId: 'dmgStatDamageDenomInput', valueId: 'dmgStatDamageDenomValue' },
         { numId: 'coinBase', denomId: 'coinBaseDenomInput', valueId: 'coinBaseDenomValue' },
@@ -825,6 +827,43 @@ async function loadTTKData() {
         }
     } catch (e) {}
 }
+
+async function saveRaidData() {
+    try {
+        if (el.activitySelect) await localforage.setItem('ae_raid_activity', el.activitySelect.value);
+        if (el.yourDPMActivity) await localforage.setItem('ae_raid_dpm', el.yourDPMActivity.value);
+        if (el.dpmActivityDenominationInput) await localforage.setItem('ae_raid_dpmDenomInput', el.dpmActivityDenominationInput.value);
+        if (el.dpmActivityDenominationValue) await localforage.setItem('ae_raid_dpmDenomValue', el.dpmActivityDenominationValue.value);
+        if (el.activityTimeLimit) await localforage.setItem('ae_raid_timeLimit', el.activityTimeLimit.value);
+        if (el.keyRunQuantity) await localforage.setItem('ae_raid_key_quantity', el.keyRunQuantity.value);
+    } catch (e) {}
+}
+
+async function loadRaidData() {
+    try {
+        const activity = await localforage.getItem('ae_raid_activity');
+        if (activity && el.activitySelect) {
+            if (el.activitySelect.querySelector(`option[value="${activity}"]`)) {
+                el.activitySelect.value = activity;
+            }
+        }
+        const dpm = await localforage.getItem('ae_raid_dpm');
+        if (dpm && el.yourDPMActivity) el.yourDPMActivity.value = dpm;
+        const dpmDenomInput = await localforage.getItem('ae_raid_dpmDenomInput');
+        if (el.dpmActivityDenominationInput) el.dpmActivityDenominationInput.value = dpmDenomInput;
+        const dpmDenom = denominations.find(d => d.name === dpmDenomInput);
+        if (el.dpmActivityDenominationValue) {
+            el.dpmActivityDenominationValue.value = dpmDenom ? dpmDenom.value : '1';
+        }
+        const timeLimit = await localforage.getItem('ae_raid_timeLimit');
+        if (timeLimit && el.activityTimeLimit) el.activityTimeLimit.value = timeLimit;
+        const quantity = await localforage.getItem('ae_raid_key_quantity');
+        if (quantity && el.keyRunQuantity) el.keyRunQuantity.value = quantity;
+        calculateMaxStage();
+        calculateKeyRunTime();
+    } catch (e) {}
+}
+
 
 async function saveTimeToEnergyData() {
     try {
@@ -1792,6 +1831,151 @@ function setupDenominationSearch(inputId, valueId, listId, callback) {
     inputEl.addEventListener('blur', handleDenominationBlur);
 }
 
+async function loadAllData() {
+    try {
+        const response = await fetch('activity-bundle.json?v=6.0');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const bundle = await response.json();
+        Object.assign(activityData, bundle.activities || {});
+    } catch (error) {}
+}
+
+function populateActivityDropdown() {
+    const select = el.activitySelect;
+    if (!select) return;
+    select.innerHTML = '<option value="">-- Select an Activity --</option>';
+    const sortedActivityNames = Object.keys(activityData).sort((a, b) => a.localeCompare(b));
+    sortedActivityNames.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.innerText = name;
+        select.appendChild(option);
+    });
+}
+
+function handleActivityChange() {
+    if (!el.activitySelect || !el.activityResult || !el.activityTimeLimit || !el.activityResultLabel) return;
+    const selection = el.activitySelect.value;
+    const activity = activityData[selection];
+    const resultLabel = el.activityResultLabel;
+    if (!activity) {
+        el.activityResult.innerText = '0 / 0';
+        el.activityTimeLimit.value = ''; 
+        saveRaidData();
+        return;
+    }
+    el.activityTimeLimit.value = activity.timeLimit;
+    if (activity.type === 'raid') {
+        resultLabel.innerText = 'Estimated Max Wave:';
+    } else {
+        resultLabel.innerText = 'Estimated Max Room:';
+    }
+    calculateMaxStage();
+    calculateKeyRunTime();
+    saveRaidData();
+}
+
+function calculateMaxStage() {
+    if (!el.activitySelect || !el.yourDPMActivity || !el.dpmActivityDenominationValue || 
+        !el.activityTimeLimit || !el.activityResult) {
+        return 0; 
+    }
+    const selection = el.activitySelect.value;
+    if (!selection) {
+        el.activityResult.innerText = '0 / 0';
+        return 0;
+    }
+    const activity = activityData[selection];
+    const dpmValue = (getNumberValue('yourDPMActivity') || 0) * (currentNumberFormat === 'letters' ? (parseFloat(el.dpmActivityDenominationValue.value) || 1) : 1);
+    const yourDPS = dpmValue / 60;
+    const timeLimit = getNumberValue('activityTimeLimit');
+    const resultEl = el.activityResult;
+    const maxStages = activity ? activity.maxStages : 0;
+    if (!activity || yourDPS <= 0 || timeLimit <= 0) {
+        resultEl.innerText = `0 / ${maxStages}`;
+        return 0;
+    }
+    const maxDamageInTime = yourDPS * timeLimit;
+    let completedStage = 0;
+    if (activity.enemies) {
+        const singleEnemyRaids = ["Mundo Raid", "Gleam Raid", "Tournament Raid"];
+        for (let i = 1; i <= maxStages; i++) {
+            const stageKey = `Room ${i}`;
+            let stageHealth = parseNumberInput(String(activity.enemies[stageKey]));
+            if (!stageHealth) {
+                break;
+            }
+            let enemyMultiplier = 1;
+            if (activity.type === 'raid' && !singleEnemyRaids.includes(selection)) {
+                enemyMultiplier = 5;
+            } else if (activity.type === 'dungeon' && !singleEnemyRaids.includes(selection)) {
+                 enemyMultiplier = 1;
+            }
+            const totalStageHealth = stageHealth * enemyMultiplier;
+            if (maxDamageInTime < totalStageHealth) {
+                break;
+            }
+            completedStage = i;
+        }
+    } else {}
+    resultEl.innerText = `${completedStage} / ${maxStages}`;
+    return completedStage;
+}
+
+function calculateKeyRunTime() {
+    if (!el.keyRunTimeResult || !el.activitySelect) return;
+    const activityName = el.activitySelect.value;
+    const activity = activityData[activityName];
+    const keyQuantity = Math.floor(getNumberValue('keyRunQuantity')) || 0;
+    const resultEl = el.keyRunTimeResult;
+    const returnTimeEl = el.keyRunReturnTime;
+    const dpmValue = (getNumberValue('yourDPMActivity') || 0) * (currentNumberFormat === 'letters' ? (parseFloat(el.dpmActivityDenominationValue.value) || 1) : 1);
+    const yourDPS = dpmValue / 60;
+    const completedStage = calculateMaxStage();
+    if (!activity || keyQuantity <= 0 || yourDPS <= 0 || completedStage <= 0) {
+        resultEl.innerText = '0s';
+        if (returnTimeEl) returnTimeEl.innerText = '';
+        return;
+    }
+    let timeInSecondsPerRun = 0;
+    const singleEnemyRaids = ["Mundo Raid", "Gleam Raid", "Tournament Raid"];
+    const RESPawn_TIME = 0.1;
+    for (let i = 1; i <= completedStage; i++) {
+        const stageKey = `Room ${i}`;
+        let stageHealth = parseNumberInput(String(activity.enemies[stageKey]));
+        let enemyMultiplier = 1;
+        if (activity.type === 'raid' && !singleEnemyRaids.includes(activityName)) {
+            enemyMultiplier = 5;
+        }
+        const totalStageHealth = stageHealth * enemyMultiplier;
+        const killTime = totalStageHealth / yourDPS;
+        const timePerStage = Math.max(killTime + LOOT_KILL_OVERHEAD, 1.0) + RESPawn_TIME;
+        timeInSecondsPerRun += timePerStage; 
+    }
+    const totalTimeInSeconds = timeInSecondsPerRun * keyQuantity;
+    if (totalTimeInSeconds === Infinity) {
+        resultEl.innerText = "Over 1000 Years";
+        if (returnTimeEl) returnTimeEl.innerText = 'ETA: Eternity';
+        return;
+    }
+    let resultString = formatTime(totalTimeInSeconds);
+    resultEl.innerText = resultString.trim() || '0s';
+    if (returnTimeEl) {
+        const now = new Date();
+        const returnTime = new Date(now.getTime() + totalTimeInSeconds * 1000);
+        const returnString = returnTime.toLocaleString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            hour: 'numeric', 
+            minute: '2-digit', 
+            hour12: true 
+        });
+        returnTimeEl.innerText = `Finish Time: ${returnString}`;
+    }
+}
+
 document.addEventListener('click', (event) => {
     const relativeContainers = document.querySelectorAll('.relative');
     let clickedInsideAContainer = false;
@@ -2084,6 +2268,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     populateTimeToReturnMinutesDropdown();
     populateBoostDurations();
     populateLootKillTimeDropdown();
+    loadAllData().then(async () => {
+        populateActivityDropdown();
+        await loadRaidData();
+    });
     setupRankSearch('rankInput', 'rankSelect', 'rankList');
     function onRankUpCEDenomChange() {
         syncEnergyData('currentEnergy', 'currentEnergyDenominationInput', 'currentEnergyDenominationValue');
@@ -2103,10 +2291,42 @@ document.addEventListener('DOMContentLoaded', async () => {
     function onTTEEPCDenomChange() {
         syncEnergyData('energyPerClickTTE', 'energyPerClickTTEDenominationInput', 'energyPerClickTTEDenominationValue');
     }
+    const syncDPS_TTKToRaid = () => {
+        if(el.yourDPMActivity && el.yourDPM) {
+            const dpm = getNumberValue('yourDPM');
+            const denom = el.dpmDenominationValue ? parseFloat(el.dpmDenominationValue.value) : 1;
+            const split = splitNumberToDenom(dpm * denom);
+            el.yourDPMActivity.value = split.value;
+            if (el.dpmActivityDenominationInput) el.dpmActivityDenominationInput.value = split.name;
+            if (el.dpmActivityDenominationValue) el.dpmActivityDenominationValue.value = split.multiplier;
+        }
+        calculateMaxStage();
+        calculateKeyRunTime();
+        saveRaidData();
+    };
     function onTTKDenomChange() {
         calculateTTK();
+        syncDPS_TTKToRaid();
+    }
+    const syncDPS_RaidToTTK = () => {
+        if(el.yourDPM && el.yourDPMActivity) {
+            const dpm = getNumberValue('yourDPMActivity');
+            const denom = el.dpmActivityDenominationValue ? parseFloat(el.dpmActivityDenominationValue.value) : 1;
+            const split = splitNumberToDenom(dpm * denom);
+            el.yourDPM.value = split.value;
+            if (el.dpmDenominationInput) el.dpmDenominationInput.value = split.name;
+            if (el.dpmDenominationValue) el.dpmDenominationValue.value = split.multiplier;
+        }
+        calculateTTK();
+    };
+    function onRaidDenomChange() {
+        calculateMaxStage();
+        calculateKeyRunTime();
+        saveRaidData();
+        syncDPS_RaidToTTK();
     }
     setupDenominationSearch('dpmDenominationInput', 'dpmDenominationValue', 'dpmDenominationList', onTTKDenomChange);
+    setupDenominationSearch('dpmActivityDenominationInput', 'dpmActivityDenominationValue', 'dpmActivityDenominationList', onRaidDenomChange);
     setupDenominationSearch('currentEnergyDenominationInput', 'currentEnergyDenominationValue', 'currentEnergyDenominationList', onRankUpCEDenomChange);
     setupDenominationSearch('energyPerClickDenominationInput', 'energyPerClickDenominationValue', 'energyPerClickDenominationList', onRankUpEPCDenomChange);
     setupDenominationSearch('currentEnergyETADenominationInput', 'currentEnergyETADenominationValue', 'currentEnergyETADenominationList', onETACEDenomChange);
@@ -2203,11 +2423,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (el.yourDPM) {
         el.yourDPM.addEventListener('input', debounce(() => {
             calculateTTK();
+            syncDPS_TTKToRaid();
             saveTTKData();
         }, 300));
     }
     if (el.enemyQuantity) el.enemyQuantity.addEventListener('input', debounce(calculateTTK, 300));
     if (el.fourSpotFarming) el.fourSpotFarming.addEventListener('change', calculateTTK);
+    const raidDebounce = debounce(() => {
+        calculateMaxStage();
+        calculateKeyRunTime();
+        saveRaidData();
+    }, 300);
+    if (el.activitySelect) {
+        el.activitySelect.addEventListener('change', () => {
+            handleActivityChange();
+            saveRaidData();
+        });
+    }
+    if (el.yourDPMActivity) {
+        el.yourDPMActivity.addEventListener('input', () => {
+            raidDebounce();
+            syncDPS_RaidToTTK();
+        });
+    }
+    if (el.activityTimeLimit) el.activityTimeLimit.addEventListener('input', raidDebounce);
+    if (el.keyRunQuantity) el.keyRunQuantity.addEventListener('input', raidDebounce);
     if (el['theme-select']) {
         populateThemeDropdown();
 
