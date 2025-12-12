@@ -748,4 +748,24 @@ const checklistDataByWorld = {
       { id: 'salty-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
+    "Mugen District": {
+      gachas: [
+          { id: 'mugen-demon-bloodline', name: 'Demon Bloodline' },
+          { id: 'mugen-slayer-mark', name: 'Slayer Mark' },
+      ],
+      progressions: [
+        { id: 'mugen-bento-box', name: 'Bento Box Crafting' },
+      ],
+      sssRank: [
+          { id: 'mugen-akazi', name: 'Akazi' }
+      ],
+      auras: [
+      ],
+      accessories: [],
+    quests: [
+      { id: 'mugen-bento-box-quests', name: 'Bento Box Quests'},
+      { id: 'mugen-key-quests', name: 'Key Quests'},
+      { id: 'mugen-obelisk-quest', name: 'Obelisk Quest'}
+    ]
+  },
 };
