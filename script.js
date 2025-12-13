@@ -105,7 +105,8 @@ async function updateAllWorldTitles(savedData) {
         sssRank: {total: 0, completed: 0}, 
         auras: {total: 0, completed: 0}, 
         accessories: {total: 0, completed: 0},
-        quests: {total: 0, completed: 0} 
+        quests: {total: 0, completed: 0},
+        raidAchievements: {total: 0, completed: 0} 
     };
     for (const worldName of worldNames) {
         const world = checklistDataByWorld[worldName];
@@ -113,7 +114,7 @@ async function updateAllWorldTitles(savedData) {
         const worldTitleEl = document.getElementById(`world-title-${worldNameId}`);
         let totalItems = 0;
         let completedItems = 0;
-        const categories = ['gachas', 'progressions', 'sssRank', 'auras', 'accessories', 'quests'];
+        const categories = ['gachas', 'progressions', 'sssRank', 'auras', 'accessories', 'quests', 'raidAchievements'];
         categories.forEach(catKey => {
             if (world[catKey]) {
                 totalItems += world[catKey].length;
@@ -134,6 +135,7 @@ async function updateAllWorldTitles(savedData) {
                     const subCompleted = world[catKey].filter(item => savedData[item.id]).length;
                     let catName = catKey.charAt(0).toUpperCase() + catKey.slice(1);
                     if (catKey === 'sssRank') catName = 'SSS Rank';
+                    if (catKey === 'raidAchievements') catName = 'Raid Achievements';
                     subTitleEl.innerHTML = `${catName} <span class="category-badge badge-${catKey}">${subCompleted}/${subTotal}</span>`;
                 }
             }
@@ -156,6 +158,7 @@ async function updateAllWorldTitles(savedData) {
     Object.keys(categoryStats).forEach(cat => {
         let elId;
         if (cat === 'sssRank') elId = 'sssrank-count';
+        if (cat === 'raidAchievements') elId = 'raidachievements-count';
         else elId = `${cat}-count`;
         const countEl = document.getElementById(elId);
         if (countEl) {
@@ -224,7 +227,8 @@ function populateWorldChecklists(savedData) {
             { key: 'sssRank', name: 'SSS Rank', css: 'sssRank' },
             { key: 'auras', name: 'Auras', css: 'auras' },
             { key: 'accessories', name: 'Accessories', css: 'accessories' },
-            { key: 'quests', name: 'Quests', css: 'quests' }
+            { key: 'quests', name: 'Quests', css: 'quests' },
+            { key: 'raidAchievements', name: 'Raid Achievements', css: 'raidAchievements' }
         ];
         const subsections = [];
         categories.forEach(cat => {
@@ -293,6 +297,7 @@ function filterChecklistItems(searchTerm = '', categoryFilter = '') {
             let visibleItems = 0;
             const subId = subTitle.id;
             const categoryMatch = !categoryFilterActive || (categoryFilter === 'sssrank' ? subId.includes('sssRank-title') : subId.includes(`${categoryFilter}-title`));
+            const categoryMatch2 = !categoryFilterActive || (categoryFilter === 'raidachievements' ? subId.includes('raidAchievements-title') : subId.includes(`${categoryFilter}-title`));
             const isCompletedCategory = isCategoryCompleted(subsection);
             items.forEach(item => {
                 const text = item.textContent.toLowerCase();
@@ -301,6 +306,10 @@ function filterChecklistItems(searchTerm = '', categoryFilter = '') {
                 const searchMatch = !searchActive || text.includes(searchLower);
                 const hideCompletedItemMatch = !isHiddenMode || !itemIsCompleted;
                 if (categoryMatch && searchMatch && hideCompletedItemMatch) {
+                    item.style.display = 'flex';
+                    visibleItems++;
+                }
+                else if (categoryMatch2 && searchMatch && hideCompletedItemMatch) {
                     item.style.display = 'flex';
                     visibleItems++;
                 } else {

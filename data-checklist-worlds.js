@@ -18,7 +18,56 @@ const checklistDataByWorld = {
       { id: 'halloween-demonflame-aura', name: 'Demonflame Aura (Spook-Suke)' }
     ],
     accessories: [],
-    quests: []
+    quests: [],
+  },
+  "Dungeon Lobby 1": {
+    gachas: [
+      { id: 'dungeon-lobby-1-power-of-stars', name: 'Power Of Stars' }
+    ],
+    progressions: [
+      { id: 'dungeon-lobby-1-upgrades', name: 'Dungeon Upgrades' },
+      { id: 'dungeon-lobby-1-attackrange', name: 'Attack Range Upgrades' },
+      { id: 'dungeon-lobby-1-jewelrycrafting', name: 'Jewelry Crafting' },
+      { id: 'dungeon-lobby-1-running-track-progression', name: 'Running Track Progression' }
+    ],
+    sssRank: [],
+    auras: [],
+    accessories: [],
+    quests: [],
+    raidAchievements: [
+      { id: 'dungeon-lobby-1-easy-dungeon', name: 'Easy Dungeon' },
+      { id: 'dungeon-lobby-1-medium-dungeon', name: 'Medium Dungeon' },
+      { id: 'dungeon-lobby-1-hard-dungeon', name: 'Hard Dungeon' },
+      { id: 'dungeon-lobby-1-insane-dungeon', name: 'Insane Dungeon' },
+      { id: 'dungeon-lobby-1-crazy-dungeon', name: 'Crazy Dungeon' },
+      { id: 'dungeon-lobby-1-nightmare-dungeon', name: 'Nightmare Dungeon' },
+      { id: 'dungeon-lobby-1-labyrinth-dungeon', name: 'Labyrinth' },
+      { id: 'dungeon-lobby-1-leaf-raid', name: 'Leaf Raid' },
+      { id: 'dungeon-lobby-1-running-raid', name: 'Running Track Raid' }
+    ]
+  },
+  "Dungeon Lobby 2": {
+    gachas: [
+    ],
+    progressions: [
+      { id: 'dungeon-lobby-2-rune-crafting', name: 'Rune Crafting' }
+    ],
+    sssRank: [],
+    auras: [],
+    accessories: [],
+    quests: [],
+    raidAchievements: [
+      { id: 'dungeon-lobby-2-green-planet-raid', name: 'Green Planet Raid' },
+      { id: 'dungeon-lobby-2-mundo-raid', name: 'Mundo Raid' },
+      { id: 'dungeon-lobby-2-hollow-raid', name: 'Hollow Raid' },
+      { id: 'dungeon-lobby-2-maze-1', name: 'Maze 1' },
+      { id: 'dungeon-lobby-2-maze-2', name: 'Maze 2' },
+      { id: 'dungeon-lobby-2-maze-3', name: 'Maze 3' },
+      { id: 'dungeon-lobby-2-maze-4', name: 'Maze 4' },
+      { id: 'dungeon-lobby-2-torment-dungeon', name: 'Torment Dungeon' },
+      { id: 'dungeon-lobby-2-adventurer-dungeon', name: 'Adventurer Dungeon' },
+      { id: 'dungeon-lobby-2-suffering-dungeon', name: 'Suffering Dungeon' }
+    ]
   },
   "Earth City": {
     gachas: [
@@ -40,11 +89,15 @@ const checklistDataByWorld = {
       { id: 'earth-hero-license', name: 'Hero License'},
       { id: 'earth-key-quests', name: 'Key Quests'},
       { id: 'earth-obelisk-quest', name: 'Obelisk Quest'}
+    ],
+    raidAchievements: [
+      { id: 'earth-tournament-raid', name: 'Tournament Raid' }
     ]
   },
   "Windmill Island": {
     gachas: [
       { id: 'windmill-pirate-crew', name: 'Pirate Crew' },
+      { id: 'windmill-demon-fruits', name: 'Demon Fruits' },
       { id: 'windmill-swords', name: 'Swords' }
     ],
     progressions: [
@@ -62,6 +115,9 @@ const checklistDataByWorld = {
     quests: [
       { id: 'windmill-key-quests', name: 'Key Quests'},
       { id: 'windmill-obelisk-quest', name: 'Obelisk Quest'}
+    ],
+    raidAchievements: [
+      { id: 'windmill-restaurant-raid', name: 'Restaurant Raid' }
     ]
   },
   "Soul Society": {
@@ -76,7 +132,7 @@ const checklistDataByWorld = {
       { id: 'soul-eizen', name: 'Eizen' }
     ],
     auras: [
-      { id: 'soul-purple-traitor-aura', name: 'Purple Traitor Aura(SS)' }
+      { id: 'soul-purple-traitor-aura', name: 'Purple Traitor Aura (SS)' }
     ],
     accessories: [],
     quests: [
@@ -99,8 +155,12 @@ const checklistDataByWorld = {
     ],
     accessories: [],
     quests: [
+      { id: 'cursed-evil-spirit-quest', name: 'Evil Spirit Quest'},
       { id: 'cursed-key-quests', name: 'Key Quests'},
       { id: 'cursed-obelisk-quest', name: 'Obelisk Quest'}
+    ],
+    raidAchievements: [
+      { id: 'cursed-cursed-raid', name: 'Cursed Raid' }
     ]
   },
   "Slayer Village": {
@@ -108,7 +168,9 @@ const checklistDataByWorld = {
       { id: 'slayer-breathings', name: 'Breathings'},
       { id: 'slayer-demon-arts', name: 'Demon Arts' }
     ],
-    progressions: [],
+    progressions: [
+      { id: 'slayer-energy-progression', name: 'Slayer Energy Progression (80)' }
+    ],
     sssRank: [
       { id: 'slayer-rangaki', name: 'Rangaki' }
     ],
@@ -180,7 +242,7 @@ const checklistDataByWorld = {
       { id: 'leaf-shinobi-flops', name: 'Shinobi Flops (SS)' }
     ],
     quests: [
-      { id: 'leaf-leaf-kage', name: 'Leaf Kage'},
+      { id: 'leaf-leaf-kage', name: 'Leaf Kage Quest'},
       { id: 'leaf-key-quests', name: 'Key Quests'},
       { id: 'leaf-obelisk-quest', name: 'Obelisk Quest'}
     ]
@@ -201,6 +263,9 @@ const checklistDataByWorld = {
     quests: [
       { id: 'spirit-key-quests', name: 'Key Quests'},
       { id: 'spirit-obelisk-quest', name: 'Obelisk Quest'}
+    ],
+    raidAchievements: [
+      { id: 'spirit-progression-raid', name: 'Progression Raid' }
     ]
   },
   "Magic Hunter City": {
@@ -247,6 +312,9 @@ const checklistDataByWorld = {
     quests: [
       { id: 'titan-key-quests', name: 'Key Quests'},
       { id: 'titan-obelisk-quest', name: 'Obelisk Quest'}
+    ],
+    raidAchievements: [
+      { id: 'titan-titan-defense', name: 'Titan Defense' }
     ]
   },
   "Village of Sins": {
@@ -266,6 +334,9 @@ const checklistDataByWorld = {
     quests: [
       { id: 'sins-key-quests', name: 'Key Quests'},
       { id: 'sins-obelisk-quest', name: 'Obelisk Quest'}
+    ],
+    raidAchievements: [
+      { id: 'sins-sin-raid', name: 'Sin Raid' }
     ]
   },
   "Kaiju Base": {
@@ -356,6 +427,9 @@ const checklistDataByWorld = {
     quests: [
       { id: 'cairo-key-quests', name: 'Key Quests'},
       { id: 'cairo-obelisk-quest', name: 'Obelisk Quest'}
+    ],
+    raidAchievements: [
+      { id: 'cairo-progression-raid-two', name: 'Progression Raid 2' }
     ]
   },
   "Ghoul City": {
@@ -378,6 +452,9 @@ const checklistDataByWorld = {
       { id: 'ghoul-ccg-quests', name: 'CCG Quests'},
       { id: 'ghoul-key-quests', name: 'Key Quests'},
       { id: 'ghoul-obelisk-quest', name: 'Obelisk Quest'}
+    ],
+    raidAchievements: [
+      { id: 'ghoul-ghoul-raid', name: 'Ghoul Raid' }
     ]
   },
   "Chainsaw City": {
@@ -401,6 +478,9 @@ const checklistDataByWorld = {
       { id: 'chainsaw-hero-license', name: 'Hero License Quests'},
       { id: 'chainsaw-key-quests', name: 'Key Quests'},
       { id: 'chainsaw-obelisk-quest', name: 'Obelisk Quest'}
+    ],
+    raidAchievements: [
+      { id: 'chainsaw-chainsaw-defense', name: 'Chainsaw Defense' }
     ]
   },
   "Tokyo Empire": {
@@ -431,6 +511,9 @@ const checklistDataByWorld = {
     quests: [
       { id: 'tokyo-key-quests', name: 'Key Quests'},
       { id: 'tokyo-obelisk-quest', name: 'Obelisk Quest'}
+    ],
+    raidAchievements: [
+      { id: 'tokyo-netherworld-defense', name: 'Netherworld Defense' }
     ]
   },
   "Green Planet": {
@@ -530,8 +613,12 @@ const checklistDataByWorld = {
       { id: 'zcity-red-hero-boots', name: 'Red Hero Boots (S)' }
     ],
     quests: [
+      { id: 'zcity-hide-and-punch-quest', name: 'Hide N Punch Quest'},
       { id: 'zcity-key-quests', name: 'Key Quests'},
       { id: 'zcity-obelisk-quest', name: 'Obelisk Quest'}
+    ],
+    raidAchievements: [
+      { id: 'zcity-one-hero-raid', name: 'One Hero Raid' }
     ]
   },
   "Great Tomb": {
@@ -557,6 +644,9 @@ const checklistDataByWorld = {
     quests: [
       { id: 'tomb-key-quests', name: 'Key Quests'},
       { id: 'tomb-obelisk-quest', name: 'Obelisk Quest'}
+    ],
+    raidAchievements: [
+      { id: 'tomb-tomb-arena-raid', name: 'Tomb Arena Raid' }
     ]
   },
   "Thriller Park": {
@@ -581,6 +671,8 @@ const checklistDataByWorld = {
         { id: 'thriller-orrs-pants', name: 'Orrs Pants (S)' },
     ],
     quests: [
+      { id: 'thriller-bounty-hunter-power-quest', name: 'Bounty Hunter Power Quest'},
+      { id: 'thriller-hero-license-quest', name: 'Hero License Quest'},
       { id: 'thriller-demon-fruit-quest', name: 'Demon Fruit Quest'},
       { id: 'thriller-key-quests', name: 'Key Quests'},
       { id: 'thriller-obelisk-quest', name: 'Obelisk Quest'}
@@ -632,6 +724,7 @@ const checklistDataByWorld = {
       ],
       accessories: [],
     quests: [
+      { id: 'manor-hero-license-quests', name: 'Hero License Quests'},
       { id: 'manor-key-quests', name: 'Key Quests'},
       { id: 'manor-obelisk-quest', name: 'Obelisk Quest'}
     ]
@@ -701,7 +794,7 @@ const checklistDataByWorld = {
       ],
     quests: [
       { id: 'sand-hero-license', name: 'Hero License Quest'},
-      { id: 'sand-sand-kage', name: 'Sand Kage'},
+      { id: 'sand-sand-kage', name: 'Sand Kage Quest'},
       { id: 'sand-key-quests', name: 'Key Quests'},
       { id: 'sand-obelisk-quest', name: 'Obelisk Quest'}
     ]
@@ -725,6 +818,9 @@ const checklistDataByWorld = {
       { id: 'raid-teigu-quest', name: 'Teigu Quest'},
       { id: 'raid-key-quests', name: 'Key Quests'},
       { id: 'raid-obelisk-quest', name: 'Obelisk Quest'}
+    ],
+    raidAchievements: [
+      { id: 'raid-canyon-crossing', name: 'Canyon Crossing' }
     ]
   },
   "Salty School": {
@@ -746,6 +842,9 @@ const checklistDataByWorld = {
       { id: 'salty-exorcism-quest', name: 'Exorcism Quest'},
       { id: 'salty-key-quests', name: 'Key Quests'},
       { id: 'salty-obelisk-quest', name: 'Obelisk Quest'}
+    ],
+    raidAchievements: [
+      { id: 'salty-body-improvement', name: 'Body Improvement Challenge' }
     ]
   },
     "Mugen District": {

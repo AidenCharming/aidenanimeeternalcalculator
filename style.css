@@ -575,6 +575,7 @@ button:active {
 .world-subsection-title.auras { color: #8b5cf6 !important; }
 .world-subsection-title.accessories { color: #06b6d4 !important; }
 .world-subsection-title.quests { color: #eab308 !important; }
+.world-subsection-title.raidAchievements { color: #ffffff !important; }
 
 .checklist-item {
   display: flex;
@@ -625,6 +626,7 @@ button:active {
 .badge-auras { background: #8b5cf620; color: #8b5cf6; }
 .badge-accessories { background: #06b6d420; color: #06b6d4; }
 .badge-quests { background: #eab30820; color: #eab308; }
+.badge-raidAchievements { background: #b9b9b920; color: #bdbdbd; }
 .progress-indicator {
   background: var(--bg-input);
   border: 1px solid var(--border-light);
