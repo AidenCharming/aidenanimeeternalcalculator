@@ -847,7 +847,7 @@ const checklistDataByWorld = {
       { id: 'salty-body-improvement', name: 'Body Improvement Challenge' }
     ]
   },
-    "Mugen District": {
+  "Mugen District": {
       gachas: [
           { id: 'mugen-demon-bloodline', name: 'Demon Bloodline' },
           { id: 'mugen-slayer-mark', name: 'Slayer Mark' },
@@ -865,6 +865,24 @@ const checklistDataByWorld = {
       { id: 'mugen-bento-box-quests', name: 'Bento Box Quests'},
       { id: 'mugen-key-quests', name: 'Key Quests'},
       { id: 'mugen-obelisk-quest', name: 'Obelisk Quest'}
+    ]
+  },
+  "Easton Academy": {
+      gachas: [
+          { id: 'easton-magic-type', name: 'Magic Type' },
+          { id: 'easton-the-muscule', name: 'The Muscule' },
+      ],
+      progressions: [
+      ],
+      sssRank: [
+          { id: 'easton-war-cell', name: 'War Cell' }
+      ],
+      auras: [
+      ],
+      accessories: [],
+    quests: [
+      { id: 'easton-key-quests', name: 'Key Quests'},
+      { id: 'easton-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
 };
