@@ -20,6 +20,23 @@ const checklistDataByWorld = {
     accessories: [],
     quests: [],
   },
+  "Christmas World": {
+    gachas: [
+      { id: 'christmas-glove', name: 'Christmas Glove' }
+    ],
+    progressions: [
+      { id: 'christmas-damage-upgrade', name: 'Christmas Damage Upgrade' },
+      { id: 'christmas-materials-upgrade', name: 'Christmas Materials Upgrade' },
+      { id: 'christmas-glove-leveling', name: 'Christmas Glove Leveling' }
+    ],
+    sssRank: [],
+    auras: [],
+    accessories: [],
+    quests: [],
+    raidAchievements: [
+      { id: 'christmas-ice-raid', name: 'Ice Raid' },
+    ]
+  },
   "Dungeon Lobby 1": {
     gachas: [
       { id: 'dungeon-lobby-1-power-of-stars', name: 'Power Of Stars' }
@@ -181,6 +198,9 @@ const checklistDataByWorld = {
     quests: [
       { id: 'slayer-key-quests', name: 'Key Quests'},
       { id: 'slayer-obelisk-quest', name: 'Obelisk Quest'}
+    ],
+    raidAchievements: [
+      { id: 'slayer-breathing-raid', name: 'Breathing Raid' }
     ]
   },
   "Solo Island": {
@@ -743,6 +763,7 @@ const checklistDataByWorld = {
       ],
       auras: [],
       accessories: [
+        { id: 'asfordo-queen-boots', name: 'Queen Boots (E)' },
         { id: 'asfordo-zero-cape', name: 'Zero Cape (SS)' },
         { id: 'asfordo-zero-mask', name: 'Zero Mask (SS)' },
       ],
@@ -861,11 +882,15 @@ const checklistDataByWorld = {
       auras: [
       ],
       accessories: [],
-    quests: [
+      quests: [
+      { id: 'mugen-hero-quest', name: 'Hero Quest'},
       { id: 'mugen-bento-box-quests', name: 'Bento Box Quests'},
       { id: 'mugen-key-quests', name: 'Key Quests'},
       { id: 'mugen-obelisk-quest', name: 'Obelisk Quest'}
-    ]
+      ],
+      raidAchievements: [
+      { id: 'mugen-dungeon', name: 'Mugen Dungeon' }
+      ]
   },
   "Easton Academy": {
       gachas: [
@@ -873,6 +898,9 @@ const checklistDataByWorld = {
           { id: 'easton-the-muscule', name: 'The Muscule' },
       ],
       progressions: [
+        { id: 'easton-house-eagle', name: 'House of Eagle (100)' },
+        { id: 'easton-house-whale', name: 'House of Killer Whale (100)' },
+        { id: 'easton-house-wolf', name: 'House of Wolf (100)' }
       ],
       sssRank: [
           { id: 'easton-war-cell', name: 'War Cell' }
