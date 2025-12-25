@@ -9,7 +9,6 @@ const checklistDataByWorld = {
       { id: 'halloween-overdrive-saw', name: 'Overdrive Saw' },
       { id: 'halloween-energy-zombies', name: 'Energy Zombies' }
     ],
-    sssRank: [],
     auras: [
       { id: 'halloween-candy-aura', name: 'Candy Aura (Carotto)' },
       { id: 'halloween-pumpkin-aura', name: 'Pumpkin Aura (Evil Bald Man)' },
@@ -17,8 +16,6 @@ const checklistDataByWorld = {
       { id: 'halloween-spookweb-aura', name: 'Spookweb Aura (Bald Warlock)' },
       { id: 'halloween-demonflame-aura', name: 'Demonflame Aura (Spook-Suke)' }
     ],
-    accessories: [],
-    quests: [],
   },
   "Christmas World": {
     gachas: [
@@ -29,10 +26,22 @@ const checklistDataByWorld = {
       { id: 'christmas-materials-upgrade', name: 'Christmas Materials Upgrade' },
       { id: 'christmas-glove-leveling', name: 'Christmas Glove Leveling' }
     ],
-    sssRank: [],
-    auras: [],
-    accessories: [],
-    quests: [],
+    auras: [
+      { id: 'christmas-coal-aura', name: 'Coal Aura (Santa Raid)' },
+      { id: 'christmas-peppermint-aura', name: 'Peppermint Aura (Santa Raid)' },
+      { id: 'christmas-christmas-tree-aura', name: 'Christmas Tree Aura (Santa Raid)' },
+      { id: 'christmas-blue-present-aura', name: 'Blue Present Aura (Santa Raid)' },
+      { id: 'christmas-red-present-aura', name: 'Red Present Aura (Santa Raid)' },
+      { id: 'christmas-presents-aura', name: 'Presents Aura (Santa Raid)' }
+    ],
+    accessories: [
+      { id: 'christmas-santa-boots', name: 'Santa Boots (Santa Raid)' },
+      { id: 'christmas-santa-bag', name: 'Santa Bag (Santa Raid)' },
+      { id: 'christmas-santa-belt', name: 'Santa Belt (Santa Raid)' },
+      { id: 'christmas-santa-pants', name: 'Santa Pants (Santa Raid)' },
+      { id: 'christmas-santa-hat', name: 'Santa Hat (Santa Raid)' },
+      { id: 'christmas-santa-beard', name: 'Santa Beard (Santa Raid)' }
+    ],
     raidAchievements: [
       { id: 'christmas-ice-raid', name: 'Ice Raid' },
     ]
@@ -47,10 +56,6 @@ const checklistDataByWorld = {
       { id: 'dungeon-lobby-1-jewelrycrafting', name: 'Jewelry Crafting' },
       { id: 'dungeon-lobby-1-running-track-progression', name: 'Running Track Progression' }
     ],
-    sssRank: [],
-    auras: [],
-    accessories: [],
-    quests: [],
     raidAchievements: [
       { id: 'dungeon-lobby-1-easy-dungeon', name: 'Easy Dungeon' },
       { id: 'dungeon-lobby-1-medium-dungeon', name: 'Medium Dungeon' },
@@ -64,15 +69,9 @@ const checklistDataByWorld = {
     ]
   },
   "Dungeon Lobby 2": {
-    gachas: [
-    ],
     progressions: [
       { id: 'dungeon-lobby-2-rune-crafting', name: 'Rune Crafting' }
     ],
-    sssRank: [],
-    auras: [],
-    accessories: [],
-    quests: [],
     raidAchievements: [
       { id: 'dungeon-lobby-2-green-planet-raid', name: 'Green Planet Raid' },
       { id: 'dungeon-lobby-2-mundo-raid', name: 'Mundo Raid' },
@@ -91,7 +90,6 @@ const checklistDataByWorld = {
       { id: 'earth-dragon-race', name: 'Dragon Race' },
       { id: 'earth-saiyan', name: 'Saiyan' }
     ],
-    progressions: [],
     sssRank: [
       { id: 'earth-kid-kohan', name: 'Kid Kohan' }
     ],
@@ -151,7 +149,6 @@ const checklistDataByWorld = {
     auras: [
       { id: 'soul-purple-traitor-aura', name: 'Purple Traitor Aura (SS)' }
     ],
-    accessories: [],
     quests: [
       { id: 'soul-key-quests', name: 'Key Quests'},
       { id: 'soul-obelisk-quest', name: 'Obelisk Quest'}
@@ -170,7 +167,6 @@ const checklistDataByWorld = {
     auras: [
       { id: 'cursed-fire-king-aura', name: 'Fire King Aura (SS)' }
     ],
-    accessories: [],
     quests: [
       { id: 'cursed-evil-spirit-quest', name: 'Evil Spirit Quest'},
       { id: 'cursed-key-quests', name: 'Key Quests'},
@@ -194,7 +190,6 @@ const checklistDataByWorld = {
     auras: [
       { id: 'slayer-flaming-aura', name: 'Flaming Aura (SS)' }
     ],
-    accessories: [],
     quests: [
       { id: 'slayer-key-quests', name: 'Key Quests'},
       { id: 'slayer-obelisk-quest', name: 'Obelisk Quest'}
@@ -218,7 +213,6 @@ const checklistDataByWorld = {
     auras: [
       { id: 'solo-statue-aura', name: 'Statue Aura (SS)' }
     ],
-    accessories: [],
     quests: [
       { id: 'solo-hero-license', name: 'Hero License Quest'},
       { id: 'solo-key-quests', name: 'Key Quests'},
@@ -237,8 +231,6 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'clover-novi-chroni', name: 'Novi Chroni' }
     ],
-    auras: [],
-    accessories: [],
     quests: [
       { id: 'clover-key-quests', name: 'Key Quests'},
       { id: 'clover-obelisk-quest', name: 'Obelisk Quest'}
@@ -278,8 +270,6 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'spirit-ken-turbo', name: 'Ken Turbo' }
     ],
-    auras: [],
-    accessories: [],
     quests: [
       { id: 'spirit-key-quests', name: 'Key Quests'},
       { id: 'spirit-obelisk-quest', name: 'Obelisk Quest'}
@@ -304,7 +294,6 @@ const checklistDataByWorld = {
     auras: [
       { id: 'magic-energetic-aura', name: 'Energetic Aura (SS)' }
     ],
-    accessories: [],
     quests: [
       { id: 'magic-hero-license', name: 'Hero License Quests'},
       { id: 'magic-key-quests', name: 'Key Quests'},
@@ -317,7 +306,6 @@ const checklistDataByWorld = {
       { id: 'titan-titans', name: 'Titans' },
       { id: 'titan-injection', name: 'Titan Injection' }
     ],
-    progressions: [],
     sssRank: [
       { id: 'titan-eran', name: 'Eran' }
     ],
@@ -349,8 +337,6 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'sins-esanor', name: 'Esanor' }
     ],
-    auras: [],
-    accessories: [],
     quests: [
       { id: 'sins-key-quests', name: 'Key Quests'},
       { id: 'sins-obelisk-quest', name: 'Obelisk Quest'}
@@ -374,7 +360,6 @@ const checklistDataByWorld = {
     auras: [
       { id: 'kaiju-monster-aura', name: 'Monster Aura (SS)' }
     ],
-    accessories: [],
     quests: [
       { id: 'kaiju-key-quests', name: 'Key Quests'},
       { id: 'kaiju-obelisk-quest', name: 'Obelisk Quest'}
@@ -394,7 +379,6 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'tempest-valzora', name: 'Valzora' }
     ],
-    auras: [],
     accessories: [
       { id: 'tempest-slime-mask', name: 'Slime Mask (S)' }
     ],
@@ -419,7 +403,6 @@ const checklistDataByWorld = {
     auras: [
       { id: 'virtual-virtual-aura', name: 'Virtual Aura (SS)' }
     ],
-    accessories: [],
     quests: [
       { id: 'virtual-hero-license', name: 'Hero License Quest'},
       { id: 'virtual-key-quests', name: 'Key Quests'},
@@ -467,7 +450,6 @@ const checklistDataByWorld = {
     auras: [
       { id: 'ghoul-ghoul-aura', name: 'Ghoul Aura (SS)' }
     ],
-    accessories: [],
     quests: [
       { id: 'ghoul-ccg-quests', name: 'CCG Quests'},
       { id: 'ghoul-key-quests', name: 'Key Quests'},
@@ -490,7 +472,6 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'chainsaw-hero-of-hell', name: 'Hero Of Hell' }
     ],
-    auras: [],
     accessories: [
       { id: 'chainsaw-pokita-slides', name: 'Pokita Slides (D)' }
     ],
@@ -553,7 +534,6 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'green-frezi-final-form', name: 'Frezi Final Form' }
     ],
-    auras: [],
     accessories: [
       { id: 'green-scarffy', name: 'Scarffy (D)' }
     ],
@@ -576,8 +556,6 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'hollow-vasto-ichige', name: 'Vasto Ichige' }
     ],
-    auras: [],
-    accessories: [],
     quests: [
       { id: 'hollow-key-quests', name: 'Key Quests'},
       { id: 'hollow-obelisk-quest', name: 'Obelisk Quest'}
@@ -655,7 +633,6 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'tomb-anz-ool-gawn', name: 'Anz Ool Gawn' }
     ],
-    auras: [],
     accessories: [
       { id: 'tomb-jalbathar-tail', name: 'Jalbathar Tail (Tomb Arena)' },
       { id: 'tomb-jalbathar-mask', name: 'Jalbathar Mask (Tomb Arena)' },
@@ -686,7 +663,6 @@ const checklistDataByWorld = {
     sssRank: [
         { id: 'thriller-gekar-morra', name: 'Gekar Morra' }
     ],
-    auras: [],
     accessories: [
         { id: 'thriller-orrs-pants', name: 'Orrs Pants (S)' },
     ],
@@ -699,24 +675,22 @@ const checklistDataByWorld = {
     ]
   },
   "Amusement Park": {
-      gachas: [
-          { id: 'amusement-assasin-grade', name: 'Assasin Grade' },
-          { id: 'amusement-assasin-skill', name: 'Assasin Skill' }
-      ],
-      progressions: [
-        { id: 'amusement-assassin-energy-100', name: 'Assassin Energy (100)' },
-        { id: 'amusement-assassin-damage-100', name: 'Assassin Damage (100)' },
-        { id: 'amusement-assassin-critical-energy-10', name: 'Assassin Critical Energy (10)' },
-        { id: 'amusement-assassin-critical-damage-10', name: 'Assassin Critical Damage (10)' },
-        { id: 'amusement-assassin-craft', name: 'Assassin Craft' },
-        { id: 'amusement-scythe-leveling', name: 'Scythe Leveling' },
-      ],
-      sssRank: [
-          { id: 'amusement-tagamura', name: 'Tagamura' },
-          { id: 'amusement-1moto', name: '1moto' }
-      ],
-      auras: [],
-      accessories: [],
+    gachas: [
+        { id: 'amusement-assasin-grade', name: 'Assasin Grade' },
+        { id: 'amusement-assasin-skill', name: 'Assasin Skill' }
+    ],
+    progressions: [
+      { id: 'amusement-assassin-energy-100', name: 'Assassin Energy (100)' },
+      { id: 'amusement-assassin-damage-100', name: 'Assassin Damage (100)' },
+      { id: 'amusement-assassin-critical-energy-10', name: 'Assassin Critical Energy (10)' },
+      { id: 'amusement-assassin-critical-damage-10', name: 'Assassin Critical Damage (10)' },
+      { id: 'amusement-assassin-craft', name: 'Assassin Craft' },
+      { id: 'amusement-scythe-leveling', name: 'Scythe Leveling' },
+    ],
+    sssRank: [
+        { id: 'amusement-tagamura', name: 'Tagamura' },
+        { id: 'amusement-1moto', name: '1moto' }
+    ],
     quests: [
       { id: 'amusement-assassin-quest', name: 'Assassin Quest'},
       { id: 'amusement-key-quests', name: 'Key Quests'},
@@ -724,72 +698,68 @@ const checklistDataByWorld = {
       { id: 'amusement-the-order-quest', name: 'The Order Quest'}
     ]
   },
-    "Re:Manor": {
-      gachas: [
-          { id: 'manor-spirit-pact', name: 'Spirit Pact' },
-          { id: 'manor-witch-factor', name: 'Witch Factor' },
-          { id: 'manor-re-spirit-pact', name: 'Re:Spirit Pact' },
-          { id: 'manor-re-witch-token', name: 'Re: Witch Token' },
-          { id: 'manor-artifical-spirit-blessings', name: 'Artifical Spirit Blessings' },
-          { id: 'manor-gospel-curses', name: 'Gospel Curses' },
-          { id: 'manor-witch-authority', name: 'Witch Authority' }
-      ],
-      progressions: [],
-      sssRank: [
-          { id: 'manor-roswald', name: 'Roswald' }
-      ],
-      auras: [
-          { id: 'manor-blue-oni-aura', name: 'Blue Oni Aura (C)' },
-          { id: 'manor-pink-oni-aura', name: 'Pink Oni Aura (D)' }
-      ],
-      accessories: [],
+  "Re:Manor": {
+    gachas: [
+      { id: 'manor-spirit-pact', name: 'Spirit Pact' },
+      { id: 'manor-witch-factor', name: 'Witch Factor' },
+      { id: 'manor-re-spirit-pact', name: 'Re:Spirit Pact' },
+      { id: 'manor-re-witch-token', name: 'Re: Witch Token' },
+      { id: 'manor-artifical-spirit-blessings', name: 'Artifical Spirit Blessings' },
+      { id: 'manor-gospel-curses', name: 'Gospel Curses' },
+      { id: 'manor-witch-authority', name: 'Witch Authority' }
+    ],
+    sssRank: [
+      { id: 'manor-roswald', name: 'Roswald' }
+    ],
+    auras: [
+      { id: 'manor-blue-oni-aura', name: 'Blue Oni Aura (C)' },
+      { id: 'manor-pink-oni-aura', name: 'Pink Oni Aura (D)' }
+    ],
     quests: [
       { id: 'manor-hero-license-quests', name: 'Hero License Quests'},
       { id: 'manor-key-quests', name: 'Key Quests'},
       { id: 'manor-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
-    "Asfordo Academy": {
-      gachas: [
-          { id: 'asfordo-geass-potential', name: 'Geass Potential' },
-          { id: 'asfordo-knightmare-frames', name: 'Knightmare Frames' }
-      ],
-      progressions: [
-        { id: 'asfordo-geass-leveling', name: 'Geass Leveling' },
-        { id: 'asfordo-geass-evolver', name: 'Geass Evolver' }
-      ],
-      sssRank: [
-          { id: 'asfordo-emperor-reloush', name: 'Emperor Reloush' }
-      ],
-      auras: [],
-      accessories: [
-        { id: 'asfordo-queen-boots', name: 'Queen Boots (E)' },
-        { id: 'asfordo-zero-cape', name: 'Zero Cape (SS)' },
-        { id: 'asfordo-zero-mask', name: 'Zero Mask (SS)' },
-      ],
+  "Asfordo Academy": {
+    gachas: [
+        { id: 'asfordo-geass-potential', name: 'Geass Potential' },
+        { id: 'asfordo-knightmare-frames', name: 'Knightmare Frames' }
+    ],
+    progressions: [
+      { id: 'asfordo-geass-leveling', name: 'Geass Leveling' },
+      { id: 'asfordo-geass-evolver', name: 'Geass Evolver' }
+    ],
+    sssRank: [
+        { id: 'asfordo-emperor-reloush', name: 'Emperor Reloush' }
+    ],
+    accessories: [
+      { id: 'asfordo-queen-boots', name: 'Queen Boots (E)' },
+      { id: 'asfordo-zero-cape', name: 'Zero Cape (SS)' },
+      { id: 'asfordo-zero-mask', name: 'Zero Mask (SS)' },
+    ],
     quests: [
       { id: 'asfordo-black-knights-quest', name: 'Black Knights Quest'},
       { id: 'asfordo-key-quests', name: 'Key Quests'},
       { id: 'asfordo-obelisk-quest', name: 'Obelisk Quest'}
     ]
   },
-    "Science Village": {
-      gachas: [
-          { id: 'science-iq', name: 'IQ' },
-          { id: 'science-scientific-weapons', name: 'Scientific Weapons' }
-      ],
-      progressions: [
-        { id: 'science-scientific-tools-crafting', name: 'Scientific Tools Crafting' },
-        { id: 'science-science-material-updgrades-100', name: 'Science Material Updgrades (100)' },
-        { id: 'science-science-upgrades-16', name: 'Science Upgrades (16)' }
-      ],
-      sssRank: [
-          { id: 'science-tsukaro', name: 'Tsukaro' }
-      ],
-      auras: [],
-      accessories: [
-        { id: 'science-wooden-quiver', name: 'Wooden Quiver (A)' }
-      ],
+  "Science Village": {
+    gachas: [
+        { id: 'science-iq', name: 'IQ' },
+        { id: 'science-scientific-weapons', name: 'Scientific Weapons' }
+    ],
+    progressions: [
+      { id: 'science-scientific-tools-crafting', name: 'Scientific Tools Crafting' },
+      { id: 'science-science-material-updgrades-100', name: 'Science Material Updgrades (100)' },
+      { id: 'science-science-upgrades-16', name: 'Science Upgrades (16)' }
+    ],
+    sssRank: [
+        { id: 'science-tsukaro', name: 'Tsukaro' }
+    ],
+    accessories: [
+      { id: 'science-wooden-quiver', name: 'Wooden Quiver (A)' }
+    ],
     quests: [
       { id: 'science-primitive-quest', name: 'Primitive Quest'},
       { id: 'science-key-quests', name: 'Key Quests'},
@@ -797,22 +767,21 @@ const checklistDataByWorld = {
     ]
   },
   "Sand Village": {
-      gachas: [
-          { id: 'sand-shinobi-clan', name: 'Shinobi Clan' },
-          { id: 'sand-kekkei-genkai', name: 'Kekkei Genkai' },
-          { id: 'sand-power-eyes-2', name: 'Power Eyes 2' },
-          { id: 'sand-chakra-infusion', name: 'Chakra Infusion' }
-      ],
-      progressions: [],
-      sssRank: [
-          { id: 'sand-sasaru', name: 'Sasaru' }
-      ],
-      auras: [
-          { id: 'sand-sand-aura', name: 'Sand Aura (A)' }
-      ],
-      accessories: [
-          { id: 'sand-one-tailed-beast', name: 'One Tailed Beast (SS)' }
-      ],
+    gachas: [
+        { id: 'sand-shinobi-clan', name: 'Shinobi Clan' },
+        { id: 'sand-kekkei-genkai', name: 'Kekkei Genkai' },
+        { id: 'sand-power-eyes-2', name: 'Power Eyes 2' },
+        { id: 'sand-chakra-infusion', name: 'Chakra Infusion' }
+    ],
+    sssRank: [
+        { id: 'sand-sasaru', name: 'Sasaru' }
+    ],
+    auras: [
+        { id: 'sand-sand-aura', name: 'Sand Aura (A)' }
+    ],
+    accessories: [
+        { id: 'sand-one-tailed-beast', name: 'One Tailed Beast (SS)' }
+    ],
     quests: [
       { id: 'sand-hero-license', name: 'Hero License Quest'},
       { id: 'sand-sand-kage', name: 'Sand Kage Quest'},
@@ -821,20 +790,19 @@ const checklistDataByWorld = {
     ]
   },
   "Night Raid Base": {
-      gachas: [
-          { id: 'raid-energy-taigu', name: 'Energy Taigu' },
-          { id: 'raid-damage-taigu', name: 'Damage Taigu' },
-      ],
-      progressions: [
-          { id: 'raid-taigu-evolve', name: 'Taigu Evolve' }
-      ],
-      sssRank: [
-          { id: 'raid-akara', name: 'Akara' }
-      ],
-      auras: [
-        { id: 'raid-ice-queen-aura', name: 'Ice Queen Aura (A)' }
-      ],
-      accessories: [],
+    gachas: [
+        { id: 'raid-energy-taigu', name: 'Energy Taigu' },
+        { id: 'raid-damage-taigu', name: 'Damage Taigu' },
+    ],
+    progressions: [
+        { id: 'raid-taigu-evolve', name: 'Taigu Evolve' }
+    ],
+    sssRank: [
+        { id: 'raid-akara', name: 'Akara' }
+    ],
+    auras: [
+      { id: 'raid-ice-queen-aura', name: 'Ice Queen Aura (A)' }
+    ],
     quests: [
       { id: 'raid-teigu-quest', name: 'Teigu Quest'},
       { id: 'raid-key-quests', name: 'Key Quests'},
@@ -845,20 +813,19 @@ const checklistDataByWorld = {
     ]
   },
   "Salty School": {
-      gachas: [
-          { id: 'salty-psycho-flow', name: 'Psycho Flow' },
-          { id: 'salty-psycho-destruction', name: 'Psycho Destruction' },
-      ],
-      progressions: [
-          { id: 'salty-mob-anger', name: 'Mob Anger' }
-      ],
-      sssRank: [
-          { id: 'salty-dimpy', name: 'Dimpy' }
-      ],
-      auras: [
-        { id: 'salty-psycho-aura', name: 'Psycho Aura (B)' }
-      ],
-      accessories: [],
+    gachas: [
+      { id: 'salty-psycho-flow', name: 'Psycho Flow' },
+      { id: 'salty-psycho-destruction', name: 'Psycho Destruction' },
+    ],
+    progressions: [
+      { id: 'salty-mob-anger', name: 'Mob Anger' }
+    ],
+    sssRank: [
+      { id: 'salty-dimpy', name: 'Dimpy' }
+    ],
+    auras: [
+      { id: 'salty-psycho-aura', name: 'Psycho Aura (B)' }
+    ],
     quests: [
       { id: 'salty-exorcism-quest', name: 'Exorcism Quest'},
       { id: 'salty-key-quests', name: 'Key Quests'},
@@ -868,29 +835,26 @@ const checklistDataByWorld = {
       { id: 'salty-body-improvement', name: 'Body Improvement Challenge' }
     ]
   },
-  "Mugen District": {
-      gachas: [
-          { id: 'mugen-demon-bloodline', name: 'Demon Bloodline' },
-          { id: 'mugen-slayer-mark', name: 'Slayer Mark' },
-      ],
-      progressions: [
-        { id: 'mugen-bento-box', name: 'Bento Box Crafting' },
-      ],
-      sssRank: [
-          { id: 'mugen-akazi', name: 'Akazi' }
-      ],
-      auras: [
-      ],
-      accessories: [],
-      quests: [
+"Mugen District": {
+    gachas: [
+      { id: 'mugen-demon-bloodline', name: 'Demon Bloodline' },
+      { id: 'mugen-slayer-mark', name: 'Slayer Mark' },
+    ],
+    progressions: [
+      { id: 'mugen-bento-box', name: 'Bento Box Crafting' },
+    ],
+    sssRank: [
+      { id: 'mugen-akazi', name: 'Akazi' }
+    ],
+    quests: [
       { id: 'mugen-hero-quest', name: 'Hero Quest'},
       { id: 'mugen-bento-box-quests', name: 'Bento Box Quests'},
       { id: 'mugen-key-quests', name: 'Key Quests'},
       { id: 'mugen-obelisk-quest', name: 'Obelisk Quest'}
-      ],
-      raidAchievements: [
-      { id: 'mugen-dungeon', name: 'Mugen Dungeon' }
-      ]
+    ],
+    raidAchievements: [
+    { id: 'mugen-dungeon', name: 'Mugen Dungeon' }
+    ]
   },
   "Easton Academy": {
       gachas: [

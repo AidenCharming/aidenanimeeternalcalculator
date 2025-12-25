@@ -1173,7 +1173,7 @@ function calculateTimeToEnergy() {
         saveTimeToEnergyData();
         return;
     }
-    const potionPriority = ['spooky-energy-potion', 'energy-potion', 'small-potion'];
+    const potionPriority = ['snowman-energy-potion','thanksgiving-energy-potion', 'spooky-energy-potion', 'energy-potion', 'small-potion'];
     const foodPriority = ['energy-macaron', 'chocolate-bar'];
     const buildQueue = (priorityList) => {
         let queue = [];

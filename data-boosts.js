@@ -1,5 +1,17 @@
 const boostItems = [
     {
+        id: 'snowman-energy-potion',
+        name: 'Snowman Energy Potion',
+        multiplier: 3.0,
+        type: 'energy'
+    },
+    {
+        id: 'thanksgiving-energy-potion',
+        name: 'Thanksgiving Energy Potion',
+        multiplier: 2.5,
+        type: 'energy'
+    },
+    {
         id: 'spooky-energy-potion',
         name: 'Spooky Energy Potion',
         multiplier: 2.5,
