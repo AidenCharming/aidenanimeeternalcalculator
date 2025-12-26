@@ -1013,7 +1013,6 @@ async function saveDamageData() {
     try {
         if(el.dmgCurrentEnergy) {
             await localforage.setItem('ae_dmg_energy', el.dmgCurrentEnergy.value);
-            // FORCE SYNC: Also save to the main "Rank Up" keys so it doesn't get overwritten on reload
             await localforage.setItem('ae_currentEnergy', el.dmgCurrentEnergy.value); 
         }
         

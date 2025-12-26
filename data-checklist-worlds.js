@@ -24,7 +24,9 @@ const checklistDataByWorld = {
     progressions: [
       { id: 'christmas-damage-upgrade', name: 'Christmas Damage Upgrade' },
       { id: 'christmas-materials-upgrade', name: 'Christmas Materials Upgrade' },
-      { id: 'christmas-glove-leveling', name: 'Christmas Glove Leveling' }
+      { id: 'christmas-glove-leveling', name: 'Christmas Glove Leveling' },
+      { id: 'christmas-craft', name: 'Christmas Craft' },
+      { id: 'christmas-santa-fusion', name: 'Santa Fusion' }
     ],
     auras: [
       { id: 'christmas-coal-aura', name: 'Coal Aura (Santa Raid)' },
@@ -857,24 +859,45 @@ const checklistDataByWorld = {
     ]
   },
   "Easton Academy": {
+    gachas: [
+        { id: 'easton-magic-type', name: 'Magic Type' },
+        { id: 'easton-the-muscule', name: 'The Muscule' },
+    ],
+    progressions: [
+      { id: 'easton-house-eagle', name: 'House of Eagle (100)' },
+      { id: 'easton-house-whale', name: 'House of Killer Whale (100)' },
+      { id: 'easton-house-wolf', name: 'House of Wolf (100)' }
+    ],
+    sssRank: [
+        { id: 'easton-war-cell', name: 'War Cell' }
+    ],
+    auras: [
+    ],
+    accessories: [
+      { id: 'easton-cream-puff', name: 'Cream Puff (SS)' },
+    ],
+    quests: [
+      { id: 'easton-key-quests', name: 'Key Quests'},
+      { id: 'easton-obelisk-quest', name: 'Obelisk Quest'}
+    ]
+    },
+    "Kuo Academy": {
       gachas: [
-          { id: 'easton-magic-type', name: 'Magic Type' },
-          { id: 'easton-the-muscule', name: 'The Muscule' },
+          { id: 'kuo-dxd-species', name: 'DxD Species' },
+          { id: 'kuo-sacred-gear', name: 'Sacred Gear' },
       ],
       progressions: [
-        { id: 'easton-house-eagle', name: 'House of Eagle (100)' },
-        { id: 'easton-house-whale', name: 'House of Killer Whale (100)' },
-        { id: 'easton-house-wolf', name: 'House of Wolf (100)' }
       ],
       sssRank: [
-          { id: 'easton-war-cell', name: 'War Cell' }
+          { id: 'kuo-riasa', name: 'Riasa' },
       ],
       auras: [
       ],
       accessories: [],
     quests: [
-      { id: 'easton-key-quests', name: 'Key Quests'},
-      { id: 'easton-obelisk-quest', name: 'Obelisk Quest'}
+      { id: 'kuo-peerage-license', name: 'Peerage Quest'},
+      { id: 'kuo-key-quests', name: 'Key Quests'},
+      { id: 'kuo-obelisk-quest', name: 'Obelisk Quest'}
     ]
-  },
+    },
 };
