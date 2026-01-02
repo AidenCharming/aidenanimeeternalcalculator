@@ -887,6 +887,8 @@ const checklistDataByWorld = {
           { id: 'kuo-sacred-gear', name: 'Sacred Gear' },
       ],
       progressions: [
+          { id: 'kuo-dragon-emperor-evolve', name: 'Dragon Emperor Evolve' },
+          { id: 'kuo-dragon-booster', name: 'Dragon Booster (100)' },
       ],
       sssRank: [
           { id: 'kuo-riasa', name: 'Riasa' },
@@ -898,6 +900,24 @@ const checklistDataByWorld = {
       { id: 'kuo-peerage-license', name: 'Peerage Quest'},
       { id: 'kuo-key-quests', name: 'Key Quests'},
       { id: 'kuo-obelisk-quest', name: 'Obelisk Quest'}
+    ]
+    },
+    "Magnoli Town": {
+      gachas: [
+          { id: 'magnoli-mage-class', name: 'Mage Class' },
+          { id: 'magnoli-dragon-class', name: 'Dragon Class' },
+      ],
+      progressions: [
+      ],
+      sssRank: [
+          { id: 'magnoli-zareth', name: 'Zareth' },
+      ],
+      auras: [
+      ],
+      accessories: [],
+    quests: [
+      { id: 'magnoli-key-quests', name: 'Key Quests'},
+      { id: 'magnoli-obelisk-quest', name: 'Obelisk Quest'}
     ]
     },
 };
