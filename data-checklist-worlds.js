@@ -123,7 +123,7 @@ const checklistDataByWorld = {
       { id: 'earth-saiyan', name: 'Saiyan' }
     ],
     sssRank: [
-      { id: 'earth-kid-kohan', name: 'Kid Kohan' }
+      { id: 'earth-sss-kid-kohan', name: 'Kid Kohan' }
     ],
     avatars: [
       { id: 'earth-kriluni', name: 'Kriluni' },
@@ -160,7 +160,7 @@ const checklistDataByWorld = {
       { id: 'windmill-haki-60', name: 'Haki (60)' }
     ],
     sssRank: [
-      { id: 'windmill-shanks', name: 'Shanks' }
+      { id: 'windmill-sss-shanks', name: 'Shanks' }
     ],
     avatars: [
       { id: 'windmill-nomi', name: 'Nomi' },
@@ -203,7 +203,7 @@ const checklistDataByWorld = {
       { id: 'soul-pressure-210', name: 'Pressure (210)' }
     ],
     sssRank: [
-      { id: 'soul-eizen', name: 'Eizen' }
+      { id: 'soul-sss-eizen', name: 'Eizen' }
     ],
     avatars: [
       { id: 'soul-hime', name: 'Hime' },
@@ -233,7 +233,7 @@ const checklistDataByWorld = {
       { id: 'cursed-progression-410', name: 'Cursed Progression (410)' }
     ],
     sssRank: [
-      { id: 'cursed-sakuni', name: 'Sakuni' }
+      { id: 'cursed-sss-sakuni', name: 'Sakuni' }
     ],
     avatars: [
       { id: 'cursed-itodo', name: 'Itodo' },
@@ -265,7 +265,7 @@ const checklistDataByWorld = {
       { id: 'slayer-energy-progression', name: 'Slayer Energy Progression (80)' }
     ],
     sssRank: [
-      { id: 'slayer-rangaki', name: 'Rangaki' }
+      { id: 'slayer-sss-rangaki', name: 'Rangaki' }
     ],
     avatars: [
       { id: 'slayer-nazuki', name: 'Nazuki' },
@@ -300,7 +300,7 @@ const checklistDataByWorld = {
       { id: 'solo-shadow-upgrades', name: 'Shadow Upgrades' }
     ],
     sssRank: [
-      { id: 'solo-statue-of-god', name: 'Statue of God' }
+      { id: 'solo-sss-statue-of-god', name: 'Statue of God' }
     ],
     avatars: [
       { id: 'solo-weak-sung', name: 'Weak Sung' },
@@ -330,7 +330,7 @@ const checklistDataByWorld = {
       { id: 'clover-wind-spirit-10', name: 'Wind Spirit (10)' }
     ],
     sssRank: [
-      { id: 'clover-novi-chroni', name: 'Novi Chroni' }
+      { id: 'clover-sss-novi-chroni', name: 'Novi Chroni' }
     ],
     avatars: [
       { id: 'clover-noalle', name: 'Noalle' },
@@ -355,7 +355,7 @@ const checklistDataByWorld = {
       { id: 'leaf-attack-range-2-4', name: 'Attack Range 2 (4)' }
     ],
     sssRank: [
-      { id: 'leaf-madera-itachi', name: 'Madera/Itachi' }
+      { id: 'leaf-sss-madera-itachi', name: 'Madera/Itachi' }
     ],
     avatars: [
       { id: 'leaf-sekuri', name: 'Sekuri' },
@@ -388,7 +388,7 @@ const checklistDataByWorld = {
       { id: 'spirit-lucky-spirit-50', name: 'Lucky Spirit (50)' },
     ],
     sssRank: [
-      { id: 'spirit-ken-turbo', name: 'Ken Turbo' }
+      { id: 'spirit-sss-ken-turbo', name: 'Ken Turbo' }
     ],
     avatars: [
       { id: 'spirit-ken', name: 'Ken' },
@@ -418,7 +418,7 @@ const checklistDataByWorld = {
       { id: 'magic-energy-obelisk-100', name: 'Energy Obelisk (100)' }
     ],
     sssRank: [
-      { id: 'magic-killas-godspeed', name: 'Killas Godspeed' }
+      { id: 'magic-sss-killas-godspeed', name: 'Killas Godspeed' }
     ],
     avatars: [
       { id: 'magic-lero', name: 'Lero' },
@@ -445,7 +445,7 @@ const checklistDataByWorld = {
       { id: 'titan-injection', name: 'Titan Injection' }
     ],
     sssRank: [
-      { id: 'titan-eran', name: 'Eran' }
+      { id: 'titan-sss-eran', name: 'Eran' }
     ],
     auras: [
       { id: 'titan-titanic-aura', name: 'Titanic Aura (SS)' }
@@ -482,7 +482,7 @@ const checklistDataByWorld = {
       { id: 'sins-sin-upgrades', name: 'Sin Upgrades' }
     ],
     sssRank: [
-      { id: 'sins-esanor', name: 'Esanor' }
+      { id: 'sins-sss-esanor', name: 'Esanor' }
     ],
     avatars: [
       { id: 'sins-diyana', name: 'Diyana' },
@@ -511,7 +511,7 @@ const checklistDataByWorld = {
       { id: 'kaiju-energy-110', name: 'Kaiju Energy (110)' }
     ],
     sssRank: [
-      { id: 'kaiju-number-8', name: 'Number 8' }
+      { id: 'kaiju-sss-number-8', name: 'Number 8' }
     ],
     avatars: [
       { id: 'kaiju-kefka', name: 'Kefka' },
@@ -542,7 +542,7 @@ const checklistDataByWorld = {
       { id: 'tempest-demon-lord-luck-50', name: 'Demon Lord Luck (50)' }
     ],
     sssRank: [
-      { id: 'tempest-valzora', name: 'Valzora' }
+      { id: 'tempest-sss-valzora', name: 'Valzora' }
     ],
     avatars: [
       { id: 'tempest-gobito', name: 'Gobito' },
@@ -572,7 +572,7 @@ const checklistDataByWorld = {
       { id: 'virtual-damage-obelisk-100', name: 'Damage Obelisk (100)' }
     ],
     sssRank: [
-      { id: 'virtual-the-paladin', name: 'The Paladin' }
+      { id: 'virtual-sss-the-paladin', name: 'The Paladin' }
     ],
     avatars: [
       { id: 'virtual-lisbeta', name: 'Lisbeta' },
@@ -605,7 +605,7 @@ const checklistDataByWorld = {
       { id: 'cairo-ripple-energy-110', name: 'Ripple Energy (110)' }
     ],
     sssRank: [
-      { id: 'cairo-dino', name: 'Dino' }
+      { id: 'cairo-sss-dino', name: 'Dino' }
     ],
     avatars: [
       { id: 'cairo-speedy', name: 'Speedy' },
@@ -640,7 +640,7 @@ const checklistDataByWorld = {
       { id: 'ghoul-kagune-leveling-50', name: 'Kagune Leveling (50)' }
     ],
     sssRank: [
-      { id: 'ghoul-arama', name: 'Arama' }
+      { id: 'ghoul-sss-arama', name: 'Arama' }
     ],
     avatars: [
       { id: 'ghoul-hideyo', name: 'Hideyo' },
@@ -674,7 +674,7 @@ const checklistDataByWorld = {
       { id: 'chainsaw-pokita-50', name: 'Pokita (50)' }
     ],
     sssRank: [
-      { id: 'chainsaw-hero-of-hell', name: 'Hero Of Hell' }
+      { id: 'chainsaw-sss-hero-of-hell', name: 'Hero Of Hell' }
     ],
     avatars: [
       { id: 'chainsaw-kabeni', name: 'Kabeni' },
@@ -712,7 +712,7 @@ const checklistDataByWorld = {
       { id: 'tokyo-adolla-leveling-100', name: 'Adolla Leveling (100)' }
     ],
     sssRank: [
-      { id: 'tokyo-bansho', name: 'Bansho' }
+      { id: 'tokyo-sss-bansho', name: 'Bansho' }
     ],
     avatars: [
       { id: 'tokyo-akiki', name: 'Akiki' },
@@ -759,7 +759,7 @@ const checklistDataByWorld = {
       { id: 'green-luck-obelisk-15', name: 'Luck Obelisk (15)' }
     ],
     sssRank: [
-      { id: 'green-frezi-final-form', name: 'Frezi Final Form' }
+      { id: 'green-sss-frezi-final-form', name: 'Frezi Final Form' }
     ],
     avatars: [
       { id: 'green-bulam', name: 'Bulam' },
@@ -791,7 +791,7 @@ const checklistDataByWorld = {
       { id: 'hollow-zanpakuto-leveling', name: 'Zanpakuto Leveling' }
     ],
     sssRank: [
-      { id: 'hollow-vasto-ichige', name: 'Vasto Ichige' }
+      { id: 'hollow-sss-vasto-ichige', name: 'Vasto Ichige' }
     ],
     avatars: [
       { id: 'hollow-ohime', name: 'Ohime' },
@@ -832,7 +832,7 @@ const checklistDataByWorld = {
       { id: 'shadow-arts-leveling-50', name: 'Shadow Arts Leveling (50)' }
     ],
     sssRank: [
-      { id: 'shadow-shadow', name: 'Shadow' }
+      { id: 'shadow-sss-shadow', name: 'Shadow' }
     ],
     avatars: [
       { id: 'shadow-cyd', name: 'Cyd' },
@@ -869,7 +869,7 @@ const checklistDataByWorld = {
       { id: 'zcity-hide-n-punch-10', name: 'Hide N Punch (10)' },
     ],
     sssRank: [
-      { id: 'zcity-galaxy-hunter', name: 'Galaxy Hunter' }
+      { id: 'zcity-sss-galaxy-hunter', name: 'Galaxy Hunter' }
     ],
     avatars: [
       { id: 'zcity-crabby', name: 'Crabby' },
@@ -908,7 +908,7 @@ const checklistDataByWorld = {
       { id: 'tomb-magic-tier-level-50', name: 'Magic Tier Level (50)' }
     ],
     sssRank: [
-      { id: 'tomb-anz-ool-gawn', name: 'Anz Ool Gawn' }
+      { id: 'tomb-sss-anz-ool-gawn', name: 'Anz Ool Gawn' }
     ],
     avatars: [
       { id: 'tomb-pandoros-actor', name: 'Pandoros Actor' },
@@ -948,7 +948,7 @@ const checklistDataByWorld = {
         { id: 'thriller-coin-obelisk-15', name: 'Coin Obelisk (15)' }
     ],
     sssRank: [
-        { id: 'thriller-gekar-morra', name: 'Gekar Morra' }
+        { id: 'thriller-sss-gekar-morra', name: 'Gekar Morra' }
     ],
     avatars: [
       { id: 'thriller-robini', name: 'Robini' },
@@ -985,8 +985,8 @@ const checklistDataByWorld = {
       { id: 'amusement-scythe-leveling', name: 'Scythe Leveling' },
     ],
     sssRank: [
-        { id: 'amusement-tagamura', name: 'Tagamura' },
-        { id: 'amusement-1moto', name: '1moto' }
+        { id: 'amusement-sss-tagamura', name: 'Tagamura' },
+        { id: 'amusement-sss-tagemoto', name: 'Tagemoto' }
     ],
     avatars: [
       { id: 'amusement-masumo', name: 'Masumo' },
@@ -1016,7 +1016,7 @@ const checklistDataByWorld = {
       { id: 'manor-witch-authority', name: 'Witch Authority' }
     ],
     sssRank: [
-      { id: 'manor-roswald', name: 'Roswald' }
+      { id: 'manor-sss-roswald', name: 'Roswald' }
     ],
     auras: [
       { id: 'manor-blue-oni-aura', name: 'Blue Oni Aura (C)' },
@@ -1048,7 +1048,7 @@ const checklistDataByWorld = {
       { id: 'asfordo-geass-evolver', name: 'Geass Evolver' }
     ],
     sssRank: [
-        { id: 'asfordo-emperor-reloush', name: 'Emperor Reloush' }
+        { id: 'asfordo-sss-emperor-reloush', name: 'Emperor Reloush' }
     ],
     avatars: [
       { id: 'asfordo-euphy', name: 'Euphy' },
@@ -1082,7 +1082,7 @@ const checklistDataByWorld = {
       { id: 'science-science-upgrades-16', name: 'Science Upgrades (16)' }
     ],
     sssRank: [
-        { id: 'science-tsukaro', name: 'Tsukaro' }
+        { id: 'science-sss-tsukaro', name: 'Tsukaro' }
     ],
     avatars: [
       { id: 'science-chromel', name: 'Chromel' },
@@ -1111,7 +1111,7 @@ const checklistDataByWorld = {
         { id: 'sand-chakra-infusion', name: 'Chakra Infusion' }
     ],
     sssRank: [
-        { id: 'sand-sasaru', name: 'Sasaru' }
+        { id: 'sand-sss-sasaru', name: 'Sasaru' }
     ],
     avatars: [
       { id: 'sand-shikomeru', name: 'Shikomeru' },
@@ -1145,7 +1145,7 @@ const checklistDataByWorld = {
         { id: 'raid-taigu-evolve', name: 'Taigu Evolve' }
     ],
     sssRank: [
-        { id: 'raid-akara', name: 'Akara' }
+        { id: 'raid-sss-akara', name: 'Akara' }
     ],
     avatars: [
       { id: 'raid-sheene', name: 'Sheene' },
@@ -1178,7 +1178,7 @@ const checklistDataByWorld = {
       { id: 'salty-mob-anger', name: 'Mob Anger' }
     ],
     sssRank: [
-      { id: 'salty-dimpy', name: 'Dimpy' }
+      { id: 'salty-sss-dimpy', name: 'Dimpy' }
     ],
     avatars: [
       { id: 'salty-arataki', name: 'Arataki' },
@@ -1211,7 +1211,7 @@ const checklistDataByWorld = {
       { id: 'mugen-bento-box', name: 'Bento Box Crafting' },
     ],
     sssRank: [
-      { id: 'mugen-akazi', name: 'Akazi' }
+      { id: 'mugen-sss-akazi', name: 'Akazi' }
     ],
     avatars: [
       { id: 'mugen-insaka', name: 'Insaka' },
@@ -1244,7 +1244,7 @@ const checklistDataByWorld = {
       { id: 'easton-house-wolf', name: 'House of Wolf (100)' }
     ],
     sssRank: [
-        { id: 'easton-war-cell', name: 'War Cell' }
+        { id: 'easton-sss-war-cell', name: 'War Cell' }
     ],
     avatars: [
       { id: 'easton-fyn', name: 'Fyn' },
@@ -1276,7 +1276,7 @@ const checklistDataByWorld = {
           { id: 'kuo-dragon-booster', name: 'Dragon Booster (100)' },
       ],
       sssRank: [
-          { id: 'kuo-riasa', name: 'Riasa' },
+          { id: 'kuo-sss-riasa', name: 'Riasa' },
       ],
       avatars: [
       { id: 'kuo-aisia', name: 'Aisia' },
@@ -1307,7 +1307,7 @@ const checklistDataByWorld = {
           { id: 'magnoli-magic-items-evolve', name: 'Magic Items Evolve (100)' },
       ],
       sssRank: [
-          { id: 'magnoli-zareth', name: 'Zereth' },
+          { id: 'magnoli-sss-zareth', name: 'Zereth' },
       ],
       avatars: [
       { id: 'magnoli-luci', name: 'Luci' },
