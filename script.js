@@ -26,6 +26,7 @@ const SLOW_CPS = 1.0919;
 const FAST_CPS = 5.88505;
 let currentNumberFormat = 'letters';
 const activityData = {};
+let isLoading = false;
 
 function toEngineeringNotation(num) {
     if (num === 0) return "0";
@@ -89,6 +90,7 @@ function createChecklistItem(item, savedData) {
 
 async function updateAllWorldTitles(savedData) {
     if (typeof checklistDataByWorld === 'undefined') return;
+    
     if (!savedData) {
         try {
             savedData = await localforage.getItem(CHECKLIST_SAVE_KEY) || {};
@@ -96,31 +98,44 @@ async function updateAllWorldTitles(savedData) {
             savedData = {};
         }
     }
+
     const worldNames = Object.keys(checklistDataByWorld);
     let overallTotal = 0;
     let overallCompleted = 0;
+
+    // FIX: Added 'avatars' and ensured 'sssRank' is tracked
     let categoryStats = { 
         gachas: {total: 0, completed: 0}, 
         progressions: {total: 0, completed: 0}, 
         sssRank: {total: 0, completed: 0}, 
         auras: {total: 0, completed: 0}, 
+        avatars: {total: 0, completed: 0},
         accessories: {total: 0, completed: 0},
+        weapons: {total: 0, completed: 0},
         quests: {total: 0, completed: 0},
         raidAchievements: {total: 0, completed: 0} 
     };
+
     for (const worldName of worldNames) {
         const world = checklistDataByWorld[worldName];
         const worldNameId = worldName.replace(/\s+/g, '-').toLowerCase();
         const worldTitleEl = document.getElementById(`world-title-${worldNameId}`);
+        
         let totalItems = 0;
         let completedItems = 0;
-        const categories = ['gachas', 'progressions', 'sssRank', 'auras', 'accessories', 'quests', 'raidAchievements'];
+
+        // Ensure keys match data-checklist-worlds.js exactly
+        const categories = ['gachas', 'progressions', 'sssRank', 'auras', 'avatars', 'accessories', 'quests', 'weapons', 'raidAchievements'];
+
         categories.forEach(catKey => {
             if (world[catKey]) {
-                totalItems += world[catKey].length;
+                const count = world[catKey].length;
+                totalItems += count;
+                
                 if (categoryStats[catKey]) {
-                    categoryStats[catKey].total += world[catKey].length;
+                    categoryStats[catKey].total += count;
                 }
+
                 world[catKey].forEach(item => {
                     if (savedData[item.id]) {
                         completedItems++;
@@ -129,25 +144,32 @@ async function updateAllWorldTitles(savedData) {
                         }
                     }
                 });
+
                 const subTitleEl = document.getElementById(`${catKey}-title-${worldNameId}`);
                 if(subTitleEl) {
-                    const subTotal = world[catKey].length;
+                    const subTotal = count;
                     const subCompleted = world[catKey].filter(item => savedData[item.id]).length;
+                    
+                    // Format Title Display
                     let catName = catKey.charAt(0).toUpperCase() + catKey.slice(1);
                     if (catKey === 'sssRank') catName = 'SSS Rank';
                     if (catKey === 'raidAchievements') catName = 'Raid Achievements';
+                    
                     subTitleEl.innerHTML = `${catName} <span class="category-badge badge-${catKey}">${subCompleted}/${subTotal}</span>`;
                 }
             }
         });
+
         if (worldTitleEl) {
             const percentage = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
             worldTitleEl.innerText = `${worldName} (${completedItems} / ${totalItems})`;
             worldTitleEl.style.setProperty('--progress', `${percentage}%`);
         }
+
         overallTotal += totalItems;
         overallCompleted += completedItems;
     }
+
     const overallProgressText = el['overall-progress-text'];
     const overallProgressFill = el['overall-progress-fill'];
     if (overallProgressText && overallProgressFill) {
@@ -155,11 +177,16 @@ async function updateAllWorldTitles(savedData) {
         overallProgressText.innerText = `${overallCompleted} / ${overallTotal} (${percentage}%)`;
         overallProgressFill.style.width = `${percentage}%`;
     }
+
+    // Update Top Summary Boxes
     Object.keys(categoryStats).forEach(cat => {
         let elId;
+        // Map data keys to HTML IDs
         if (cat === 'sssRank') elId = 'sssrank-count';
-        if (cat === 'raidAchievements') elId = 'raidachievements-count';
+        else if (cat === 'raidAchievements') elId = 'raidachievements-count';
+        else if (cat === 'avatars') elId = 'avatars-count'; // NEW
         else elId = `${cat}-count`;
+        
         const countEl = document.getElementById(elId);
         if (countEl) {
             countEl.innerText = `${categoryStats[cat].completed}/${categoryStats[cat].total}`;
@@ -187,79 +214,124 @@ async function saveChecklistData() {
     } catch (e) {}
 }
 
-function populateWorldChecklists(savedData) {
-    if (typeof checklistDataByWorld === 'undefined') return;
-    const checklistContainer = el['checklist-worlds-container'];
-    if (!checklistContainer) return;
-    checklistContainer.innerHTML = '';
-    const worldOrder = Object.keys(checklistDataByWorld);
-    if (checklistDataByWorld["Miscellaneous"]) {
-        worldOrder.push("Miscellaneous");
+function populateWorldChecklists() {
+    console.log("Apex: Initialization started...");
+
+    // 1. Robust Data Fetching
+    let data = null;
+    if (typeof checklistDataByWorld !== 'undefined') data = checklistDataByWorld;
+    else if (window.checklistDataByWorld) data = window.checklistDataByWorld;
+
+    if (!data) {
+        console.error("Apex Error: 'checklistDataByWorld' not found. script.js might be loading before data file.");
+        return;
     }
+
+    // 2. Direct DOM Access
+    const container = document.getElementById('checklist-worlds-container');
+    if (!container) {
+        console.error("Apex Error: HTML element 'checklist-worlds-container' not found.");
+        return;
+    }
+
+    // 3. Clear and Rebuild
+    container.innerHTML = '';
+    const worldOrder = Object.keys(data);
+    
+    // Move Miscellaneous to the end
+    if (data["Miscellaneous"]) {
+        const index = worldOrder.indexOf("Miscellaneous");
+        if (index > -1) {
+            worldOrder.splice(index, 1);
+            worldOrder.push("Miscellaneous");
+        }
+    }
+
     for (const worldName of worldOrder) {
-        if (!checklistDataByWorld[worldName]) continue;
-        const world = checklistDataByWorld[worldName];
+        if (!data[worldName]) continue;
+        const world = data[worldName];
         const worldNameId = worldName.replace(/\s+/g, '-').toLowerCase();
+
         const section = document.createElement('section');
+        
+        // Header
         const worldHeader = document.createElement('div');
-        worldHeader.className = 'world-section-header';
+        worldHeader.className = 'world-section-header flex flex-wrap items-end justify-between gap-4 mb-4';
+        
         const title = document.createElement('h2');
-        title.className = 'world-section-title';
+        title.className = 'world-section-title text-xl md:text-2xl font-bold pb-2 border-b-2 border-slate-700 w-full md:w-auto';
         title.id = `world-title-${worldNameId}`;
         title.innerText = `${worldName} (0 / 0)`; 
         worldHeader.appendChild(title);
+
+        // Buttons
         const worldToggleContainer = document.createElement('div');
-        worldToggleContainer.className = 'toggle-container world-toggle';
+        worldToggleContainer.className = 'toggle-container world-toggle flex gap-1';
+        
         const checkAllWorldBtn = document.createElement('button');
-        checkAllWorldBtn.className = 'toggle-btn world-check-all';
+        checkAllWorldBtn.className = 'toggle-btn world-check-all px-3 py-1 text-xs';
         checkAllWorldBtn.innerText = 'Check All';
         checkAllWorldBtn.dataset.worldId = worldNameId; 
+        
         const uncheckAllWorldBtn = document.createElement('button');
-        uncheckAllWorldBtn.className = 'toggle-btn world-uncheck-all';
+        uncheckAllWorldBtn.className = 'toggle-btn world-uncheck-all px-3 py-1 text-xs';
         uncheckAllWorldBtn.innerText = 'Uncheck All';
         uncheckAllWorldBtn.dataset.worldId = worldNameId; 
+
         worldToggleContainer.appendChild(checkAllWorldBtn);
+        worldToggleContainer.appendChild(uncheckAllWorldBtn);
         worldHeader.appendChild(worldToggleContainer);
         section.appendChild(worldHeader);
+
+        // Categories
         const categories = [
             { key: 'gachas', name: 'Gachas', css: 'gachas' },
             { key: 'progressions', name: 'Progressions', css: 'progressions' },
             { key: 'sssRank', name: 'SSS Rank', css: 'sssRank' },
             { key: 'auras', name: 'Auras', css: 'auras' },
+            { key: 'avatars', name: 'Avatars', css: 'avatars' },
             { key: 'accessories', name: 'Accessories', css: 'accessories' },
+            { key: 'weapons', name: 'Weapons', css: 'weapons' },
             { key: 'quests', name: 'Quests', css: 'quests' },
             { key: 'raidAchievements', name: 'Raid Achievements', css: 'raidAchievements' }
         ];
+
         const subsections = [];
         categories.forEach(cat => {
             if (world[cat.key] && world[cat.key].length > 0) {
                 const subSection = document.createElement('div');
-                subSection.className = 'checklist-category-subsection';
+                subSection.className = 'checklist-category-subsection h-full'; 
+                
                 const subTitle = document.createElement('h3');
-                subTitle.className = `world-subsection-title ${cat.css}`;
+                subTitle.className = `world-subsection-title ${cat.css} font-bold mb-2 border-b border-slate-700 pb-1`;
                 subTitle.id = `${cat.key}-title-${worldNameId}`;
                 subTitle.innerText = `${cat.name} (0 / ${world[cat.key].length})`;
                 subSection.appendChild(subTitle);
+
                 const listDiv = document.createElement('div');
                 listDiv.className = 'space-y-2';
+                
+                // Note: We access localForage in loadChecklistData, so we just build structure here
+                // Passing 'null' as savedData is fine, the re-check function handles visuals later
                 world[cat.key].forEach(item => {
-                    listDiv.appendChild(createChecklistItem(item, savedData));
+                    listDiv.appendChild(createChecklistItem(item, {})); 
                 });
+                
                 subSection.appendChild(listDiv);
                 subsections.push(subSection);
             }
         });
+
         if (subsections.length > 0) {
             const grid = document.createElement('div');
-            let gridCols = 'md:grid-cols-2 lg:grid-cols-3';
-            if (subsections.length === 1) gridCols = ''; 
-            if (subsections.length === 2) gridCols = 'md:grid-cols-2'; 
-            grid.className = `grid grid-cols-1 ${gridCols} gap-6 mt-4`;
+            grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4 w-full';
             subsections.forEach(sub => grid.appendChild(sub));
             section.appendChild(grid);
         }
-        checklistContainer.appendChild(section);
+
+        container.appendChild(section);
     }
+    console.log("Apex: Checklist Population Complete.");
 }
 
 async function loadChecklistData() {
@@ -276,6 +348,32 @@ async function loadChecklistData() {
     } catch (e) {
         populateWorldChecklists({});
         updateAllWorldTitles({});
+    }
+}
+
+function applyCategoryFilter(categoryValue, clickedElement) {
+    // 1. Update the Dropdown
+    const dropdown = document.getElementById('category-filter');
+    if (dropdown) {
+        dropdown.value = categoryValue;
+        // Trigger the change event manually so any listeners attached to the dropdown fire
+        dropdown.dispatchEvent(new Event('change'));
+    }
+
+    // 2. Perform Filtering
+    const searchTerm = document.getElementById('checklist-search') ? document.getElementById('checklist-search').value : '';
+    filterChecklistItems(searchTerm, categoryValue);
+
+    // 3. Update Visual Highlight (Active State)
+    const allBoxes = document.querySelectorAll('.checklist-summary-grid .result-box');
+    allBoxes.forEach(box => box.classList.remove('active-filter'));
+    
+    if (clickedElement) {
+        clickedElement.classList.add('active-filter');
+    } else {
+        // If triggered programmatically or via dropdown, find the matching box
+        // This is a simple lookup based on the category value mapping
+        // (Implementation optional based on if you want reverse-sync)
     }
 }
 
@@ -670,6 +768,7 @@ function debounce(func, delay) {
 }
 
 async function saveRankUpData() {
+    if (isLoading) return; // BLOCK SAVE DURING LOAD
     try {
         if (el.rankSelect) await localforage.setItem('ae_rankSelect', el.rankSelect.value);
         if (el.rankInput) await localforage.setItem('ae_rankInput', el.rankInput.value);
@@ -685,6 +784,57 @@ async function saveRankUpData() {
     } catch (e) {}
 }
 
+async function saveETAData() {
+    if (isLoading) return; // BLOCK SAVE DURING LOAD
+    try {
+        if (el.currentEnergyETA) await localforage.setItem('ae_currentEnergy', el.currentEnergyETA.value);
+        if (el.currentEnergyETADenominationInput) await localforage.setItem('ae_currentEnergyDenomInput', el.currentEnergyETADenominationInput.value);
+        if (el.currentEnergyETADenominationValue) await localforage.setItem('ae_currentEnergyDenomValue', el.currentEnergyETADenominationValue.value);
+        
+        if (el.energyPerClickETA) await localforage.setItem('ae_energyPerClick', el.energyPerClickETA.value);
+        if (el.energyPerClickETADenominationInput) await localforage.setItem('ae_energyPerClickDenomInput', el.energyPerClickETADenominationInput.value);
+        if (el.energyPerClickETADenominationValue) await localforage.setItem('ae_energyPerClickDenomValue', el.energyPerClickETADenominationValue.value);
+
+        if (el.targetEnergyETA) await localforage.setItem('ae_targetEnergyETA', el.targetEnergyETA.value);
+        if (el.targetEnergyETADenominationInput) await localforage.setItem('ae_targetEnergyETADenomInput', el.targetEnergyETADenominationInput.value);
+        if (el.targetEnergyETADenominationValue) await localforage.setItem('ae_targetEnergyETADenomValue', el.targetEnergyETADenominationValue.value);
+
+        if (el.clickerSpeedETA) await localforage.setItem('ae_clickerSpeed', el.clickerSpeedETA.checked);
+        
+        if (el.energyCriticalChanceETA) await localforage.setItem('ae_rankup_critChance', el.energyCriticalChanceETA.value);
+        if (el.criticalEnergyETA) await localforage.setItem('ae_rankup_critEnergy', el.criticalEnergyETA.value);
+    } catch(e) {}
+}
+
+async function saveTimeToEnergyData() {
+    if (isLoading) return; // BLOCK SAVE DURING LOAD
+    try {
+        if (el.currentEnergyTTE) await localforage.setItem('ae_currentEnergy', el.currentEnergyTTE.value);
+        if (el.currentEnergyTTEDenominationInput) await localforage.setItem('ae_currentEnergyDenomInput', el.currentEnergyTTEDenominationInput.value);
+        if (el.currentEnergyTTEDenominationValue) await localforage.setItem('ae_currentEnergyDenomValue', el.currentEnergyTTEDenominationValue.value);
+        
+        if (el.energyPerClickTTE) await localforage.setItem('ae_energyPerClick', el.energyPerClickTTE.value);
+        if (el.energyPerClickTTEDenominationInput) await localforage.setItem('ae_energyPerClickDenomInput', el.energyPerClickTTEDenominationInput.value);
+        if (el.energyPerClickTTEDenominationValue) await localforage.setItem('ae_energyPerClickDenomValue', el.energyPerClickTTEDenominationValue.value);
+        
+        if (el.energyCriticalChanceTTE) await localforage.setItem('ae_rankup_critChance', el.energyCriticalChanceTTE.value);
+        if (el.criticalEnergyTTE) await localforage.setItem('ae_rankup_critEnergy', el.criticalEnergyTTE.value);
+        
+        if (el.timeToReturnSelect) await localforage.setItem('ae_tte_returnTime', el.timeToReturnSelect.value); 
+        if (el.timeToReturnSelectMinutes) await localforage.setItem('ae_tte_returnTimeMinutes', el.timeToReturnSelectMinutes.value);
+        if (el.clickerSpeedTTE) await localforage.setItem('ae_clickerSpeed', el.clickerSpeedTTE.checked); 
+        
+        if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
+            boostItems.filter(item => item.type === 'energy').forEach(async item => {
+                const hoursEl = el[`boost-${item.id}-hours`];
+                const minutesEl = el[`boost-${item.id}-minutes`];
+                if (hoursEl) await localforage.setItem(`ae_tte_boost_${item.id}_hours`, hoursEl.value);
+                if (minutesEl) await localforage.setItem(`ae_tte_boost_${item.id}_minutes`, minutesEl.value);
+            });
+        }
+    } catch (e) {}
+}
+
 async function loadRankUpData() {
     try {
         const rankSelect = await localforage.getItem('ae_rankSelect');
@@ -694,26 +844,37 @@ async function loadRankUpData() {
         }
         const rankInput = await localforage.getItem('ae_rankInput');
         if (rankInput && el.rankInput) el.rankInput.value = rankInput;
+
         const currentEnergy = await localforage.getItem('ae_currentEnergy');
-        if (currentEnergy && el.currentEnergy) el.currentEnergy.value = currentEnergy;
+        if (currentEnergy !== null && el.currentEnergy) el.currentEnergy.value = currentEnergy;
+
         const currentEnergyDenomInput = await localforage.getItem('ae_currentEnergyDenomInput');
-        if (currentEnergyDenomInput && el.currentEnergyDenominationInput) el.currentEnergyDenominationInput.value = currentEnergyDenomInput;
-        const currentDenom = denominations.find(d => d.name === currentEnergyDenomInput);
+        if (currentEnergyDenomInput !== null && el.currentEnergyDenominationInput) el.currentEnergyDenominationInput.value = currentEnergyDenomInput;
+
+        const currentEnergyDenomVal = await localforage.getItem('ae_currentEnergyDenomValue');
         if (el.currentEnergyDenominationValue) {
-            el.currentEnergyDenominationValue.value = currentDenom ? currentDenom.value : '1';
+            if (currentEnergyDenomVal) el.currentEnergyDenominationValue.value = currentEnergyDenomVal;
+            else el.currentEnergyDenominationValue.value = '1';
         }
+
         const energyPerClick = await localforage.getItem('ae_energyPerClick');
-        if (energyPerClick && el.energyPerClick) el.energyPerClick.value = energyPerClick;
+        if (energyPerClick !== null && el.energyPerClick) el.energyPerClick.value = energyPerClick;
+
         const energyPerClickDenomInput = await localforage.getItem('ae_energyPerClickDenomInput');
-        if (energyPerClickDenomInput && el.energyPerClickDenominationInput) el.energyPerClickDenominationInput.value = energyPerClickDenomInput;
-        const energyPerClickDenom = denominations.find(d => d.name === energyPerClickDenomInput);
+        if (energyPerClickDenomInput !== null && el.energyPerClickDenominationInput) el.energyPerClickDenominationInput.value = energyPerClickDenomInput;
+
+        const energyPerClickDenomVal = await localforage.getItem('ae_energyPerClickDenomValue');
         if (el.energyPerClickDenominationValue) {
-            el.energyPerClickDenominationValue.value = energyPerClickDenom ? energyPerClickDenom.value : '1';
+            if (energyPerClickDenomVal) el.energyPerClickDenominationValue.value = energyPerClickDenomVal;
+            else el.energyPerClickDenominationValue.value = '1';
         }
+
         const clickerSpeed = await localforage.getItem('ae_clickerSpeed');
         const isFast = (clickerSpeed === true || clickerSpeed === 'true');
+        
         if (el.energyCriticalChance) el.energyCriticalChance.value = await localforage.getItem('ae_rankup_critChance') || '';
         if (el.criticalEnergy) el.criticalEnergy.value = await localforage.getItem('ae_rankup_critEnergy') || '';
+        
         if (el.clickerSpeed) {
             el.clickerSpeed.checked = isFast;
             const parentDiv = el.clickerSpeed.parentElement;
@@ -726,47 +887,50 @@ async function loadRankUpData() {
         }
         displayRankRequirement();
         calculateRankUp();
-    } catch (e) {}
-}
-
-async function saveETAData() {
-    try {
-        if (el.targetEnergyETA) await localforage.setItem('ae_targetEnergyETA', el.targetEnergyETA.value);
-        if (el.targetEnergyETADenominationInput) await localforage.setItem('ae_targetEnergyETADenomInput', el.targetEnergyETADenominationInput.value);
-        if (el.targetEnergyETADenominationValue) await localforage.setItem('ae_targetEnergyETADenomValue', el.targetEnergyETADenominationValue.value);
-        if (el.energyCriticalChanceETA) await localforage.setItem('ae_eta_critChance', el.energyCriticalChanceETA.value);
-        if (el.criticalEnergyETA) await localforage.setItem('ae_eta_critEnergy', el.criticalEnergyETA.value);
-    } catch(e) {}
+    } catch (e) { console.error("Error loading RankUp data", e); }
 }
 
 async function loadETAData() {
     try {
-        const currentEnergyNum = await localforage.getItem('ae_currentEnergy') || '';
-        if (el.currentEnergyETA) el.currentEnergyETA.value = currentEnergyNum;
-        const currentEnergyDenomText = await localforage.getItem('ae_currentEnergyDenomInput') || '';
-        if (el.currentEnergyETADenominationInput) el.currentEnergyETADenominationInput.value = currentEnergyDenomText;
-        const currentDenom = denominations.find(d => d.name === currentEnergyDenomText);
+        const currentEnergy = await localforage.getItem('ae_currentEnergy');
+        if (currentEnergy !== null && el.currentEnergyETA) el.currentEnergyETA.value = currentEnergy;
+
+        const currentEnergyDenomInput = await localforage.getItem('ae_currentEnergyDenomInput');
+        if (currentEnergyDenomInput !== null && el.currentEnergyETADenominationInput) el.currentEnergyETADenominationInput.value = currentEnergyDenomInput;
+        
+        const currentEnergyDenomVal = await localforage.getItem('ae_currentEnergyDenomValue');
         if (el.currentEnergyETADenominationValue) {
-            el.currentEnergyETADenominationValue.value = currentDenom ? currentDenom.value : '1';
+            if (currentEnergyDenomVal) el.currentEnergyETADenominationValue.value = currentEnergyDenomVal;
+            else el.currentEnergyETADenominationValue.value = '1';
         }
-        const energyPerClickNum = await localforage.getItem('ae_energyPerClick') || '';
-        if (el.energyPerClickETA) el.energyPerClickETA.value = energyPerClickNum;
-        const energyPerClickDenomText = await localforage.getItem('ae_energyPerClickDenomInput') || '';
-        if (el.energyPerClickETADenominationInput) el.energyPerClickETADenominationInput.value = energyPerClickDenomText;
-        const energyPerClickDenom = denominations.find(d => d.name === energyPerClickDenomText);
+
+        const energyPerClick = await localforage.getItem('ae_energyPerClick');
+        if (energyPerClick !== null && el.energyPerClickETA) el.energyPerClickETA.value = energyPerClick;
+
+        const energyPerClickDenomInput = await localforage.getItem('ae_energyPerClickDenomInput');
+        if (energyPerClickDenomInput !== null && el.energyPerClickETADenominationInput) el.energyPerClickETADenominationInput.value = energyPerClickDenomInput;
+
+        const energyPerClickDenomVal = await localforage.getItem('ae_energyPerClickDenomValue');
         if (el.energyPerClickETADenominationValue) {
-            el.energyPerClickETADenominationValue.value = energyPerClickDenom ? energyPerClickDenom.value : '1';
+            if (energyPerClickDenomVal) el.energyPerClickETADenominationValue.value = energyPerClickDenomVal;
+            else el.energyPerClickETADenominationValue.value = '1';
         }
-        const targetEnergyNum = await localforage.getItem('ae_targetEnergyETA') || '';
-        if (el.targetEnergyETA) el.targetEnergyETA.value = targetEnergyNum;
-        const targetEnergyDenomText = await localforage.getItem('ae_targetEnergyETADenomInput') || '';
-        if (el.targetEnergyETADenominationInput) el.targetEnergyETADenominationInput.value = targetEnergyDenomText;
-        const targetDenom = denominations.find(d => d.name === targetEnergyDenomText);
+
+        const targetEnergyNum = await localforage.getItem('ae_targetEnergyETA');
+        if (targetEnergyNum !== null && el.targetEnergyETA) el.targetEnergyETA.value = targetEnergyNum;
+        
+        const targetEnergyDenomText = await localforage.getItem('ae_targetEnergyETADenomInput');
+        if (targetEnergyDenomText !== null && el.targetEnergyETADenominationInput) el.targetEnergyETADenominationInput.value = targetEnergyDenomText;
+        
+        const targetEnergyDenomVal = await localforage.getItem('ae_targetEnergyETADenomValue');
         if (el.targetEnergyETADenominationValue) {
-            el.targetEnergyETADenominationValue.value = targetDenom ? targetDenom.value : '1';
+             if (targetEnergyDenomVal) el.targetEnergyETADenominationValue.value = targetEnergyDenomVal;
+             else el.targetEnergyETADenominationValue.value = '1';
         }
-        if (el.energyCriticalChanceETA) el.energyCriticalChanceETA.value = await localforage.getItem('ae_eta_critChance') || '';
-        if (el.criticalEnergyETA) el.criticalEnergyETA.value = await localforage.getItem('ae_eta_critEnergy') || '';
+
+        if (el.energyCriticalChanceETA) el.energyCriticalChanceETA.value = await localforage.getItem('ae_rankup_critChance') || '';
+        if (el.criticalEnergyETA) el.criticalEnergyETA.value = await localforage.getItem('ae_rankup_critEnergy') || '';
+        
         const clickerSpeed = await localforage.getItem('ae_clickerSpeed');
         const isFast = (clickerSpeed === true || clickerSpeed === 'true');
         if (el.clickerSpeedETA) {
@@ -780,7 +944,7 @@ async function loadETAData() {
             }
         }
         calculateEnergyETA();
-    } catch(e) {}
+    } catch(e) { console.error("Error loading ETA data", e); }
 }
 
 async function saveTTKData() {
@@ -873,63 +1037,45 @@ async function loadRaidData() {
     } catch (e) {}
 }
 
-
-async function saveTimeToEnergyData() {
-    try {
-        if (el.currentEnergyTTE) await localforage.setItem('ae_tte_currentEnergy', el.currentEnergyTTE.value);
-        if (el.currentEnergyTTEDenominationInput) await localforage.setItem('ae_tte_currentEnergyDenomInput', el.currentEnergyTTEDenominationInput.value);
-        if (el.currentEnergyTTEDenominationValue) await localforage.setItem('ae_tte_currentEnergyDenomValue', el.currentEnergyTTEDenominationValue.value);
-        if (el.energyPerClickTTE) await localforage.setItem('ae_tte_energyPerClick', el.energyPerClickTTE.value);
-        if (el.energyPerClickTTEDenominationInput) await localforage.setItem('ae_tte_energyPerClickDenomInput', el.energyPerClickTTEDenominationInput.value);
-        if (el.energyPerClickTTEDenominationValue) await localforage.setItem('ae_tte_energyPerClickDenomValue', el.energyPerClickTTEDenominationValue.value);
-        if (el.energyCriticalChanceTTE) await localforage.setItem('ae_tte_critChance', el.energyCriticalChanceTTE.value);
-        if (el.criticalEnergyTTE) await localforage.setItem('ae_tte_critEnergy', el.criticalEnergyTTE.value);
-        if (el.timeToReturnSelect) await localforage.setItem('ae_tte_returnTime', el.timeToReturnSelect.value); 
-        if (el.timeToReturnSelectMinutes) await localforage.setItem('ae_tte_returnTimeMinutes', el.timeToReturnSelectMinutes.value);
-        if (el.clickerSpeedTTE) await localforage.setItem('ae_clickerSpeed', el.clickerSpeedTTE.checked); 
-        if (typeof boostItems !== 'undefined' && Array.isArray(boostItems)) {
-            boostItems.filter(item => item.type === 'energy').forEach(async item => {
-                const hoursEl = el[`boost-${item.id}-hours`];
-                const minutesEl = el[`boost-${item.id}-minutes`];
-                if (hoursEl) {
-                    await localforage.setItem(`ae_tte_boost_${item.id}_hours`, hoursEl.value);
-                }
-                if (minutesEl) {
-                    await localforage.setItem(`ae_tte_boost_${item.id}_minutes`, minutesEl.value);
-                }
-            });
-        }
-    } catch (e) {}
-}
-
 async function loadTimeToEnergyData() {
      try {
         const currentEnergyNum = await localforage.getItem('ae_currentEnergy') || '';
         if (el.currentEnergyTTE) el.currentEnergyTTE.value = currentEnergyNum;
+        
         const currentEnergyDenomText = await localforage.getItem('ae_currentEnergyDenomInput') || '';
         if (el.currentEnergyTTEDenominationInput) el.currentEnergyTTEDenominationInput.value = currentEnergyDenomText;
+        
+        const savedCEDenomValue = await localforage.getItem('ae_currentEnergyDenomValue');
         const currentDenom = denominations.find(d => d.name === currentEnergyDenomText);
         if (el.currentEnergyTTEDenominationValue) {
-            el.currentEnergyTTEDenominationValue.value = currentDenom ? currentDenom.value : '1';
+            if (savedCEDenomValue) el.currentEnergyTTEDenominationValue.value = savedCEDenomValue;
+            else if (currentDenom) el.currentEnergyTTEDenominationValue.value = currentDenom.value;
+            else el.currentEnergyTTEDenominationValue.value = '1';
         }
+
         const energyPerClickNum = await localforage.getItem('ae_energyPerClick') || '';
         if (el.energyPerClickTTE) el.energyPerClickTTE.value = energyPerClickNum;
+        
         const energyPerClickDenomText = await localforage.getItem('ae_energyPerClickDenomInput') || '';
         if (el.energyPerClickTTEDenominationInput) el.energyPerClickTTEDenominationInput.value = energyPerClickDenomText;
+        
+        const savedEPCDenomValue = await localforage.getItem('ae_energyPerClickDenomValue');
         const energyPerClickDenom = denominations.find(d => d.name === energyPerClickDenomText);
         if (el.energyPerClickTTEDenominationValue) {
-            el.energyPerClickTTEDenominationValue.value = energyPerClickDenom ? energyPerClickDenom.value : '1';
+            if (savedEPCDenomValue) el.energyPerClickTTEDenominationValue.value = savedEPCDenomValue;
+            else if (energyPerClickDenom) el.energyPerClickTTEDenominationValue.value = energyPerClickDenom.value;
+            else el.energyPerClickTTEDenominationValue.value = '1';
         }
+
         if (el.energyCriticalChanceTTE) el.energyCriticalChanceTTE.value = await localforage.getItem('ae_rankup_critChance') || '';
         if (el.criticalEnergyTTE) el.criticalEnergyTTE.value = await localforage.getItem('ae_rankup_critEnergy') || '';
+        
         const returnTime = await localforage.getItem('ae_tte_returnTime');
-        if (returnTime && el.timeToReturnSelect) {
-            el.timeToReturnSelect.value = returnTime;
-        }
+        if (returnTime && el.timeToReturnSelect) el.timeToReturnSelect.value = returnTime;
+        
         const returnTimeMinutes = await localforage.getItem('ae_tte_returnTimeMinutes');
-        if (returnTimeMinutes && el.timeToReturnSelectMinutes) {
-            el.timeToReturnSelectMinutes.value = returnTimeMinutes;
-        }
+        if (returnTimeMinutes && el.timeToReturnSelectMinutes) el.timeToReturnSelectMinutes.value = returnTimeMinutes;
+        
         const clickerSpeed = await localforage.getItem('ae_clickerSpeed');
         const isFast = (clickerSpeed === true || clickerSpeed === 'true');
         if (el.clickerSpeedTTE) {
@@ -948,12 +1094,8 @@ async function loadTimeToEnergyData() {
                 const minutesEl = el[`boost-${item.id}-minutes`];
                 const savedHours = await localforage.getItem(`ae_tte_boost_${item.id}_hours`);
                 const savedMinutes = await localforage.getItem(`ae_tte_boost_${item.id}_minutes`);
-                if (hoursEl && savedHours !== null) {
-                    hoursEl.value = savedHours;
-                }
-                if (minutesEl && savedMinutes !== null) {
-                    minutesEl.value = savedMinutes;
-                }
+                if (hoursEl && savedHours !== null) hoursEl.value = savedHours;
+                if (minutesEl && savedMinutes !== null) minutesEl.value = savedMinutes;
             });
         }
         calculateTimeToEnergy();
@@ -1012,6 +1154,7 @@ async function loadLootData() {
 async function saveDamageData() {
     try {
         if(el.dmgCurrentEnergy) {
+            // We still save to dmg_energy for redundancy, but we WRITE to global too
             await localforage.setItem('ae_dmg_energy', el.dmgCurrentEnergy.value);
             await localforage.setItem('ae_currentEnergy', el.dmgCurrentEnergy.value); 
         }
@@ -1043,13 +1186,22 @@ async function saveDamageData() {
 
 async function loadDamageData() {
     try {
-        if(el.dmgCurrentEnergy) el.dmgCurrentEnergy.value = await localforage.getItem('ae_dmg_energy') || '';
+        // FIX: Load from Global Energy, not stale damage energy
+        if(el.dmgCurrentEnergy) el.dmgCurrentEnergy.value = await localforage.getItem('ae_currentEnergy') || '';
         
-        const enDenom = await localforage.getItem('ae_dmg_energyDenom');
+        // Load Global Denom
+        const enDenom = await localforage.getItem('ae_currentEnergyDenomInput');
         if(el.dmgCurrentEnergyDenomInput && enDenom) {
             el.dmgCurrentEnergyDenomInput.value = enDenom;
-            const d = denominations.find(x => x.name === enDenom);
-            if(d && el.dmgCurrentEnergyDenomValue) el.dmgCurrentEnergyDenomValue.value = d.value;
+        }
+        // Load Global Denom Value
+        const enDenomVal = await localforage.getItem('ae_currentEnergyDenomValue');
+        if (el.dmgCurrentEnergyDenomValue && enDenomVal) {
+             el.dmgCurrentEnergyDenomValue.value = enDenomVal;
+        } else {
+             // Fallback logic if value key missing
+             const d = denominations.find(x => x.name === enDenom);
+             if(d && el.dmgCurrentEnergyDenomValue) el.dmgCurrentEnergyDenomValue.value = d.value;
         }
 
         if(el.dmgStatDamage) el.dmgStatDamage.value = await localforage.getItem('ae_dmg_stat') || '';
@@ -1081,8 +1233,9 @@ async function loadDamageData() {
         for(const id of comps) {
             if(el[id]) el[id].value = await localforage.getItem(`ae_dmg_${id}`) || '';
         }
-
-        calculateDamage();
+        
+        // Note: Removed calculateDamage() call to prevent premature saving. 
+        // Logic will update on first user interaction.
     } catch(e){}
 }
 
@@ -1097,38 +1250,51 @@ function getEffectiveEnergyPerClick(baseEnergyPerClick, critChanceId, critEnergy
 
 function calculateEnergyETA() {
     if (!el.etaResult) return;
-    const isFastClicker = el.clickerSpeedETA ? el.clickerSpeedETA.checked : false;
-    const currentEnergyValue = getNumberValue('currentEnergyETA');
-    const currentEnergyDenom = currentNumberFormat === 'letters' ? (el.currentEnergyETADenominationValue ? (parseFloat(el.currentEnergyETADenominationValue.value) || 1) : 1) : 1;
-    const currentEnergy = currentEnergyValue * currentEnergyDenom;
+
+    // FIX: Read from ETA inputs, not Rank Up inputs
     const targetEnergyValue = getNumberValue('targetEnergyETA');
     const targetEnergyDenom = currentNumberFormat === 'letters' ? (el.targetEnergyETADenominationValue ? (parseFloat(el.targetEnergyETADenominationValue.value) || 1) : 1) : 1;
     const targetEnergy = targetEnergyValue * targetEnergyDenom;
+
+    const isFastClicker = el.clickerSpeedETA ? el.clickerSpeedETA.checked : false; // Use ETA specific clicker
+
+    // FIX: Read from ETA inputs
+    const currentEnergyValue = getNumberValue('currentEnergyETA');
+    const currentEnergyDenom = currentNumberFormat === 'letters' ? (el.currentEnergyETADenominationValue ? (parseFloat(el.currentEnergyETADenominationValue.value) || 1) : 1) : 1;
+    const currentEnergy = currentEnergyValue * currentEnergyDenom;
+
+    // FIX: Read from ETA inputs
     const energyPerClickValue = getNumberValue('energyPerClickETA');
     const energyPerClickDenom = currentNumberFormat === 'letters' ? (el.energyPerClickETADenominationValue ? (parseFloat(el.energyPerClickETADenominationValue.value) || 1) : 1) : 1;
     const baseEnergyPerClick = energyPerClickValue * energyPerClickDenom;
+
     const effectiveEnergyPerClick = getEffectiveEnergyPerClick(
         baseEnergyPerClick, 
-        'energyCriticalChanceETA', 
+        'energyCriticalChanceETA', // Use ETA specific criticals
         'criticalEnergyETA'
     );
+
     const clicksPerSecond = isFastClicker ? FAST_CPS : SLOW_CPS;
     const energyNeeded = targetEnergy - currentEnergy;
     const returnTimeEl = el.etaReturnTime;
+
     if (energyNeeded <= 0) {
         el.etaResult.innerText = 'Target Reached!';
         if (returnTimeEl) returnTimeEl.innerText = "You're already there!";
         return;
     }
+
     if (effectiveEnergyPerClick <= 0 || clicksPerSecond <= 0) {
         el.etaResult.innerText = 'N/A';
         if (returnTimeEl) returnTimeEl.innerText = '';
         saveETAData();
         return;
     }
+
     const timeInSeconds = (energyNeeded / effectiveEnergyPerClick) / clicksPerSecond;
     let resultString = formatTime(timeInSeconds);
     el.etaResult.innerText = resultString.trim();
+
     if (returnTimeEl) {
         const now = new Date();
         const returnTime = new Date(now.getTime() + timeInSeconds * 1000);
@@ -1141,6 +1307,7 @@ function calculateEnergyETA() {
         });
         returnTimeEl.innerText = `Return on: ${returnString}`;
     }
+
     saveETAData();
 }
 
@@ -2491,17 +2658,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     (async () => {
+        isLoading = true;
         await loadNumberFormat();
         await loadRankUpData();
         await loadETAData();
         await loadTimeToEnergyData(); 
         await loadLootData();
         await loadTTKData();
-        if (el.worldSelect) {
-            populateEnemyDropdown(); 
-        } else {
-            calculateTTK();
-        }
+        populateWorldChecklists();
+        await loadChecklistData(); // This checks the boxes based on save data
+
+        // 4. Final UI Updates
+        if (el.worldSelect) populateEnemyDropdown(); 
+        else calculateTTK();
+        
+        if (el.currentEnergy) el.currentEnergy.dispatchEvent(new Event('input')); 
+        
+        calculateLootDrops();
+        
+        isLoading = false;
+        console.log("Apex: All Systems Loaded.");
         if (el.currentEnergy) {
             el.currentEnergy.dispatchEvent(new Event('input')); 
         } else if (el.currentEnergyETA) {
@@ -2588,6 +2764,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             await loadChecklistData();
         }
+        
+        // --- FIX: Run this UNCONDITIONALLY (Removed el.worldSelect check) ---
+        if (typeof checklistDataByWorld !== 'undefined') {
+           // We pass 'null' as savedData for now; the internal loader handles the rest
+           populateWorldChecklists(null); 
+           // Also trigger the load to check the boxes
+           loadChecklistData(); 
+        }
+
+        isLoading = false;
     })();
 
     const handleScroll = () => {

@@ -1,32 +1,26 @@
 :root {
-  /* --- Core Palette --- */
   --bg-body: #0a0a0a;
   --bg-panel: #000000;
   --bg-card: #0a0a0a;
   --bg-input: #0f0f0f;
   
-  /* --- Borders --- */
   --border-main: #1e293b;
   --border-light: #334155;
   
-  /* --- Typography --- */
   --text-main: #ffffff;
   --text-muted: #94a3b8;
   
-  /* --- Theming Variables --- */
   --accent-color: #0062ff;
   --accent-glow: rgba(59, 130, 246, 0.3);
   --accent-dim: rgba(59, 130, 246, 0.1);
   --gradient-start: #0062ff;
   --gradient-end: #0062ff;
   
-  /* --- Status Colors --- */
   --status-success: #22c55e;
-  --status-warning: #eab308; /* Gold/Yellow for Headers */
+  --status-warning: #eab308;
   --status-error: #ef4444;
 }
 
-/* --- Theme Overrides --- */
 body.theme-dark-blue {
   --accent-color: #02368a;
   --accent-glow: rgba(70, 58, 237, 0.4);
@@ -119,7 +113,6 @@ body.theme-dark-red {
   --gradient-end: #8b0202;
 }
 
-/* --- Global Reset & Scrollbars --- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 ::-webkit-scrollbar { width: 10px; }
@@ -133,7 +126,6 @@ body.theme-dark-red {
 
 ::selection { background: var(--accent-glow); color: #fff; }
 
-/* --- Body & Layout --- */
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--bg-body);
@@ -159,7 +151,6 @@ body.blue-theme .calculator-card {
   background: rgba(0, 0, 0, 0.9);
 }
 
-/* --- Header / Topbar --- */
 header {
   background: var(--bg-panel);
   border-bottom: 1px solid var(--border-main);
@@ -219,7 +210,6 @@ header {
   border-color: var(--accent-color);
 }
 
-/* --- Navigation Tabs --- */
 .calculator-card {
   display: flex;
   flex: 1;
@@ -268,20 +258,18 @@ header {
 .content-wrapper {
   flex: 1;
   padding: 30px 40px;
-  max-width: 1400px;
+  max-width: 100% !important;
+  padding-right: 40px !important;
   margin: 0;
   width: 100%;
   padding-bottom: 100px !important;
 }
 
-/* --- HEADERS: FORCE YELLOW --- */
-/* Target all heading levels and specific titles */
 h3, h4, .subsection-title, .world-section-title, .world-subsection-title {
-    color: var(--status-warning) !important; /* Gold/Yellow */
+    color: var(--status-warning) !important;
     border-color: var(--border-light) !important;
 }
 
-/* Specific Override for Active Boosts (which has a blue class in HTML) */
 h4.text-blue-400 {
     color: var(--status-warning) !important;
 }
@@ -295,7 +283,6 @@ h4.text-blue-400 {
   border-bottom: 1px solid var(--border-light);
 }
 
-/* --- Inputs --- */
 .input-field, .select-field {
   background-color: var(--bg-input);
   border: 1px solid var(--border-light);
@@ -367,7 +354,6 @@ label {
   border-bottom: none;
 }
 
-/* --- RESULT BOXES (THE CORE LOGIC) --- */
 .result-box {
   background: var(--bg-input);
   border: 1px solid var(--border-light);
@@ -381,40 +367,35 @@ label {
   transition: all 0.2s ease;
 }
 
-/* 1. Labels inside Result Box -> FORCE WHITE */
 .result-box p {
-  color: var(--text-main) !important; /* White */
+  color: var(--text-main) !important;
   font-size: 14px;
   margin-bottom: 6px;
 }
-/* Specifically override the "Avg Special Drops" label which has a blue class in HTML */
+
 .result-box p.text-blue-400 {
   color: var(--text-main) !important;
 }
 
-/* 2. Numbers inside Result Box -> FORCE BLUE (Accent) */
 .result-box p:last-child {
-  color: var(--accent-color) !important; /* Blue */
+  color: var(--accent-color) !important;
   font-size: 2.5rem !important;
   font-weight: 700 !important;
   margin: 0;
   line-height: 1.2;
 }
 
-/* 3. Specific ID Overrides (to ensure size and color stick) */
 #rankUpResult, #etaResult, #timeToEnergyResult, #ttkResult, #lootTokensResult, #lootSpecialDropsResult {
     color: var(--accent-color) !important;
     font-size: 2.5rem !important;
     font-weight: 700 !important;
 }
 
-/* Time to Target (Loot) - Keep Accent Color */
 #lootTokenTimeToTargetResult {
     color: var(--accent-color) !important; 
     opacity: 1 !important;
 }
 
-/* Buttons & Toggles */
 button {
   background: var(--bg-input);
   border: 1px solid var(--border-light);
@@ -568,14 +549,13 @@ button:active {
   transition: width 0.3s ease;
 }
 
-/* Sub-section titles override to specific colors if needed, but headers are yellow by default now */
 .world-subsection-title.gachas { color: #f59e0b !important; }
 .world-subsection-title.progressions { color: #10b981 !important; }
 .world-subsection-title.sssRank { color: #ef4444 !important; }
 .world-subsection-title.auras { color: #8b5cf6 !important; }
 .world-subsection-title.accessories { color: #06b6d4 !important; }
 .world-subsection-title.quests { color: #eab308 !important; }
-.world-subsection-title.raidAchievements { color: #ffffff !important; }
+.world-subsection-title.raidAchievements { color: #e879f9 !important; }
 
 .checklist-item {
   display: flex;
@@ -607,6 +587,23 @@ button:active {
 .checklist-item.completed {
   animation: completePulse 0.5s ease-out;
 }
+
+.checklist-summary-grid .result-box {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border-light);
+}
+.checklist-summary-grid .result-box:hover {
+    background: var(--border-light);
+    transform: translateY(-2px);
+    border-color: var(--accent-color);
+}
+.checklist-summary-grid .result-box.active-filter {
+    background: var(--accent-dim);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
 @keyframes completePulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.02); background: var(--status-success); }
@@ -626,7 +623,8 @@ button:active {
 .badge-auras { background: #8b5cf620; color: #8b5cf6; }
 .badge-accessories { background: #06b6d420; color: #06b6d4; }
 .badge-quests { background: #eab30820; color: #eab308; }
-.badge-raidAchievements { background: #b9b9b920; color: #bdbdbd; }
+.badge-raidAchievements { background: #e879f920; color: #e879f9; }
+.badge-avatars { background: #818cf820; color: #818cf8; }
 .progress-indicator {
   background: var(--bg-input);
   border: 1px solid var(--border-light);
@@ -778,7 +776,6 @@ button:active {
     border-bottom-color: var(--accent-color);
   }
 }
-/* Tailwind Utility Classes Replacements/Overrides */
 .text-\[\#3b82f6\] { color: var(--accent-color) !important; }
 .bg-\[\#0a0a0a\] { background-color: var(--bg-card); }
 .bg-\[\#0f172a\] { background-color: var(--bg-input); }
@@ -793,3 +790,31 @@ button:active {
 .to-cyan-400 {
     --tw-gradient-to: var(--gradient-end) !important;
 }
+.world-subsection-title.avatars { 
+    color: #818cf8 !important;
+}
+
+.text-fuchsia-400 { color: #e879f9 !important; }
+
+.checklist-category-subsection {
+    min-width: 0; 
+}
+
+.checklist-item {
+    align-items: flex-start;
+    padding: 4px 0;
+}
+
+.checklist-item span {
+    flex: 1;
+    white-space: normal;
+    word-break: normal; 
+    overflow-wrap: anywhere; 
+    line-height: 1.4;
+    padding-right: 4px;
+    min-width: 0;
+}
+
+.world-subsection-title.weapons { color: #f43f5e !important; }
+.badge-weapons { background: #f43f5e20; color: #f43f5e; }
+.text-rose-500 { color: #f43f5e !important; }

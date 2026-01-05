@@ -9,12 +9,26 @@ const checklistDataByWorld = {
       { id: 'halloween-overdrive-saw', name: 'Overdrive Saw' },
       { id: 'halloween-energy-zombies', name: 'Energy Zombies' }
     ],
+    avatars: [
+      { id: 'halloween-carrotto', name: 'Carrotto' },
+      { id: 'halloween-evil-bald', name: 'Evil Bald Man' },
+      { id: 'halloween-pumpkinado', name: 'Pumpkinado' },
+      { id: 'halloween-bald-warlock', name: 'Bald Warlock' },
+      { id: 'halloween-spook-suke', name: 'Spook-Suke' }
+    ],
     auras: [
       { id: 'halloween-candy-aura', name: 'Candy Aura (Carotto)' },
       { id: 'halloween-pumpkin-aura', name: 'Pumpkin Aura (Evil Bald Man)' },
       { id: 'halloween-plague-aura', name: 'Plague Aura (Pumpkinado)' },
       { id: 'halloween-spookweb-aura', name: 'Spookweb Aura (Bald Warlock)' },
       { id: 'halloween-demonflame-aura', name: 'Demonflame Aura (Spook-Suke)' }
+    ],
+    weapons: [
+      { id: 'halloween-overdrive-saw', name: 'Overdrive Saw (Spook-Suke)' },
+    ],
+    raidAchievements: [
+      { id: 'halloween-halloween-raid', name: 'Halloween Raid' },
+      { id: 'halloween-graveyard-defense-raid', name: 'Graveyard Defense' }
     ],
   },
   "Christmas World": {
@@ -27,6 +41,14 @@ const checklistDataByWorld = {
       { id: 'christmas-glove-leveling', name: 'Christmas Glove Leveling' },
       { id: 'christmas-craft', name: 'Christmas Craft' },
       { id: 'christmas-santa-fusion', name: 'Santa Fusion' }
+    ],
+    avatars: [
+      { id: 'christmas-santa', name: 'Santa (Santa Fusion)' },
+      { id: 'christmas-nezudeer', name: 'Nezudeer' },
+      { id: 'christmas-ginsta', name: 'Ginsta' },
+      { id: 'christmas-rorodeer', name: 'Rorodeer' },
+      { id: 'christmas-gohoho', name: 'GoHoHo' },
+      { id: 'christmas-elfchigo', name: 'Elfchigo' }
     ],
     auras: [
       { id: 'christmas-coal-aura', name: 'Coal Aura (Santa Raid)' },
@@ -44,8 +66,16 @@ const checklistDataByWorld = {
       { id: 'christmas-santa-hat', name: 'Santa Hat (Santa Raid)' },
       { id: 'christmas-santa-beard', name: 'Santa Beard (Santa Raid)' }
     ],
+    weapons: [
+      { id: 'christmas-candy-cane-cutter', name: 'Candy Cane Cutter (Nezudeer)' },
+      { id: 'christmas-demon-crumb-slayer', name: 'Demon Crumb Slayer (Ginsta)' },
+      { id: 'christmas-frostmint-saber', name: 'Frostmint Saber (Rorodeer)' },
+      { id: 'christmas-candy-cane-scythe', name: 'Candy Cane Scythe (GoHoHo)' },
+      { id: 'christmas-cangetsu', name: 'Cangetsu (Elfchigo)' }
+    ],
     raidAchievements: [
       { id: 'christmas-ice-raid', name: 'Ice Raid' },
+      { id: 'christmas-santa-raid', name: 'Santa Raid' }
     ]
   },
   "Dungeon Lobby 1": {
@@ -95,6 +125,15 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'earth-kid-kohan', name: 'Kid Kohan' }
     ],
+    avatars: [
+      { id: 'earth-kriluni', name: 'Kriluni' },
+      { id: 'earth-ymicha', name: 'Ymicha' },
+      { id: 'earth-tian-shan', name: 'Tian-Shan' },
+      { id: 'earth-kohan', name: 'Kohan' },
+      { id: 'earth-picco', name: 'Picco' },
+      { id: 'earth-koku', name: 'Koku' },
+      { id: 'earth-kid-kohan', name: 'Kid Kohan' }
+    ],
     auras: [
       { id: 'earth-luck-aura', name: 'Luck Aura (SS)' }
     ],
@@ -123,11 +162,29 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'windmill-shanks', name: 'Shanks' }
     ],
+    avatars: [
+      { id: 'windmill-nomi', name: 'Nomi' },
+      { id: 'windmill-usup', name: 'Usup' },
+      { id: 'windmill-robins', name: 'Robins' },
+      { id: 'windmill-senji', name: 'Senji' },
+      { id: 'windmill-zaro', name: 'Zaro' },
+      { id: 'windmill-loffy', name: 'Loffy' },
+      { id: 'windmill-shanks', name: 'Shanks' }
+    ],
     auras: [
       { id: 'windmill-red-emperor-aura', name: 'Red Emperor Aura (SS)' }
     ],
     accessories: [
       { id: 'windmill-armless-cloak', name: 'Armless Cloak (SS)' }
+    ],
+    weapons: [
+      { id: 'windmill-bloodthorn', name: 'Bloodthorn (Swords)' },
+      { id: 'windmill-eclipse-warden', name: 'Eclipse Warden (Swords)' },
+      { id: 'windmill-obsidian-reaver', name: 'Obsidian Reaver (Swords)' },
+      { id: 'windmill-aquarius-edge', name: 'Aquarius Edge (Swords)' },
+      { id: 'windmill-doomsoul', name: 'Doomsoul (Swords)' },
+      { id: 'windmill-redmourne', name: 'Redmourne (Swords)' },
+      { id: 'windmill-venomstrike', name: 'Venomstrike (Swords)' }
     ],
     quests: [
       { id: 'windmill-key-quests', name: 'Key Quests'},
@@ -148,8 +205,20 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'soul-eizen', name: 'Eizen' }
     ],
+    avatars: [
+      { id: 'soul-hime', name: 'Hime' },
+      { id: 'soul-ichige', name: 'Ichige' },
+      { id: 'soul-uryua', name: 'Uryua' },
+      { id: 'soul-rakiu', name: 'Rakiu' },
+      { id: 'soul-yoichoi', name: 'Yoichoi' },
+      { id: 'soul-kahara', name: 'Kahara' },
+      { id: 'soul-eizen', name: 'Eizen' }
+    ],
     auras: [
       { id: 'soul-purple-traitor-aura', name: 'Purple Traitor Aura (SS)' }
+    ],
+    weapons: [
+      { id: 'soul-zangetso', name: 'Zangetso (D)' },
     ],
     quests: [
       { id: 'soul-key-quests', name: 'Key Quests'},
@@ -164,6 +233,15 @@ const checklistDataByWorld = {
       { id: 'cursed-progression-410', name: 'Cursed Progression (410)' }
     ],
     sssRank: [
+      { id: 'cursed-sakuni', name: 'Sakuni' }
+    ],
+    avatars: [
+      { id: 'cursed-itodo', name: 'Itodo' },
+      { id: 'cursed-nebara', name: 'Nebara' },
+      { id: 'cursed-magum', name: 'Magum' },
+      { id: 'cursed-meki', name: 'Meki' },
+      { id: 'cursed-tage', name: 'Tage' },
+      { id: 'cursed-gajo', name: 'Gajo' },
       { id: 'cursed-sakuni', name: 'Sakuni' }
     ],
     auras: [
@@ -189,8 +267,20 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'slayer-rangaki', name: 'Rangaki' }
     ],
+    avatars: [
+      { id: 'slayer-nazuki', name: 'Nazuki' },
+      { id: 'slayer-tenjaro', name: 'Tenjaro' },
+      { id: 'slayer-zentsu', name: 'Zentsu' },
+      { id: 'slayer-insake', name: 'Insake' },
+      { id: 'slayer-tamoka', name: 'Tamoka' },
+      { id: 'slayer-shinabe', name: 'Shinabe' },
+      { id: 'slayer-rangaki', name: 'Rangaki' }
+    ],
     auras: [
       { id: 'slayer-flaming-aura', name: 'Flaming Aura (SS)' }
+    ],
+    weapons: [
+      { id: 'slayer-yellow-nichirin', name: 'Yellow Nichirin (C)' },
     ],
     quests: [
       { id: 'slayer-key-quests', name: 'Key Quests'},
@@ -210,6 +300,15 @@ const checklistDataByWorld = {
       { id: 'solo-shadow-upgrades', name: 'Shadow Upgrades' }
     ],
     sssRank: [
+      { id: 'solo-statue-of-god', name: 'Statue of God' }
+    ],
+    avatars: [
+      { id: 'solo-weak-sung', name: 'Weak Sung' },
+      { id: 'solo-green-goblin', name: 'Green Goblin' },
+      { id: 'solo-white-tiger', name: 'White Tiger' },
+      { id: 'solo-cha', name: 'Cha' },
+      { id: 'solo-choi', name: 'Choi' },
+      { id: 'solo-solo-sung', name: 'Solo Sung' },
       { id: 'solo-statue-of-god', name: 'Statue of God' }
     ],
     auras: [
@@ -233,6 +332,15 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'clover-novi-chroni', name: 'Novi Chroni' }
     ],
+    avatars: [
+      { id: 'clover-noalle', name: 'Noalle' },
+      { id: 'clover-megna', name: 'Megna' },
+      { id: 'clover-finrel', name: 'Finrel' },
+      { id: 'clover-aste', name: 'Aste' },
+      { id: 'clover-yune', name: 'Yune' },
+      { id: 'clover-yemi', name: 'Yemi' },
+      { id: 'clover-novi-chroni', name: 'Novi Chroni' }
+    ],
     quests: [
       { id: 'clover-key-quests', name: 'Key Quests'},
       { id: 'clover-obelisk-quest', name: 'Obelisk Quest'}
@@ -248,6 +356,16 @@ const checklistDataByWorld = {
     ],
     sssRank: [
       { id: 'leaf-madera-itachi', name: 'Madera/Itachi' }
+    ],
+    avatars: [
+      { id: 'leaf-sekuri', name: 'Sekuri' },
+      { id: 'leaf-kid-norto', name: 'Kid Norto' },
+      { id: 'leaf-kid-seske', name: 'Kid Seske' },
+      { id: 'leaf-kakashki', name: 'Kakashki' },
+      { id: 'leaf-jiria', name: 'Jiria' },
+      { id: 'leaf-tsuni', name: 'Tsuni' },
+      { id: 'leaf-itech', name: 'Itech' },
+      { id: 'leaf-madera', name: 'Madera' }
     ],
     auras: [
       { id: 'leaf-leafy-aura', name: 'Leafy Aura (SS)' }
@@ -272,6 +390,15 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'spirit-ken-turbo', name: 'Ken Turbo' }
     ],
+    avatars: [
+      { id: 'spirit-ken', name: 'Ken' },
+      { id: 'spirit-aira', name: 'Aira' },
+      { id: 'spirit-jiji', name: 'Jiji' },
+      { id: 'spirit-momo', name: 'Momo' },
+      { id: 'spirit-alien', name: 'Alien' },
+      { id: 'spirit-saiko', name: 'Saiko' },
+      { id: 'spirit-ken-turbo', name: 'Ken Turbo' }
+    ],
     quests: [
       { id: 'spirit-key-quests', name: 'Key Quests'},
       { id: 'spirit-obelisk-quest', name: 'Obelisk Quest'}
@@ -291,6 +418,15 @@ const checklistDataByWorld = {
       { id: 'magic-energy-obelisk-100', name: 'Energy Obelisk (100)' }
     ],
     sssRank: [
+      { id: 'magic-killas-godspeed', name: 'Killas Godspeed' }
+    ],
+    avatars: [
+      { id: 'magic-lero', name: 'Lero' },
+      { id: 'magic-gone', name: 'Gone' },
+      { id: 'magic-karapik', name: 'Karapik' },
+      { id: 'magic-killas', name: 'Killas' },
+      { id: 'magic-hisoker', name: 'Hisoker' },
+      { id: 'magic-illumio', name: 'Illumio' },
       { id: 'magic-killas-godspeed', name: 'Killas Godspeed' }
     ],
     auras: [
@@ -313,6 +449,15 @@ const checklistDataByWorld = {
     ],
     auras: [
       { id: 'titan-titanic-aura', name: 'Titanic Aura (SS)' }
+    ],
+    avatars: [
+      { id: 'titan-armium', name: 'Armium' },
+      { id: 'titan-annie', name: 'Annie' },
+      { id: 'titan-mikala', name: 'Mikala' },
+      { id: 'titan-rainar', name: 'Rainar' },
+      { id: 'titan-ervin', name: 'Ervin' },
+      { id: 'titan-lavi', name: 'Lavi' },
+      { id: 'titan-eran', name: 'Eran' }
     ],
     accessories: [
       { id: 'titan-red-scarf', name: 'Red Scarf (C)' },
@@ -339,6 +484,15 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'sins-esanor', name: 'Esanor' }
     ],
+    avatars: [
+      { id: 'sins-diyana', name: 'Diyana' },
+      { id: 'sins-kyng', name: 'Kyng' },
+      { id: 'sins-gowen', name: 'Gowen' },
+      { id: 'sins-merlun', name: 'Merlun' },
+      { id: 'sins-bane', name: 'Bane' },
+      { id: 'sins-melyon', name: 'Melyon' },
+      { id: 'sins-esanor', name: 'Esanor' }
+    ],
     quests: [
       { id: 'sins-key-quests', name: 'Key Quests'},
       { id: 'sins-obelisk-quest', name: 'Obelisk Quest'}
@@ -358,6 +512,15 @@ const checklistDataByWorld = {
     ],
     sssRank: [
       { id: 'kaiju-number-8', name: 'Number 8' }
+    ],
+    avatars: [
+      { id: 'kaiju-kefka', name: 'Kefka' },
+      { id: 'kaiju-rano', name: 'Rano' },
+      { id: 'kaiju-ihero', name: 'Ihero' },
+      { id: 'kaiju-kikoi', name: 'Kikoi' },
+      { id: 'kaiju-sosiro', name: 'Sosiro' },
+      { id: 'kaiju-meena', name: 'Meena' },
+      { id: 'kaiju-number-eight', name: 'Number 8' }
     ],
     auras: [
       { id: 'kaiju-monster-aura', name: 'Monster Aura (SS)' }
@@ -381,6 +544,15 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'tempest-valzora', name: 'Valzora' }
     ],
+    avatars: [
+      { id: 'tempest-gobito', name: 'Gobito' },
+      { id: 'tempest-gabido', name: 'Gabido' },
+      { id: 'tempest-sakai', name: 'Sakai' },
+      { id: 'tempest-hakamaru', name: 'Hakamaru' },
+      { id: 'tempest-benitaro', name: 'Benitaro' },
+      { id: 'tempest-rimaru', name: 'Rimaru' },
+      { id: 'tempest-valzora', name: 'Valzora' }
+    ],
     accessories: [
       { id: 'tempest-slime-mask', name: 'Slime Mask (S)' }
     ],
@@ -402,8 +574,20 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'virtual-the-paladin', name: 'The Paladin' }
     ],
+    avatars: [
+      { id: 'virtual-lisbeta', name: 'Lisbeta' },
+      { id: 'virtual-silica', name: 'Silica' },
+      { id: 'virtual-klain', name: 'Klain' },
+      { id: 'virtual-yai', name: 'Yai' },
+      { id: 'virtual-asana', name: 'Asana' },
+      { id: 'virtual-beater', name: 'Beater' },
+      { id: 'virtual-the-paladin', name: 'The Paladin' }
+    ],
     auras: [
       { id: 'virtual-virtual-aura', name: 'Virtual Aura (SS)' }
+    ],
+    weapons: [
+      { id: 'virtual-lucidator', name: 'Lucidator (S)' },
     ],
     quests: [
       { id: 'virtual-hero-license', name: 'Hero License Quest'},
@@ -421,6 +605,15 @@ const checklistDataByWorld = {
       { id: 'cairo-ripple-energy-110', name: 'Ripple Energy (110)' }
     ],
     sssRank: [
+      { id: 'cairo-dino', name: 'Dino' }
+    ],
+    avatars: [
+      { id: 'cairo-speedy', name: 'Speedy' },
+      { id: 'cairo-cesar', name: 'Cesar' },
+      { id: 'cairo-joseph', name: 'Joseph' },
+      { id: 'cairo-polyreff', name: 'Polyreff' },
+      { id: 'cairo-avdoli', name: 'Avdoli' },
+      { id: 'cairo-jokaro', name: 'Jokaro' },
       { id: 'cairo-dino', name: 'Dino' }
     ],
     auras: [
@@ -449,6 +642,15 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'ghoul-arama', name: 'Arama' }
     ],
+    avatars: [
+      { id: 'ghoul-hideyo', name: 'Hideyo' },
+      { id: 'ghoul-joozu', name: 'Joozu' },
+      { id: 'ghoul-madyo', name: 'Madyo' },
+      { id: 'ghoul-kotaro', name: 'Kotaro' },
+      { id: 'ghoul-toaoka', name: 'Toaoka' },
+      { id: 'ghoul-kanny', name: 'Kanny' },
+      { id: 'ghoul-arama', name: 'Arama' }
+    ],
     auras: [
       { id: 'ghoul-ghoul-aura', name: 'Ghoul Aura (SS)' }
     ],
@@ -472,6 +674,16 @@ const checklistDataByWorld = {
       { id: 'chainsaw-pokita-50', name: 'Pokita (50)' }
     ],
     sssRank: [
+      { id: 'chainsaw-hero-of-hell', name: 'Hero Of Hell' }
+    ],
+    avatars: [
+      { id: 'chainsaw-kabeni', name: 'Kabeni' },
+      { id: 'chainsaw-benji', name: 'Benji' },
+      { id: 'chainsaw-powa', name: 'Powa' },
+      { id: 'chainsaw-aoki', name: 'Aoki' },
+      { id: 'chainsaw-raza', name: 'Raza' },
+      { id: 'chainsaw-makomi', name: 'Makomi' },
+      { id: 'chainsaw-mr-chainsaw', name: 'Mr. Chainsaw' },
       { id: 'chainsaw-hero-of-hell', name: 'Hero Of Hell' }
     ],
     accessories: [
@@ -502,8 +714,21 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'tokyo-bansho', name: 'Bansho' }
     ],
+    avatars: [
+      { id: 'tokyo-akiki', name: 'Akiki' },
+      { id: 'tokyo-arter', name: 'Arter' },
+      { id: 'tokyo-shinro', name: 'Shinro' },
+      { id: 'tokyo-tameki', name: 'Tameki' },
+      { id: 'tokyo-iriso', name: 'Iriso' },
+      { id: 'tokyo-witch-queen', name: 'Witch Queen' },
+      { id: 'tokyo-leonardo', name: 'Leonardo' },
+      { id: 'tokyo-bansho', name: 'Bansho' }
+    ],
     auras: [
       { id: 'tokyo-fire-captain-aura', name: 'Fire Captain Aura (SS)' }
+    ],
+    weapons: [
+      { id: 'tokyo-excaliber', name: 'Excaliber (D)' },
     ],
     accessories: [
       { id: 'tokyo-fire-force-pants', name: 'Fire Force Pants (C)' },
@@ -536,6 +761,16 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'green-frezi-final-form', name: 'Frezi Final Form' }
     ],
+    avatars: [
+      { id: 'green-bulam', name: 'Bulam' },
+      { id: 'green-young-kohan', name: 'Young Kohan' },
+      { id: 'green-armored-kriluni', name: 'Armored Kriluni' },
+      { id: 'green-giniy', name: 'Giniy' },
+      { id: 'green-vegiti', name: 'Vegiti' },
+      { id: 'green-lord-frizzi', name: 'Lord Frizzi' },
+      { id: 'green-koku-ssj', name: 'Koku SSJ' },
+      { id: 'green-frezi-final-form', name: 'Frezi Final Form' }
+    ],
     accessories: [
       { id: 'green-scarffy', name: 'Scarffy (D)' }
     ],
@@ -558,6 +793,26 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'hollow-vasto-ichige', name: 'Vasto Ichige' }
     ],
+    avatars: [
+      { id: 'hollow-ohime', name: 'Ohime' },
+      { id: 'hollow-ichiga', name: 'Ichiga' },
+      { id: 'hollow-chaddo', name: 'Chaddo' },
+      { id: 'hollow-zayrel', name: 'Zayrel' },
+      { id: 'hollow-uloqi', name: 'Uloqi' },
+      { id: 'hollow-grimmi', name: 'Grimmi' },
+      { id: 'hollow-cifer', name: 'Cifer' },
+      { id: 'hollow-vasto-ichige', name: 'Vasto Ichige' }
+    ],
+    weapons: [
+      { id: 'hollow-venomleaf', name: 'Venomleaf (Scythes)' },
+      { id: 'hollow-cryoscythe', name: 'Cryoscythe (Scythes)' },
+      { id: 'hollow-toxinfang', name: 'Toxinfang (Scythes)' },
+      { id: 'hollow-crimson-thorn', name: 'Crimson Thorn (Scythes)' },
+      { id: 'hollow-bonehowl', name: 'Bonehowl (Scythes)' },
+      { id: 'hollow-ashfang', name: 'Ashfang (Scythes)' },
+      { id: 'hollow-phantom-requiem', name: 'Phantom Requiem (Scythes)' },
+      { id: 'hollow-stormreaver', name: 'Stormreaver (Scythes)' }
+    ],
     quests: [
       { id: 'hollow-key-quests', name: 'Key Quests'},
       { id: 'hollow-obelisk-quest', name: 'Obelisk Quest'}
@@ -577,6 +832,16 @@ const checklistDataByWorld = {
       { id: 'shadow-arts-leveling-50', name: 'Shadow Arts Leveling (50)' }
     ],
     sssRank: [
+      { id: 'shadow-shadow', name: 'Shadow' }
+    ],
+    avatars: [
+      { id: 'shadow-cyd', name: 'Cyd' },
+      { id: 'shadow-zeta', name: 'Zeta' },
+      { id: 'shadow-delta', name: 'Delta' },
+      { id: 'shadow-beta', name: 'Beta' },
+      { id: 'shadow-gamma', name: 'Gamma' },
+      { id: 'shadow-alpha', name: 'Alpha' },
+      { id: 'shadow-blood-queen', name: 'Blood Queen' },
       { id: 'shadow-shadow', name: 'Shadow' }
     ],
     auras: [
@@ -606,6 +871,16 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'zcity-galaxy-hunter', name: 'Galaxy Hunter' }
     ],
+    avatars: [
+      { id: 'zcity-crabby', name: 'Crabby' },
+      { id: 'zcity-mantis', name: 'Mantis' },
+      { id: 'zcity-tatsura', name: 'Tatsura' },
+      { id: 'zcity-ganos', name: 'Ganos' },
+      { id: 'zcity-king-of-seas', name: 'King of Seas' },
+      { id: 'zcity-bald-man', name: 'Bald Man' },
+      { id: 'zcity-lord-boro', name: 'Lord Boro' },
+      { id: 'zcity-galaxy-hunter', name: 'Galaxy Hunter' }
+    ],
     auras: [
       { id: 'zcity-galaxy-aura', name: 'Galaxy Aura (SSS)' }
     ],
@@ -633,6 +908,16 @@ const checklistDataByWorld = {
       { id: 'tomb-magic-tier-level-50', name: 'Magic Tier Level (50)' }
     ],
     sssRank: [
+      { id: 'tomb-anz-ool-gawn', name: 'Anz Ool Gawn' }
+    ],
+    avatars: [
+      { id: 'tomb-pandoros-actor', name: 'Pandoros Actor' },
+      { id: 'tomb-auro', name: 'Auro' },
+      { id: 'tomb-maro', name: 'Maro' },
+      { id: 'tomb-sebes', name: 'Sebes' },
+      { id: 'tomb-shaltir', name: 'Shaltir' },
+      { id: 'tomb-demurge', name: 'Demurge' },
+      { id: 'tomb-albedia', name: 'Albedia' },
       { id: 'tomb-anz-ool-gawn', name: 'Anz Ool Gawn' }
     ],
     accessories: [
@@ -665,6 +950,16 @@ const checklistDataByWorld = {
     sssRank: [
         { id: 'thriller-gekar-morra', name: 'Gekar Morra' }
     ],
+    avatars: [
+      { id: 'thriller-robini', name: 'Robini' },
+      { id: 'thriller-perina', name: 'Perina' },
+      { id: 'thriller-franq', name: 'Franq' },
+      { id: 'thriller-brukk', name: 'Brukk' },
+      { id: 'thriller-nightmare-loffy', name: 'Nightmare Loffy' },
+      { id: 'thriller-orrs', name: 'Orrs' },
+      { id: 'thriller-riuma', name: 'Riuma' },
+      { id: 'thriller-gekar-morra', name: 'Gekar Morra' }
+    ],
     accessories: [
         { id: 'thriller-orrs-pants', name: 'Orrs Pants (S)' },
     ],
@@ -693,6 +988,16 @@ const checklistDataByWorld = {
         { id: 'amusement-tagamura', name: 'Tagamura' },
         { id: 'amusement-1moto', name: '1moto' }
     ],
+    avatars: [
+      { id: 'amusement-masumo', name: 'Masumo' },
+      { id: 'amusement-lu-shaoran', name: 'Lu Shaoran' },
+      { id: 'amusement-shiru', name: 'Shiru' },
+      { id: 'amusement-nakumo', name: 'Nakumo' },
+      { id: 'amusement-sakomura', name: 'Sakomura' },
+      { id: 'amusement-shibasa', name: 'Shibasa' },
+      { id: 'amusement-hayo', name: 'Hayo' },
+      { id: 'amusement-tagamura', name: 'Tagamura' }
+    ],
     quests: [
       { id: 'amusement-assassin-quest', name: 'Assassin Quest'},
       { id: 'amusement-key-quests', name: 'Key Quests'},
@@ -717,6 +1022,16 @@ const checklistDataByWorld = {
       { id: 'manor-blue-oni-aura', name: 'Blue Oni Aura (C)' },
       { id: 'manor-pink-oni-aura', name: 'Pink Oni Aura (D)' }
     ],
+    avatars: [
+      { id: 'manor-sabaru', name: 'Sabaru' },
+      { id: 'manor-rammy', name: 'Rammy' },
+      { id: 'manor-remmy', name: 'Remmy' },
+      { id: 'manor-fredrika', name: 'Fredrika' },
+      { id: 'manor-felis', name: 'Felis' },
+      { id: 'manor-emilli', name: 'Emilli' },
+      { id: 'manor-bellatrice', name: 'Bellatrice' },
+      { id: 'manor-roswald', name: 'Roswald' }
+    ],
     quests: [
       { id: 'manor-hero-license-quests', name: 'Hero License Quests'},
       { id: 'manor-key-quests', name: 'Key Quests'},
@@ -734,6 +1049,16 @@ const checklistDataByWorld = {
     ],
     sssRank: [
         { id: 'asfordo-emperor-reloush', name: 'Emperor Reloush' }
+    ],
+    avatars: [
+      { id: 'asfordo-euphy', name: 'Euphy' },
+      { id: 'asfordo-reloush', name: 'Reloush' },
+      { id: 'asfordo-ogi', name: 'Ogi' },
+      { id: 'asfordo-anja', name: 'Anja' },
+      { id: 'asfordo-kalla', name: 'Kalla' },
+      { id: 'asfordo-susaku', name: 'Susaku' },
+      { id: 'asfordo-zero', name: 'Zero' },
+      { id: 'asfordo-emperor-reloush', name: 'Emperor Reloush' }
     ],
     accessories: [
       { id: 'asfordo-queen-boots', name: 'Queen Boots (E)' },
@@ -759,6 +1084,16 @@ const checklistDataByWorld = {
     sssRank: [
         { id: 'science-tsukaro', name: 'Tsukaro' }
     ],
+    avatars: [
+      { id: 'science-chromel', name: 'Chromel' },
+      { id: 'science-senko', name: 'Senko' },
+      { id: 'science-genru', name: 'Genru' },
+      { id: 'science-ginrai', name: 'Ginrai' },
+      { id: 'science-uryon', name: 'Uryon' },
+      { id: 'science-taiko', name: 'Taiko' },
+      { id: 'science-kohara', name: 'Kohara' },
+      { id: 'science-tsukaro', name: 'Tsukaro' }
+    ],
     accessories: [
       { id: 'science-wooden-quiver', name: 'Wooden Quiver (A)' }
     ],
@@ -777,6 +1112,16 @@ const checklistDataByWorld = {
     ],
     sssRank: [
         { id: 'sand-sasaru', name: 'Sasaru' }
+    ],
+    avatars: [
+      { id: 'sand-shikomeru', name: 'Shikomeru' },
+      { id: 'sand-kenkoro', name: 'Kenkoro' },
+      { id: 'sand-kaboto', name: 'Kaboto' },
+      { id: 'sand-temoro', name: 'Temoro' },
+      { id: 'sand-deidi', name: 'Deidi' },
+      { id: 'sand-hiruken', name: 'Hiruken' },
+      { id: 'sand-gaari', name: 'Gaari' },
+      { id: 'sand-sasaru', name: 'Sasaru' }
     ],
     auras: [
         { id: 'sand-sand-aura', name: 'Sand Aura (A)' }
@@ -802,6 +1147,16 @@ const checklistDataByWorld = {
     sssRank: [
         { id: 'raid-akara', name: 'Akara' }
     ],
+    avatars: [
+      { id: 'raid-sheene', name: 'Sheene' },
+      { id: 'raid-vols', name: 'Vols' },
+      { id: 'raid-leina', name: 'Leina' },
+      { id: 'raid-buran', name: 'Buran' },
+      { id: 'raid-tatsumo', name: 'Tatsumo' },
+      { id: 'raid-kurona', name: 'Kurona' },
+      { id: 'raid-susanoe', name: 'Susanoe' },
+      { id: 'raid-akara', name: 'Akara' }
+    ],
     auras: [
       { id: 'raid-ice-queen-aura', name: 'Ice Queen Aura (A)' }
     ],
@@ -823,6 +1178,16 @@ const checklistDataByWorld = {
       { id: 'salty-mob-anger', name: 'Mob Anger' }
     ],
     sssRank: [
+      { id: 'salty-dimpy', name: 'Dimpy' }
+    ],
+    avatars: [
+      { id: 'salty-arataki', name: 'Arataki' },
+      { id: 'salty-taruka', name: 'Taruka' },
+      { id: 'salty-retsu', name: 'Retsu' },
+      { id: 'salty-mob', name: 'Mob' },
+      { id: 'salty-shoi', name: 'Shoi' },
+      { id: 'salty-sarizaw', name: 'Sarizaw' },
+      { id: 'salty-mob-100%', name: 'Mob 100%' },
       { id: 'salty-dimpy', name: 'Dimpy' }
     ],
     auras: [
@@ -848,6 +1213,16 @@ const checklistDataByWorld = {
     sssRank: [
       { id: 'mugen-akazi', name: 'Akazi' }
     ],
+    avatars: [
+      { id: 'mugen-insaka', name: 'Insaka' },
+      { id: 'mugen-zantsu', name: 'Zantsu' },
+      { id: 'mugen-tanjaro', name: 'Tanjaro' },
+      { id: 'mugen-rengaki', name: 'Rengaki' },
+      { id: 'mugen-tangan', name: 'Tangan' },
+      { id: 'mugen-deki', name: 'Deki' },
+      { id: 'mugen-giutero', name: 'Giutero' },
+      { id: 'mugen-akazi', name: 'Akazi' }
+    ],
     quests: [
       { id: 'mugen-hero-quest', name: 'Hero Quest'},
       { id: 'mugen-bento-box-quests', name: 'Bento Box Quests'},
@@ -871,6 +1246,16 @@ const checklistDataByWorld = {
     sssRank: [
         { id: 'easton-war-cell', name: 'War Cell' }
     ],
+    avatars: [
+      { id: 'easton-fyn', name: 'Fyn' },
+      { id: 'easton-dot', name: 'Dot' },
+      { id: 'easton-lanz', name: 'Lanz' },
+      { id: 'easton-margery', name: 'Margery' },
+      { id: 'easton-rayn', name: 'Rayn' },
+      { id: 'easton-abiss', name: 'Abiss' },
+      { id: 'easton-mashe', name: 'Mashe' },
+      { id: 'easton-war-cell', name: 'War Cell' }
+    ],
     auras: [
     ],
     accessories: [
@@ -893,6 +1278,16 @@ const checklistDataByWorld = {
       sssRank: [
           { id: 'kuo-riasa', name: 'Riasa' },
       ],
+      avatars: [
+      { id: 'kuo-aisia', name: 'Aisia' },
+      { id: 'kuo-gespar', name: 'Gespar' },
+      { id: 'kuo-kaneko', name: 'Kaneko' },
+      { id: 'kuo-rosweiss', name: 'Rosweiss' },
+      { id: 'kuo-xanovia', name: 'Xanovia' },
+      { id: 'kuo-akena', name: 'Akena' },
+      { id: 'kuo-issai', name: 'Issai' },
+      { id: 'kuo-riasa', name: 'Riasa' }
+    ],
       auras: [
       ],
       accessories: [],
@@ -908,10 +1303,22 @@ const checklistDataByWorld = {
           { id: 'magnoli-dragon-class', name: 'Dragon Class' },
       ],
       progressions: [
+          { id: 'magnoli-magic-items-crafting', name: 'Magic Items Crafting' },
+          { id: 'magnoli-magic-items-evolve', name: 'Magic Items Evolve (100)' },
       ],
       sssRank: [
-          { id: 'magnoli-zareth', name: 'Zareth' },
+          { id: 'magnoli-zareth', name: 'Zereth' },
       ],
+      avatars: [
+      { id: 'magnoli-luci', name: 'Luci' },
+      { id: 'magnoli-wendia', name: 'Wendia' },
+      { id: 'magnoli-grae', name: 'Grae' },
+      { id: 'magnoli-gejael', name: 'Gejael' },
+      { id: 'magnoli-natsuyo', name: 'Natsuyo' },
+      { id: 'magnoli-erzae', name: 'Erzae' },
+      { id: 'magnoli-mavys', name: 'Mavys' },
+      { id: 'magnoli-zereth', name: 'Zereth' }
+    ],
       auras: [
       ],
       accessories: [],
