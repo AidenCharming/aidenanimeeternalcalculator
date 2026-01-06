@@ -72,20 +72,39 @@ function styleChecklistItem(checkbox, isChecked) {
 }
 
 function createChecklistItem(item, savedData) {
-    const label = document.createElement('label');
-    label.className = 'checklist-item';
-    label.htmlFor = item.id;
+    const div = document.createElement('div');
+    div.className = 'checklist-item flex items-start space-x-2 p-1 rounded hover:bg-slate-800 transition-colors';
+    
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.id = item.id;
-    checkbox.name = item.id;
-    checkbox.checked = !!savedData[item.id];
-    const span = document.createElement('span');
-    span.textContent = item.name;
-    label.appendChild(checkbox);
-    label.appendChild(span);
-    styleChecklistItem(checkbox, checkbox.checked);
-    return label;
+    checkbox.className = 'form-checkbox h-4 w-4 text-blue-600 bg-slate-900 border-slate-600 rounded mt-1';
+    
+    // FIX: Check it immediately if it exists in savedData
+    if (savedData && savedData[item.id]) {
+        checkbox.checked = true;
+    }
+
+    checkbox.addEventListener('change', () => {
+        styleChecklistItem(div, checkbox.checked);
+        // Save immediately on change
+        saveChecklistData(); 
+        // Update titles to reflect the change visually
+        updateAllWorldTitles(); 
+    });
+
+    const label = document.createElement('label');
+    label.htmlFor = item.id;
+    label.className = 'text-sm text-gray-300 cursor-pointer leading-tight';
+    label.innerText = item.name;
+
+    div.appendChild(checkbox);
+    div.appendChild(label);
+
+    // Apply initial styling
+    styleChecklistItem(div, checkbox.checked);
+
+    return div;
 }
 
 async function updateAllWorldTitles(savedData) {
@@ -214,32 +233,15 @@ async function saveChecklistData() {
     } catch (e) {}
 }
 
-function populateWorldChecklists() {
-    console.log("Apex: Initialization started...");
+function populateWorldChecklists(savedData = {}) {
+    if (typeof checklistDataByWorld === 'undefined') return;
+    const checklistContainer = document.getElementById('checklist-worlds-container');
+    if (!checklistContainer) return;
 
-    // 1. Robust Data Fetching
-    let data = null;
-    if (typeof checklistDataByWorld !== 'undefined') data = checklistDataByWorld;
-    else if (window.checklistDataByWorld) data = window.checklistDataByWorld;
+    checklistContainer.innerHTML = '';
 
-    if (!data) {
-        console.error("Apex Error: 'checklistDataByWorld' not found. script.js might be loading before data file.");
-        return;
-    }
-
-    // 2. Direct DOM Access
-    const container = document.getElementById('checklist-worlds-container');
-    if (!container) {
-        console.error("Apex Error: HTML element 'checklist-worlds-container' not found.");
-        return;
-    }
-
-    // 3. Clear and Rebuild
-    container.innerHTML = '';
-    const worldOrder = Object.keys(data);
-    
-    // Move Miscellaneous to the end
-    if (data["Miscellaneous"]) {
+    const worldOrder = Object.keys(checklistDataByWorld);
+    if (checklistDataByWorld["Miscellaneous"]) {
         const index = worldOrder.indexOf("Miscellaneous");
         if (index > -1) {
             worldOrder.splice(index, 1);
@@ -248,8 +250,8 @@ function populateWorldChecklists() {
     }
 
     for (const worldName of worldOrder) {
-        if (!data[worldName]) continue;
-        const world = data[worldName];
+        if (!checklistDataByWorld[worldName]) continue;
+        const world = checklistDataByWorld[worldName];
         const worldNameId = worldName.replace(/\s+/g, '-').toLowerCase();
 
         const section = document.createElement('section');
@@ -264,7 +266,6 @@ function populateWorldChecklists() {
         title.innerText = `${worldName} (0 / 0)`; 
         worldHeader.appendChild(title);
 
-        // Buttons
         const worldToggleContainer = document.createElement('div');
         worldToggleContainer.className = 'toggle-container world-toggle flex gap-1';
         
@@ -283,7 +284,6 @@ function populateWorldChecklists() {
         worldHeader.appendChild(worldToggleContainer);
         section.appendChild(worldHeader);
 
-        // Categories
         const categories = [
             { key: 'gachas', name: 'Gachas', css: 'gachas' },
             { key: 'progressions', name: 'Progressions', css: 'progressions' },
@@ -291,7 +291,6 @@ function populateWorldChecklists() {
             { key: 'auras', name: 'Auras', css: 'auras' },
             { key: 'avatars', name: 'Avatars', css: 'avatars' },
             { key: 'accessories', name: 'Accessories', css: 'accessories' },
-            { key: 'weapons', name: 'Weapons', css: 'weapons' },
             { key: 'quests', name: 'Quests', css: 'quests' },
             { key: 'raidAchievements', name: 'Raid Achievements', css: 'raidAchievements' }
         ];
@@ -311,10 +310,9 @@ function populateWorldChecklists() {
                 const listDiv = document.createElement('div');
                 listDiv.className = 'space-y-2';
                 
-                // Note: We access localForage in loadChecklistData, so we just build structure here
-                // Passing 'null' as savedData is fine, the re-check function handles visuals later
                 world[cat.key].forEach(item => {
-                    listDiv.appendChild(createChecklistItem(item, {})); 
+                    // FIX: We explicitly pass 'savedData' here
+                    listDiv.appendChild(createChecklistItem(item, savedData));
                 });
                 
                 subSection.appendChild(listDiv);
@@ -324,14 +322,13 @@ function populateWorldChecklists() {
 
         if (subsections.length > 0) {
             const grid = document.createElement('div');
-            grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4 w-full';
+            grid.className = 'grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 mt-4 w-full';
             subsections.forEach(sub => grid.appendChild(sub));
             section.appendChild(grid);
         }
 
-        container.appendChild(section);
+        checklistContainer.appendChild(section);
     }
-    console.log("Apex: Checklist Population Complete.");
 }
 
 async function loadChecklistData() {
@@ -2665,8 +2662,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadTimeToEnergyData(); 
         await loadLootData();
         await loadTTKData();
-        populateWorldChecklists();
-        await loadChecklistData(); // This checks the boxes based on save data
+        
+        if (typeof checklistDataByWorld !== 'undefined') {
+            // A. Load data from storage FIRST
+            let savedChecklist = {};
+            try {
+                savedChecklist = await localforage.getItem(CHECKLIST_SAVE_KEY) || {};
+                console.log("Apex: Loaded checklist data:", Object.keys(savedChecklist).length, "items.");
+            } catch (e) {
+                console.error("Apex: Failed to load checklist save.", e);
+            }
+
+            // B. Build the list using that data
+            populateWorldChecklists(savedChecklist);
+
+            // C. Update the visual counts
+            updateAllWorldTitles(savedChecklist);
+        }
 
         // 4. Final UI Updates
         if (el.worldSelect) populateEnemyDropdown(); 
