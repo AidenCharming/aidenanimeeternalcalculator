@@ -1287,11 +1287,11 @@ const checklistDataByWorld = {
       { id: 'kuo-akena', name: 'Akena' },
       { id: 'kuo-issai', name: 'Issai' },
       { id: 'kuo-riasa', name: 'Riasa' }
-    ],
+      ],
       auras: [
       ],
       accessories: [],
-    quests: [
+      quests: [
       { id: 'kuo-peerage-license', name: 'Peerage Quest'},
       { id: 'kuo-key-quests', name: 'Key Quests'},
       { id: 'kuo-obelisk-quest', name: 'Obelisk Quest'}
@@ -1318,13 +1318,45 @@ const checklistDataByWorld = {
       { id: 'magnoli-erzae', name: 'Erzae' },
       { id: 'magnoli-mavys', name: 'Mavys' },
       { id: 'magnoli-zereth', name: 'Zereth' }
-    ],
+      ],
       auras: [
       ],
       accessories: [],
-    quests: [
+      quests: [
       { id: 'magnoli-key-quests', name: 'Key Quests'},
       { id: 'magnoli-obelisk-quest', name: 'Obelisk Quest'}
+    ]
+    },
+    "Lute Village": {
+      gachas: [
+          { id: 'lute-magic-shield', name: 'Magic Shield' },
+          { id: 'lute-vassal', name: 'Vassal Weapon' },
+      ],
+      progressions: [
+          { id: 'lute-legendary-bow-leveling', name: 'Legendary Bow Leveling' },
+          { id: 'lute-legendary-spear-leveling', name: 'Legendary Spear Leveling' },
+          { id: 'lute-legendary-sword-leveling', name: 'Legendary Sword Leveling' },
+          { id: 'lute-legendary-shield-leveling', name: 'Legendary Shield Leveling' }
+      ],
+      sssRank: [
+          { id: 'lute-sss-glasya', name: 'Glasya' },
+      ],
+      avatars: [
+      { id: 'lute-raftalia', name: 'Raftalia' },
+      { id: 'lute-naofin', name: 'Naofin' },
+      { id: 'lute-mellia', name: 'Mellia' },
+      { id: 'lute-motoyan', name: 'Motoyan' },
+      { id: 'lute-filoa', name: 'Filoa' },
+      { id: 'lute-rennel', name: 'Rennel' },
+      { id: 'lute-itsura', name: 'Itsura' },
+      { id: 'lute-glasya', name: 'Glasya' }
+      ],
+      auras: [
+      ],
+      accessories: [],
+      quests: [
+      { id: 'lute-key-quests', name: 'Key Quests'},
+      { id: 'lute-obelisk-quest', name: 'Obelisk Quest'}
     ]
     },
 };

@@ -67,7 +67,7 @@
                 </div>
 
                 <div class="topbar-right">
-                    <span class="version-text">Version 32.3 - Magnoli Town Part 2</span>
+                    <span class="version-text">Version 33 - Lute Village</span>
                     <div class="toggle-container">
                         <button id="format-toggle-scientific" class="toggle-btn" data-format="scientific">Scientific</button>
                         <button id="format-toggle-engineering" class="toggle-btn" data-format="engineering">Engineering</button>
@@ -685,8 +685,89 @@
 
 
                 <div id="panel-raid" class="hidden">
-                     <div class="max-w-4xl ml-0 space-y-6">
-                         <div class="result-box p-6 rounded-xl border-2 border-blue-600 relative overflow-hidden" style="padding: 24px !important;"><div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-cyan-400"></div><h3 class="text-white font-bold text-lg mb-4 border-b pb-2 flex items-center gap-2" style="border-color: var(--border-light);">Raids & Dungeons</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="space-y-4"><div><label for="activitySelect">Select Activity</label><div class="relative"><select id="activitySelect" class="select-field w-full rounded-lg"></select></div></div><div><label for="activityTimeLimit">Time Limit (Seconds)</label><input type="text" id="activityTimeLimit" class="input-field w-full"></div></div><div class="space-y-4"><div><label for="yourDPMActivity">Your DPM</label><div class="grid-denom"><input type="text" id="yourDPMActivity" class="input-field w-full" placeholder="e.g., 30000"><div class="relative"><input type="text" id="dpmActivityDenominationInput" class="input-field w-full" placeholder="e.g., Sx" autocomplete="off"><input type="hidden" id="dpmActivityDenominationValue" value="1"><div id="dpmActivityDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div></div></div></div><div><label for="keyRunQuantity">Key Runs (Quantity)</label><input type="text" id="keyRunQuantity" class="input-field w-full" placeholder="e.g., 5"></div></div></div><div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4"><div class="p-4 result-box text-center"><p id="activityResultLabel" class="text-gray-400 text-sm uppercase tracking-wider mb-1">Estimated Max Stage</p><p id="activityResult" class="text-2xl font-bold text-blue-400">0 / 0</p></div><div class="p-4 result-box text-center" onclick="copyResult('keyRunTimeResult')"><p class="text-gray-400 text-sm uppercase tracking-wider mb-1">Total Run Time</p><p id="keyRunTimeResult" class="text-2xl font-bold text-blue-400">0s</p><p id="keyRunReturnTime" class="text-xs text-gray-500 mt-1"></p></div></div></div>
+                    <div class="max-w-4xl ml-0 space-y-6">
+                        <div class="result-box p-6 rounded-xl border-2 border-blue-600 relative overflow-hidden" style="padding: 24px !important;">
+                            
+                            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-cyan-400"></div>
+                            <h3 class="text-white font-bold text-lg mb-4 border-b pb-2 flex items-center gap-2" style="border-color: var(--border-light);">
+                                Raids & Dungeons
+                            </h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="activitySelect">Select Activity</label>
+                                        <div class="relative">
+                                            <select id="activitySelect" class="select-field w-full rounded-lg"></select>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label for="raidTargetStageInput" class="text-cyan-400">Target Room / Stage</label>
+                                        <input type="number" id="raidTargetStageInput" class="input-field w-full border-blue-900/50" placeholder="e.g., 50" min="1">
+                                    </div>
+
+                                    <div>
+                                        <label class="text-xs text-gray-500 uppercase">Target Enemy HP</label>
+                                        <div id="raidEnemyHP" class="text-white font-mono text-lg truncate">0</div>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="activityTimeLimit">Time Limit (Seconds)</label>
+                                        <input type="text" id="activityTimeLimit" class="input-field w-full">
+                                    </div>
+
+                                    <div>
+                                        <label for="yourDPMActivity">Your DPM</label>
+                                        <div class="grid-denom">
+                                            <input type="text" id="yourDPMActivity" class="input-field w-full" placeholder="e.g., 30000">
+                                            <div class="relative">
+                                                <input type="text" id="dpmActivityDenominationInput" class="input-field w-full" placeholder="e.g., Sx" autocomplete="off">
+                                                <input type="hidden" id="dpmActivityDenominationValue" value="1">
+                                                <div id="dpmActivityDenominationList" class="search-list absolute z-10 w-full mt-2 max-h-48 overflow-y-auto hidden"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label for="keyRunQuantity">Key Runs (Quantity)</label>
+                                        <input type="text" id="keyRunQuantity" class="input-field w-full" placeholder="e.g., 5">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 mb-2">
+                                <p class="text-xs text-cyan-400 uppercase tracking-widest font-bold mb-2">Requirements to Clear Target</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="p-4 result-box text-center bg-blue-900/20 rounded-lg border border-blue-800" onclick="copyResult('recDPSResult')">
+                                        <p class="text-gray-400 text-sm uppercase tracking-wider mb-1">Estimated DPS (+10%)</p>
+                                        <p id="recDPSResult" class="text-xl font-bold text-cyan-400 cursor-pointer hover:text-white transition-colors">0</p>
+                                    </div>
+                                    <div class="p-4 result-box text-center bg-blue-900/20 rounded-lg border border-blue-800" onclick="copyResult('recDPMResult')">
+                                        <p class="text-gray-400 text-sm uppercase tracking-wider mb-1">Estimated DPM (+10%)</p>
+                                        <p id="recDPMResult" class="text-xl font-bold text-blue-400 cursor-pointer hover:text-white transition-colors">0</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <p class="text-xs text-gray-500 uppercase tracking-widest font-bold mb-2">Estimates Based on Your DPM</p>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="p-4 result-box text-center">
+                                        <p id="activityResultLabel" class="text-gray-400 text-sm uppercase tracking-wider mb-1">Estimated Max Stage</p>
+                                        <p id="activityResult" class="text-2xl font-bold text-white">0 / 0</p>
+                                    </div>
+                                    <div class="p-4 result-box text-center" onclick="copyResult('keyRunTimeResult')">
+                                        <p class="text-gray-400 text-sm uppercase tracking-wider mb-1">Total Run Time</p>
+                                        <p id="keyRunTimeResult" class="text-2xl font-bold text-white">0s</p>
+                                        <p id="keyRunReturnTime" class="text-xs text-gray-500 mt-1"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

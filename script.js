@@ -1006,6 +1006,9 @@ async function saveRaidData() {
         if (el.dpmActivityDenominationValue) await localforage.setItem('ae_raid_dpmDenomValue', el.dpmActivityDenominationValue.value);
         if (el.activityTimeLimit) await localforage.setItem('ae_raid_timeLimit', el.activityTimeLimit.value);
         if (el.keyRunQuantity) await localforage.setItem('ae_raid_key_quantity', el.keyRunQuantity.value);
+        if (document.getElementById('raidTargetStageInput')) {
+            await localforage.setItem('ae_raid_target_stage', document.getElementById('raidTargetStageInput').value);
+        }
     } catch (e) {}
 }
 
@@ -1029,8 +1032,13 @@ async function loadRaidData() {
         if (timeLimit && el.activityTimeLimit) el.activityTimeLimit.value = timeLimit;
         const quantity = await localforage.getItem('ae_raid_key_quantity');
         if (quantity && el.keyRunQuantity) el.keyRunQuantity.value = quantity;
+        const savedTargetStage = await localforage.getItem('ae_raid_target_stage');
+        if (savedTargetStage && document.getElementById('raidTargetStageInput')) {
+            document.getElementById('raidTargetStageInput').value = savedTargetStage;
+        }
         calculateMaxStage();
         calculateKeyRunTime();
+        calculateRaidRequirements();
     } catch (e) {}
 }
 
@@ -2072,7 +2080,7 @@ function calculateMaxStage() {
     const maxDamageInTime = yourDPS * timeLimit;
     let completedStage = 0;
     if (activity.enemies) {
-        const singleEnemyRaids = ["Mundo Raid", "Gleam Raid", "Tournament Raid"];
+        const singleEnemyRaids = ["Mundo Raid", "Gleam Raid", "Tournament Raid", "Breathing Raid"];
         for (let i = 1; i <= maxStages; i++) {
             const stageKey = `Room ${i}`;
             let stageHealth = parseNumberInput(String(activity.enemies[stageKey]));
@@ -2112,7 +2120,7 @@ function calculateKeyRunTime() {
         return;
     }
     let timeInSecondsPerRun = 0;
-    const singleEnemyRaids = ["Mundo Raid", "Gleam Raid", "Tournament Raid"];
+    const singleEnemyRaids = ["Mundo Raid", "Gleam Raid", "Tournament Raid", "Breathing Raid"];
     const RESPawn_TIME = 0.1;
     for (let i = 1; i <= completedStage; i++) {
         const stageKey = `Room ${i}`;
@@ -2145,6 +2153,44 @@ function calculateKeyRunTime() {
             hour12: true 
         });
         returnTimeEl.innerText = `Finish Time: ${returnString}`;
+    }
+}
+
+function calculateRaidRequirements() {
+    const targetStageInput = document.getElementById('raidTargetStageInput');
+    const elHP = document.getElementById('raidEnemyHP');
+    const elReqDPS = document.getElementById('recDPSResult');
+    const elReqDPM = document.getElementById('recDPMResult');
+    const timeLimitInput = document.getElementById('activityTimeLimit');
+    const activitySelect = document.getElementById('activitySelect');
+
+    if (!targetStageInput || !elHP || !elReqDPS || !elReqDPM || !activitySelect) return;
+
+    const activityName = activitySelect.value;
+    const activity = activityData[activityName];
+    const targetStage = parseInt(targetStageInput.value) || 0;
+    const timeLimit = parseFloat(timeLimitInput.value) || 60;
+
+    if (activity && activity.enemies) {
+        const roomKey = `Room ${targetStage}`;
+        const hpString = activity.enemies[roomKey];
+
+        if (hpString) {
+            const hp = Number(hpString); 
+            elHP.innerText = formatNumber(hp);
+            const reqDPS = (hp / timeLimit) * 1.10;
+            const reqDPM = reqDPS * 60;
+            elReqDPS.innerText = formatNumber(reqDPS);
+            elReqDPM.innerText = formatNumber(reqDPM);
+        } else {
+            elHP.innerText = "Invalid Stage";
+            elReqDPS.innerText = "0";
+            elReqDPM.innerText = "0";
+        }
+    } else {
+        elHP.innerText = "0";
+        elReqDPS.innerText = "0";
+        elReqDPM.innerText = "0";
     }
 }
 
@@ -2604,6 +2650,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const raidDebounce = debounce(() => {
         calculateMaxStage();
         calculateKeyRunTime();
+        calculateRaidRequirements();
         saveRaidData();
     }, 300);
     if (el.activitySelect) {
@@ -2620,6 +2667,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     if (el.activityTimeLimit) el.activityTimeLimit.addEventListener('input', raidDebounce);
     if (el.keyRunQuantity) el.keyRunQuantity.addEventListener('input', raidDebounce);
+    const targetStageInput = document.getElementById('raidTargetStageInput');
+    if (targetStageInput) {
+        targetStageInput.addEventListener('input', raidDebounce);
+    }
     if (el['theme-select']) {
         populateThemeDropdown();
 
