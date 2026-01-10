@@ -1338,10 +1338,10 @@ const checklistDataByWorld = {
           { id: 'lute-vassal', name: 'Vassal Weapon' },
       ],
       progressions: [
-          { id: 'lute-legendary-bow-leveling', name: 'Legendary Bow Leveling' },
-          { id: 'lute-legendary-spear-leveling', name: 'Legendary Spear Leveling' },
-          { id: 'lute-legendary-sword-leveling', name: 'Legendary Sword Leveling' },
-          { id: 'lute-legendary-shield-leveling', name: 'Legendary Shield Leveling' }
+          { id: 'lute-legendary-bow-leveling', name: 'Legendary Bow Leveling (100)' },
+          { id: 'lute-legendary-spear-leveling', name: 'Legendary Spear Leveling (100)' },
+          { id: 'lute-legendary-sword-leveling', name: 'Legendary Sword Leveling (100)' },
+          { id: 'lute-legendary-shield-leveling', name: 'Legendary Shield Leveling (100)' }
       ],
       sssRank: [
           { id: 'lute-sss-glasya', name: 'Glasya' },
