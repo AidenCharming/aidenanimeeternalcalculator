@@ -787,8 +787,8 @@ const checklistDataByWorld = {
       { id: 'hollow-espada', name: 'Espada' }
     ],
     progressions: [
-      { id: 'hollow-reiatsu-leveling', name: 'Reiatsu Leveling' },
-      { id: 'hollow-zanpakuto-leveling', name: 'Zanpakuto Leveling' }
+      { id: 'hollow-reiatsu-leveling', name: 'Reiatsu Leveling (25)' },
+      { id: 'hollow-zanpakuto-leveling', name: 'Zanpakuto Leveling (25)' }
     ],
     sssRank: [
       { id: 'hollow-sss-vasto-ichige', name: 'Vasto Ichige' }
@@ -1199,7 +1199,8 @@ const checklistDataByWorld = {
       { id: 'salty-obelisk-quest', name: 'Obelisk Quest'}
     ],
     raidAchievements: [
-      { id: 'salty-body-improvement', name: 'Body Improvement Challenge' }
+      { id: 'salty-body-improvement', name: 'Body Improvement Challenge' },
+      { id: 'salty-maze-five', name: 'Maze 5' }
     ]
   },
 "Mugen District": {
@@ -1209,6 +1210,7 @@ const checklistDataByWorld = {
     ],
     progressions: [
       { id: 'mugen-bento-box', name: 'Bento Box Crafting' },
+      { id: 'mugen-demon-arts-leveling', name: 'Demon Arts Leveling (25)' }
     ],
     sssRank: [
       { id: 'mugen-sss-akazi', name: 'Akazi' }
@@ -1295,7 +1297,10 @@ const checklistDataByWorld = {
       { id: 'kuo-peerage-license', name: 'Peerage Quest'},
       { id: 'kuo-key-quests', name: 'Key Quests'},
       { id: 'kuo-obelisk-quest', name: 'Obelisk Quest'}
-    ]
+      ],
+      raidAchievements: [
+        { id: 'kuo-maze-six', name: 'Maze 6' }
+      ]
     },
     "Magnoli Town": {
       gachas: [
