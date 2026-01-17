@@ -172,6 +172,7 @@ const SS_SSS_MOBS = [
     "Issai", "Issai 20%", "Riasa",
     "Mavys", "Mavys 20%", "Zereth",
     "Itsura", "Itsura 20%", "Glasya",
+    "Future Android 18", "Future Android 18 20%", "Future Android 17",
 ];
 
 const worldData = {
@@ -624,6 +625,19 @@ const worldData = {
             "Itsura": "1.69e270",
 			"Itsura 20%": "3.38e269",
             "Glasya": "1.68e274",
+        }
+    },
+    "Future Earth City": {
+        "enemies": {
+            "Future Bulmina": "1.41e269",
+            "Future Trunx": "4.22e270",
+            "Future Kohaan": "7.6e271",
+            "Future Trunx SSJ": "8.19e272",
+            "Future Kohan SSJ": "8.63e273",
+            "Future Celor": "9.09e274",
+            "Future Android 18": "9.1e278",
+            "Future Android 18 20%": "1.82e278",
+            "Future Android 17": "9.1e282"
         }
     }
 };

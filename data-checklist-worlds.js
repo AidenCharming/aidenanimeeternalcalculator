@@ -1357,24 +1357,54 @@ const checklistDataByWorld = {
           { id: 'lute-sss-glasya', name: 'Glasya' },
       ],
       avatars: [
-      { id: 'lute-raftalia', name: 'Raftalia' },
-      { id: 'lute-naofin', name: 'Naofin' },
-      { id: 'lute-mellia', name: 'Mellia' },
-      { id: 'lute-motoyan', name: 'Motoyan' },
-      { id: 'lute-filoa', name: 'Filoa' },
-      { id: 'lute-rennel', name: 'Rennel' },
-      { id: 'lute-itsura', name: 'Itsura' },
-      { id: 'lute-glasya', name: 'Glasya' }
+        { id: 'lute-raftalia', name: 'Raftalia' },
+        { id: 'lute-naofin', name: 'Naofin' },
+        { id: 'lute-mellia', name: 'Mellia' },
+        { id: 'lute-motoyan', name: 'Motoyan' },
+        { id: 'lute-filoa', name: 'Filoa' },
+        { id: 'lute-rennel', name: 'Rennel' },
+        { id: 'lute-itsura', name: 'Itsura' },
+        { id: 'lute-glasya', name: 'Glasya' }
+        ],
+      auras: [
+        ],
+      accessories: [],
+      quests: [
+        { id: 'lute-key-quests', name: 'Key Quests'},
+        { id: 'lute-obelisk-quest', name: 'Obelisk Quest'}
+        ],
+      raidAchievements: [
+        { id: 'lute-calamity-raid', name: 'Calamity Raid' }
+      ]
+    },
+    "Future Earth City": {
+      gachas: [
+          { id: 'future-android-evolution', name: 'Android Evolution' }
+      ],
+      progressions: [
+          { id: 'future-saiyan-state-leveling', name: 'Saiyan State Leveling' }
+      ],
+      sssRank: [
+          { id: 'future-sss-android-17', name: 'Future Android 17' }
+      ],
+      avatars: [
+        { id: 'future-bulmina', name: 'Future Bulmina' },
+        { id: 'future-trunx', name: 'Future Trunx' },
+        { id: 'future-kohaan', name: 'Future Kohaan' },
+        { id: 'future-trunx-ssj', name: 'Future Trunx SSJ' },
+        { id: 'future-kohaan-ssj', name: 'Future Kohaan SSJ' },
+        { id: 'future-celor', name: 'Future Celor' },
+        { id: 'future-android-18', name: 'Future Android 18' },
+        { id: 'future-android-17', name: 'Future Android 17' }
       ],
       auras: [
       ],
       accessories: [],
       quests: [
-      { id: 'lute-key-quests', name: 'Key Quests'},
-      { id: 'lute-obelisk-quest', name: 'Obelisk Quest'}
+        { id: 'future-key-quests', name: 'Key Quests'},
+        { id: 'future-obelisk-quest', name: 'Obelisk Quest'}
       ],
       raidAchievements: [
-        { id: 'lute-calamity-raid', name: 'Calamity Raid' }
       ]
-    },
-};
+    }
+    };
