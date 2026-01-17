@@ -102,7 +102,14 @@ const checklistDataByWorld = {
   },
   "Dungeon Lobby 2": {
     progressions: [
-      { id: 'dungeon-lobby-2-rune-crafting', name: 'Rune Crafting' }
+      { id: 'dungeon-lobby-2-rune-crafting', name: 'Rune Crafting' },
+      { id: 'dungeon-lobby-2-pirate-crew-leveling', name: 'Pirate Crew Leveling (25)' },
+      { id: 'dungeon-lobby-2-pirate-cursed-leveling', name: 'Pirate Cursed Leveling (25)' },
+      { id: 'dungeon-lobby-2-solo-hunter-rank-leveling', name: 'Solo Hunter Rank Leveling (25)' },
+      { id: 'dungeon-lobby-2-psychic-mayhem-leveling', name: 'Psychic Mayhem Leveling (25)' },
+      { id: 'dungeon-lobby-2-damage-spell-card-leveling', name: 'Damage Spell Card Leveling (25)' },
+      { id: 'dungeon-lobby-2-damage-rune-exp-leveling', name: 'Damage Rune Exp Leveling (25)' }
+
     ],
     raidAchievements: [
       { id: 'dungeon-lobby-2-green-planet-raid', name: 'Green Planet Raid' },
@@ -415,7 +422,7 @@ const checklistDataByWorld = {
     progressions: [
       { id: 'magic-ten-110', name: 'Ten (110)' },
       { id: 'magic-contract-of-greed-100', name: 'Contract of Greed (100)' },
-      { id: 'magic-energy-obelisk-100', name: 'Energy Obelisk (100)' }
+      { id: 'magic-energy-obelisk-100', name: 'Energy Obelisk (125)' }
     ],
     sssRank: [
       { id: 'magic-sss-killas-godspeed', name: 'Killas Godspeed' }
@@ -569,7 +576,7 @@ const checklistDataByWorld = {
     progressions: [
       { id: 'virtual-swordsman-energy-210', name: 'Swordsman Energy (210)' },
       { id: 'virtual-swordsman-damage-110', name: 'Swordsman Damage (110)' },
-      { id: 'virtual-damage-obelisk-100', name: 'Damage Obelisk (100)' }
+      { id: 'virtual-damage-obelisk-100', name: 'Damage Obelisk (125)' }
     ],
     sssRank: [
       { id: 'virtual-sss-the-paladin', name: 'The Paladin' }
@@ -1325,6 +1332,7 @@ const checklistDataByWorld = {
       { id: 'magnoli-zereth', name: 'Zereth' }
       ],
       auras: [
+        { id: 'magnoli-fire-dragon-slayer-aura', name: 'Fire Dragon Slayer (A)' }
       ],
       accessories: [],
       quests: [
@@ -1336,12 +1344,14 @@ const checklistDataByWorld = {
       gachas: [
           { id: 'lute-magic-shield', name: 'Magic Shield' },
           { id: 'lute-vassal', name: 'Vassal Weapon' },
+          { id: 'lute-legendary-shield-blessing', name: 'Legendary Shield Blessing' },
+          { id: 'lute-legendary-sword-blessing', name: 'Legendary Sword Blessing' },
       ],
       progressions: [
           { id: 'lute-legendary-bow-leveling', name: 'Legendary Bow Leveling (100)' },
           { id: 'lute-legendary-spear-leveling', name: 'Legendary Spear Leveling (100)' },
           { id: 'lute-legendary-sword-leveling', name: 'Legendary Sword Leveling (100)' },
-          { id: 'lute-legendary-shield-leveling', name: 'Legendary Shield Leveling (100)' }
+          { id: 'lute-legendary-shield-leveling', name: 'Legendary Shield Leveling (100)' },
       ],
       sssRank: [
           { id: 'lute-sss-glasya', name: 'Glasya' },
@@ -1362,6 +1372,9 @@ const checklistDataByWorld = {
       quests: [
       { id: 'lute-key-quests', name: 'Key Quests'},
       { id: 'lute-obelisk-quest', name: 'Obelisk Quest'}
-    ]
+      ],
+      raidAchievements: [
+        { id: 'lute-calamity-raid', name: 'Calamity Raid' }
+      ]
     },
 };
