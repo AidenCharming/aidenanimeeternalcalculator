@@ -763,7 +763,8 @@ const checklistDataByWorld = {
       { id: 'green-eternal-dragon-50', name: 'Eternal Dragon (50)' },
       { id: 'green-dragon-energy-50', name: 'Dragon Energy (50)' },
       { id: 'green-dragon-damage-500', name: 'Dragon Damage (500)' },
-      { id: 'green-luck-obelisk-15', name: 'Luck Obelisk (15)' }
+      { id: 'green-luck-obelisk-15', name: 'Luck Obelisk (15)' },
+      { id: 'green-power-of-friendship-leveling', name: 'Power Of Friendship Leveling (100)' }
     ],
     sssRank: [
       { id: 'green-sss-frezi-final-form', name: 'Frezi Final Form' }
@@ -1117,6 +1118,10 @@ const checklistDataByWorld = {
         { id: 'sand-power-eyes-2', name: 'Power Eyes 2' },
         { id: 'sand-chakra-infusion', name: 'Chakra Infusion' }
     ],
+    progressions: [
+        { id: 'sand-shinobi-clan-leveling', name: 'Shinobi Clan Leveling (100)' },
+        { id: 'sand-kekkei-genkai-leveling-50', name: 'Kekkei Genkai Leveling (100)' }
+    ],
     sssRank: [
         { id: 'sand-sss-sasaru', name: 'Sasaru' }
     ],
@@ -1149,7 +1154,9 @@ const checklistDataByWorld = {
         { id: 'raid-damage-taigu', name: 'Damage Taigu' },
     ],
     progressions: [
-        { id: 'raid-taigu-evolve', name: 'Taigu Evolve' }
+        { id: 'raid-taigu-evolve', name: 'Taigu Evolve' },
+        { id: 'raid-energy-taigu-leveling', name: 'Energy Taigu Leveling (100)' },
+        { id: 'raid-damage-taigu-leveling', name: 'Damage Taigu Leveling (100)' }
     ],
     sssRank: [
         { id: 'raid-sss-akara', name: 'Akara' }
@@ -1379,10 +1386,12 @@ const checklistDataByWorld = {
     },
     "Future Earth City": {
       gachas: [
-          { id: 'future-android-evolution', name: 'Android Evolution' }
+          { id: 'future-android-evolution', name: 'Android Evolution' },
+          { id: 'future-saiyan-state-blessing', name: 'Saiyan State Blessing' }
       ],
       progressions: [
-          { id: 'future-saiyan-state-leveling', name: 'Saiyan State Leveling' }
+          { id: 'future-saiyan-state-leveling', name: 'Saiyan State Leveling' },
+          { id: 'future-android-evolution-leveling', name: 'Android Evolution Leveling' }
       ],
       sssRank: [
           { id: 'future-sss-android-17', name: 'Future Android 17' }
